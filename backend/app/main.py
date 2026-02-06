@@ -5,10 +5,8 @@ import os
 import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
-from app.config import get_settings
-from app.routers import auth_router, projects_router, simulations_router
+from sqlalchemy import text
 
 # Configure logging
 logging.basicConfig(
@@ -17,12 +15,13 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-settings = get_settings()
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan events"""
+    from app.config import get_settings
+    settings = get_settings()
+    
     # Startup
     logger.info("Starting AgentSociety API...")
     
@@ -35,24 +34,34 @@ async def lifespan(app: FastAPI):
     logger.info("Shutting down AgentSociety API...")
 
 
-# Create FastAPI app
+# Create FastAPI app - disable redirect_slashes to prevent 307 that strips auth headers
 app = FastAPI(
     title="AgentSociety Marketing Platform",
     description="AI-powered marketing simulation platform that simulates 1,000+ AI agents reacting to video advertisements",
     version="1.0.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    redirect_slashes=False
 )
 
-# CORS configuration
+# CORS configuration - explicit origins required when credentials=True
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
     allow_headers=["*"],
+    expose_headers=["*"],
 )
 
 # Register routers
+from app.routers import auth_router, projects_router, simulations_router
 app.include_router(auth_router)
 app.include_router(projects_router)
 app.include_router(simulations_router)
@@ -71,7 +80,8 @@ async def root():
 @app.get("/health")
 async def health_check():
     """Detailed health check"""
-    from app.database import engine
+    from app.config import get_settings
+    settings = get_settings()
     
     health = {
         "api": "healthy",
@@ -81,8 +91,9 @@ async def health_check():
     
     # Check database
     try:
+        from app.database import engine
         with engine.connect() as conn:
-            conn.execute("SELECT 1")
+            conn.execute(text("SELECT 1"))
             health["database"] = "healthy"
     except Exception as e:
         health["database"] = f"unhealthy: {str(e)}"

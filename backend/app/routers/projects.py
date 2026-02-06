@@ -21,7 +21,7 @@ ALLOWED_EXTENSIONS = {".mp4", ".mov", ".avi", ".webm", ".mkv"}
 MAX_FILE_SIZE = 500 * 1024 * 1024  # 500MB
 
 
-@router.post("/", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ProjectResponse, status_code=status.HTTP_201_CREATED)
 async def create_project(
     title: str = Form(...),
     demographic_filter: Optional[str] = Form(None),
@@ -100,7 +100,7 @@ async def create_project(
     return project
 
 
-@router.get("/", response_model=List[ProjectListResponse])
+@router.get("", response_model=List[ProjectListResponse])
 async def list_projects(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db)
