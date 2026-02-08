@@ -1,30 +1,39 @@
 """
 LLM client using Google Gemini with retry logic
+Now using the new google.genai client API
 """
 import logging
 from typing import Optional
-import google.generativeai as genai
+from google import genai
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 import os
 
 logger = logging.getLogger(__name__)
 
-# Configure Gemini
-_gemini_configured = False
-
+# Configure Gemini client
+_client = None
 
 def configure_gemini(api_key: str = None):
-    """Configure Gemini API"""
-    global _gemini_configured
+    """Configure Gemini API client"""
+    global _client
     
-    if not _gemini_configured:
+    if _client is None:
         key = api_key or os.getenv("GEMINI_API_KEY")
         if key:
-            genai.configure(api_key=key)
-            _gemini_configured = True
-            logger.info("Gemini API configured")
+            _client = genai.Client(api_key=key)
+            logger.info("Gemini API client configured")
         else:
             logger.warning("No Gemini API key provided")
+    
+    return _client
+
+
+def get_client():
+    """Get the configured Gemini client"""
+    global _client
+    if _client is None:
+        configure_gemini()
+    return _client
 
 
 class GeminiRateLimitError(Exception):
@@ -42,7 +51,7 @@ async def call_llm(
     prompt: str,
     max_tokens: int = 200,
     temperature: float = 0.7,
-    model_name: str = "gemini-1.5-flash"
+    model_name: str = "gemini-2.0-flash"
 ) -> str:
     """
     Call Gemini LLM with exponential backoff retry
@@ -57,18 +66,17 @@ async def call_llm(
         Generated text response
     """
     try:
-        configure_gemini()
+        client = get_client()
+        if client is None:
+            return ""
         
-        model = genai.GenerativeModel(model_name)
-        
-        generation_config = genai.GenerationConfig(
-            max_output_tokens=max_tokens,
-            temperature=temperature
-        )
-        
-        response = model.generate_content(
-            prompt,
-            generation_config=generation_config
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config={
+                "max_output_tokens": max_tokens,
+                "temperature": temperature
+            }
         )
         
         if response.text:
@@ -92,24 +100,23 @@ def call_llm_sync(
     prompt: str,
     max_tokens: int = 200,
     temperature: float = 0.7,
-    model_name: str = "gemini-1.5-flash"
+    model_name: str = "gemini-2.0-flash"
 ) -> str:
     """
     Synchronous version of call_llm
     """
     try:
-        configure_gemini()
+        client = get_client()
+        if client is None:
+            return ""
         
-        model = genai.GenerativeModel(model_name)
-        
-        generation_config = genai.GenerationConfig(
-            max_output_tokens=max_tokens,
-            temperature=temperature
-        )
-        
-        response = model.generate_content(
-            prompt,
-            generation_config=generation_config
+        response = client.models.generate_content(
+            model=model_name,
+            contents=prompt,
+            config={
+                "max_output_tokens": max_tokens,
+                "temperature": temperature
+            }
         )
         
         if response.text:

@@ -1,10 +1,19 @@
 """
 Celery tasks for background processing
 """
+import os
+import sys
 import logging
 from celery import Celery
 from datetime import datetime
 from app.config import get_settings
+
+# Add simulation directory to path (it's a sibling of backend)
+backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+project_root = os.path.dirname(backend_dir)
+simulation_path = os.path.join(project_root, "simulation")
+if simulation_path not in sys.path:
+    sys.path.insert(0, project_root)
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
@@ -85,10 +94,16 @@ def process_video_task(self, project_id: str):
 @celery_app.task(bind=True)
 def run_simulation_task(self, simulation_id: str):
     """
-    Background task to run agent simulation
+    Background task to queue simulation for Ray worker
+    
+    This task:
+    1. Validates the simulation and project
+    2. Publishes request to Redis 'simulation_requests' channel
+    3. Ray worker (separate process) handles the actual simulation
+    4. Results listener updates the database when complete
     """
     from app.database import SessionLocal
-    from app.models import SimulationRun, Project, AgentLog, RiskFlag
+    from app.models import SimulationRun, Project
     import json
     import redis
     
@@ -111,65 +126,35 @@ def run_simulation_task(self, simulation_id: str):
             db.commit()
             return {"error": "Project not ready"}
         
-        # Update status
+        # Update status to RUNNING (Ray worker will process)
         simulation.status = "RUNNING"
         simulation.started_at = datetime.utcnow()
         db.commit()
         
-        logger.info(f"Starting simulation {simulation_id} with {simulation.num_agents} agents")
+        logger.info(f"Sending simulation {simulation_id} to Ray worker")
         
-        # Run simulation using Ray
-        from simulation.run_simulation import run_simulation
+        # Publish request to Redis for Ray worker
+        request = {
+            "simulation_id": str(simulation.id),
+            "project_id": str(project.id),
+            "ad_content": project.vlm_generated_context,
+            "demographic_filter": project.demographic_filter,
+            "num_agents": simulation.num_agents,
+            "simulation_days": simulation.simulation_days
+        }
         
-        results = run_simulation(
-            experiment_id=str(simulation.id),
-            ad_content=project.vlm_generated_context,
-            demographic_filter=project.demographic_filter,
-            num_agents=simulation.num_agents,
-            simulation_days=simulation.simulation_days,
-            redis_client=redis_client
-        )
+        redis_client.publish("simulation_requests", json.dumps(request))
         
-        # Save results
-        simulation.status = "COMPLETED"
-        simulation.completed_at = datetime.utcnow()
-        simulation.virality_score = results.get("virality_score", 0)
-        simulation.sentiment_breakdown = results.get("sentiment_breakdown", {})
-        
-        # Save agent logs
-        for log_data in results.get("agent_logs", []):
-            agent_log = AgentLog(
-                simulation_run_id=simulation.id,
-                agent_id=log_data["agent_id"],
-                event_type=log_data["event_type"],
-                event_data=log_data.get("event_data", {})
-            )
-            db.add(agent_log)
-        
-        # Save risk flags
-        for flag_data in results.get("risk_flags", []):
-            risk_flag = RiskFlag(
-                simulation_run_id=simulation.id,
-                flag_type=flag_data["flag_type"],
-                severity=flag_data["severity"],
-                description=flag_data["description"],
-                affected_demographics=flag_data.get("affected_demographics"),
-                sample_agent_reactions=flag_data.get("sample_agent_reactions")
-            )
-            db.add(risk_flag)
-        
-        db.commit()
-        
-        logger.info(f"Simulation {simulation_id} completed successfully")
+        logger.info(f"Simulation {simulation_id} published to Ray worker queue")
         
         return {
             "simulation_id": simulation_id,
-            "status": "COMPLETED",
-            "virality_score": results.get("virality_score", 0)
+            "status": "RUNNING",
+            "message": "Simulation sent to Ray worker for processing"
         }
         
     except Exception as e:
-        logger.error(f"Simulation failed for {simulation_id}: {e}")
+        logger.error(f"Failed to queue simulation {simulation_id}: {e}")
         try:
             simulation = db.query(SimulationRun).filter(SimulationRun.id == simulation_id).first()
             if simulation:

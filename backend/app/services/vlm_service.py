@@ -1,5 +1,6 @@
 """
 Video processing service using Google Gemini for frame analysis
+Now using the new google.genai client API
 """
 import os
 import cv2
@@ -7,14 +8,21 @@ import base64
 import tempfile
 import logging
 from typing import List, Tuple
-import google.generativeai as genai
+from google import genai
 from app.config import get_settings
 
 settings = get_settings()
 logger = logging.getLogger(__name__)
 
-# Configure Gemini
-genai.configure(api_key=settings.gemini_api_key)
+# Configure Gemini client
+_client = None
+
+def get_client():
+    """Get or create Gemini client"""
+    global _client
+    if _client is None:
+        _client = genai.Client(api_key=settings.gemini_api_key)
+    return _client
 
 
 def extract_frames(video_path: str, fps: int = 1, max_frames: int = 30) -> List[str]:
@@ -95,24 +103,19 @@ def analyze_frames_with_gemini(frame_paths: List[str]) -> str:
         return "No frames could be extracted from the video."
     
     try:
-        # Use Gemini Pro Vision model
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        client = get_client()
         
         scene_descriptions = []
         
-        # Analyze frames in batches (Gemini can handle multiple images)
+        # Analyze frames in batches
         batch_size = 5
         for i in range(0, len(frame_paths), batch_size):
             batch = frame_paths[i:i + batch_size]
             
-            # Prepare images for Gemini
-            images = []
-            for frame_path in batch:
-                from PIL import Image
-                img = Image.open(frame_path)
-                images.append(img)
+            # Prepare images for Gemini - use file uploads
+            parts = []
             
-            # Create prompt with images
+            # Add the prompt first
             prompt = """Analyze these frames from a video advertisement. For each distinct scene, describe:
 1. People present and their relationships (age, gender, roles)
 2. Cultural elements, symbols, or traditions shown
@@ -122,8 +125,24 @@ def analyze_frames_with_gemini(frame_paths: List[str]) -> str:
 
 Be specific and detailed. Focus on elements that could affect how different demographic groups might react to this advertisement."""
             
-            # Send to Gemini
-            response = model.generate_content([prompt] + images)
+            parts.append(prompt)
+            
+            # Add images as base64
+            for frame_path in batch:
+                with open(frame_path, "rb") as f:
+                    image_data = f.read()
+                parts.append({
+                    "inline_data": {
+                        "mime_type": "image/jpeg",
+                        "data": base64.b64encode(image_data).decode("utf-8")
+                    }
+                })
+            
+            # Send to Gemini using new API - using 2.0-flash which is more stable
+            response = client.models.generate_content(
+                model="gemini-2.0-flash",
+                contents=parts
+            )
             
             scene_num = i // batch_size + 1
             scene_descriptions.append(f"Scenes {scene_num}:\n{response.text}")

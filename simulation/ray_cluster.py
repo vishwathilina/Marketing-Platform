@@ -37,14 +37,17 @@ def init_ray_cluster(
         context = ray.init(address=address)
     else:
         # Start local cluster
+        # Disable log_to_driver to fix compatibility with Celery's LoggingProxy
         logger.info("Initializing local Ray cluster")
         context = ray.init(
             num_cpus=num_cpus,
             num_gpus=num_gpus,
             local_mode=local_mode,
             dashboard_host=dashboard_host,
-            logging_level=logging.INFO,
-            ignore_reinit_error=True
+            logging_level=logging.WARNING,  # Reduce logging noise
+            ignore_reinit_error=True,
+            log_to_driver=False,  # Fix for Celery LoggingProxy compatibility
+            configure_logging=False  # Don't reconfigure logging
         )
     
     resources = ray.available_resources()

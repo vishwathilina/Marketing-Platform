@@ -1,8 +1,26 @@
 """
 Configuration settings loaded from environment variables
 """
+import os
 from pydantic_settings import BaseSettings
 from functools import lru_cache
+
+
+# Determine .env path - check both current dir and parent dir
+def find_env_file():
+    """Find .env file in current or parent directory"""
+    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    
+    # Check backend directory
+    if os.path.exists(os.path.join(current_dir, ".env")):
+        return os.path.join(current_dir, ".env")
+    
+    # Check parent directory (agent-society-platform)
+    parent_dir = os.path.dirname(current_dir)
+    if os.path.exists(os.path.join(parent_dir, ".env")):
+        return os.path.join(parent_dir, ".env")
+    
+    return ".env"
 
 
 class Settings(BaseSettings):
@@ -42,10 +60,11 @@ class Settings(BaseSettings):
     upload_dir: str = "uploads"
     
     class Config:
-        env_file = ".env"
+        env_file = find_env_file()
         env_file_encoding = "utf-8"
 
 
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+

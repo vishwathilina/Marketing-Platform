@@ -166,7 +166,9 @@ class SimulationOrchestrator:
             
             # Update progress
             progress = 20 + int((i + len(batch)) / len(self.agents) * 60)
-            current_day = min((i // (len(self.agents) // simulation_days)) + 1, simulation_days)
+            # Guard against division by zero when agents < simulation_days
+            agents_per_day = max(1, len(self.agents) // max(1, simulation_days))
+            current_day = min((i // agents_per_day) + 1, simulation_days)
             self._update_progress(redis_client, progress, current_day, len(all_states))
             
             logger.info(f"Processed {len(all_states)}/{len(self.agents)} agents")

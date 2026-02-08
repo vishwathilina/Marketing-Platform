@@ -28,9 +28,16 @@ async def lifespan(app: FastAPI):
     # Create upload directory
     os.makedirs(settings.upload_dir, exist_ok=True)
     
+    # Start results listener (receives simulation results from Ray worker)
+    from app.results_listener import start_results_listener
+    start_results_listener()
+    logger.info("Results listener started - listening for Ray worker results")
+    
     yield
     
     # Shutdown
+    from app.results_listener import stop_results_listener
+    stop_results_listener()
     logger.info("Shutting down AgentSociety API...")
 
 
