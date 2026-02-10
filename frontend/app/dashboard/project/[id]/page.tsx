@@ -44,10 +44,15 @@ export default function ProjectDetailPage() {
     const [activeSimulation, setActiveSimulation] = useState<any>(null);
     const [pollingEnabled, setPollingEnabled] = useState(false);
 
-    // Fetch project
+    // Fetch project - poll while processing
     const { data: project, isLoading: projectLoading } = useQuery({
         queryKey: ['project', projectId],
         queryFn: () => projectsApi.get(projectId),
+        refetchInterval: (query) => {
+            // Poll every 5 seconds while video is processing
+            const status = query.state.data?.status;
+            return status && status !== 'READY' && status !== 'FAILED' ? 5000 : false;
+        },
     });
 
     // Poll simulation status

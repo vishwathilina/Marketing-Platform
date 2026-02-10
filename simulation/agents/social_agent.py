@@ -35,11 +35,16 @@ class SocialAgent:
         mqtt_host: str = "localhost",
         mqtt_port: int = 1883,
         chroma_host: str = "localhost",
-        chroma_port: int = 8000
+        chroma_port: int = 8000,
+        api_key: str = None
     ):
         """
         Initialize agent with profile and communication channels
         """
+        # Configure LLM client with API key for this Ray actor
+        if api_key:
+            from simulation.llm_client import configure_gemini
+            configure_gemini(api_key)
         self.agent_id = agent_id
         self.profile = profile
         self.experiment_id = experiment_id
@@ -132,7 +137,7 @@ class SocialAgent:
         
         # Step 3: Get LLM response
         try:
-            response = call_llm_sync(prompt, max_tokens=300)
+            response = call_llm_sync(prompt, max_tokens=500)
             parsed = self._parse_llm_response(response)
             
             self.opinion_on_ad = parsed['opinion']

@@ -92,7 +92,7 @@ Respond with EXACTLY this JSON format (no markdown, no extra text):
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.0-flash",
+            model="gemini-3-flash-preview",
             contents=prompt,
             config={
                 "max_output_tokens": 150,

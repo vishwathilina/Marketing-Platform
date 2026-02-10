@@ -43,6 +43,9 @@ class SimulationOrchestrator:
         self.chroma_host = chroma_host
         self.chroma_port = chroma_port
         
+        # Get API key to pass to Ray actors
+        self.api_key = os.getenv("GEMINI_API_KEY", "")
+        
         self.agents = []
         self.profiles = []
         self.social_network = {}
@@ -131,7 +134,8 @@ class SimulationOrchestrator:
                 mqtt_host=self.mqtt_host,
                 mqtt_port=self.mqtt_port,
                 chroma_host=self.chroma_host,
-                chroma_port=self.chroma_port
+                chroma_port=self.chroma_port,
+                api_key=self.api_key  # Pass API key to Ray actor
             )
             
             self.agents.append(agent)
@@ -150,12 +154,24 @@ class SimulationOrchestrator:
         # Have all agents perceive the ad (parallel execution)
         logger.info("Broadcasting ad content to all agents...")
         
-        # Process in batches to avoid overwhelming the system
-        batch_size = 50
+        # GEMINI FREE TIER RATE LIMITS:
+        # - 10-15 RPM (requests per minute)
+        # - 20-50 RPD (requests per day)
+        # 
+        # To stay safe at 10 RPM: max 1 request every 6 seconds
+        # Using batch_size=2 with 7s delay = ~8.5 RPM (safe margin)
+        batch_size = 2  # Process 2 agents at a time
+        batch_delay = 7  # 7 seconds between batches
         all_states = []
+        
+        total_batches = (len(self.agents) + batch_size - 1) // batch_size
+        logger.info(f"Processing {len(self.agents)} agents in {total_batches} batches (rate limited to ~8.5 RPM)")
         
         for i in range(0, len(self.agents), batch_size):
             batch = self.agents[i:i + batch_size]
+            batch_num = (i // batch_size) + 1
+            
+            logger.info(f"Batch {batch_num}/{total_batches}: Processing {len(batch)} agents...")
             
             # Start processing for this batch
             futures = [agent.perceive_ad.remote(ad_content) for agent in batch]
@@ -172,6 +188,11 @@ class SimulationOrchestrator:
             self._update_progress(redis_client, progress, current_day, len(all_states))
             
             logger.info(f"Processed {len(all_states)}/{len(self.agents)} agents")
+            
+            # Rate limiting delay between batches
+            if i + batch_size < len(self.agents):
+                logger.info(f"Rate limit pause: {batch_delay}s...")
+                time.sleep(batch_delay)
         
         # Simulate social influence over days
         for day in range(1, simulation_days + 1):

@@ -2,6 +2,7 @@
 Ray cluster initialization and utilities
 """
 import logging
+import os
 import ray
 
 logger = logging.getLogger(__name__)
@@ -31,10 +32,18 @@ def init_ray_cluster(
         logger.info("Ray already initialized, shutting down first")
         ray.shutdown()
     
+    # Get API key to pass to workers via runtime_env
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    runtime_env = {
+        "env_vars": {
+            "GEMINI_API_KEY": api_key
+        }
+    }
+    
     if address:
         # Connect to existing cluster
         logger.info(f"Connecting to Ray cluster at {address}")
-        context = ray.init(address=address)
+        context = ray.init(address=address, runtime_env=runtime_env)
     else:
         # Start local cluster
         # Disable log_to_driver to fix compatibility with Celery's LoggingProxy
@@ -47,7 +56,8 @@ def init_ray_cluster(
             logging_level=logging.WARNING,  # Reduce logging noise
             ignore_reinit_error=True,
             log_to_driver=False,  # Fix for Celery LoggingProxy compatibility
-            configure_logging=False  # Don't reconfigure logging
+            configure_logging=False,  # Don't reconfigure logging
+            runtime_env=runtime_env  # Pass API key to workers
         )
     
     resources = ray.available_resources()
