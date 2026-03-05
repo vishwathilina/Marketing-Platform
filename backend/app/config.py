@@ -25,7 +25,7 @@ def find_env_file():
 
 class Settings(BaseSettings):
     # Database
-    database_url: str = "postgresql://agentsociety:dev_password@localhost:5432/agentsociety_db"
+    database_url: str = "postgresql://agentsociety:dev_password@localhost:5433/agentsociety_db"
     
     # Redis
     redis_url: str = "redis://localhost:6379/0"
@@ -33,10 +33,13 @@ class Settings(BaseSettings):
     # MQTT
     mqtt_broker_host: str = "localhost"
     mqtt_broker_port: int = 1883
+    mqtt_transport: str = "tcp"
+    mqtt_path: str = ""
     
     # ChromaDB
     chroma_host: str = "localhost"
     chroma_port: int = 8000
+    chroma_ssl: bool = False
     
     # AWS S3 (optional)
     aws_access_key_id: str = ""
@@ -46,6 +49,7 @@ class Settings(BaseSettings):
     
     # Google Gemini API
     gemini_api_key: str = ""
+    gemini_api_keys: str = ""  # comma-separated keys for rotation
     
     # Security
     jwt_secret: str = "change_this_to_a_random_32_character_string"

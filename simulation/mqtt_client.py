@@ -3,6 +3,7 @@ MQTT Client wrapper for agent communication
 """
 import json
 import logging
+import ssl
 import uuid
 import time
 from typing import Callable, Optional, Dict, Any
@@ -25,17 +26,39 @@ class AgentMQTTClient:
         self,
         broker_host: str = "localhost",
         broker_port: int = 1883,
-        client_id: Optional[str] = None
+        client_id: Optional[str] = None,
+        transport: str = "tcp",
+        ws_path: Optional[str] = None,
     ):
         self.broker_host = broker_host
         self.broker_port = broker_port
         self.client_id = client_id or f"agent_{uuid.uuid4().hex[:8]}"
-        
-        self.client = mqtt.Client(client_id=self.client_id)
+        self.transport = transport
+        self.ws_path = ws_path
+
+        self.client = mqtt.Client(
+            client_id=self.client_id,
+            transport=self.transport,
+        )
+
+        # Websocket path (e.g. "/mqtt" for EMQX)
+        if self.transport == "websockets" and self.ws_path:
+            self.client.ws_set_options(path=self.ws_path)
+
+        # Enable TLS/SSL for secure connections (port 443)
+        if self.broker_port == 443:
+            self.client.tls_set(
+                ca_certs=None,           # use system CA bundle
+                certfile=None,
+                keyfile=None,
+                cert_reqs=ssl.CERT_REQUIRED,
+                tls_version=ssl.PROTOCOL_TLS_CLIENT,
+            )
+
         self.client.on_connect = self._on_connect
         self.client.on_message = self._on_message
         self.client.on_disconnect = self._on_disconnect
-        
+
         self.message_handlers: Dict[str, Callable] = {}
         self.connected = False
         self._connect_retries = 0

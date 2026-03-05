@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
     
     # Start results listener (receives simulation results from Ray worker)
     from app.results_listener import start_results_listener
-    start_results_listener()
+    start_results_listener(redis_url=settings.redis_url)
     logger.info("Results listener started - listening for Ray worker results")
     
     yield
@@ -108,7 +108,11 @@ async def health_check():
     # Check Redis
     try:
         import redis
-        r = redis.from_url(settings.redis_url)
+        import ssl as ssl_module
+        redis_kwargs = {}
+        if settings.redis_url.startswith("rediss://"):
+            redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
+        r = redis.from_url(settings.redis_url, **redis_kwargs)
         r.ping()
         health["redis"] = "healthy"
     except Exception as e:

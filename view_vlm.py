@@ -30,3 +30,8 @@ else:
     print("Project not found")
 
 conn.close()
+
+
+
+Input: ad_content (string), agent_profile (dict)
+Output: agent_state (dict with emotion, opinion, reasoning)

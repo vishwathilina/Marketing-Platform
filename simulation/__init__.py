@@ -1,17 +1,31 @@
 """
 Simulation module exports
 """
-from simulation.mqtt_client import AgentMQTTClient
 from simulation.ray_cluster import init_ray_cluster, shutdown_ray
-from simulation.llm_client import call_llm_sync, configure_gemini
-from simulation.run_simulation import run_simulation, SimulationOrchestrator
+from simulation.llm_client import (
+    GeminiLLM,
+    GeminiActor,
+    configure_gemini,
+    call_llm_sync,
+    get_llm_pool,
+    shutdown_llm_pool,
+)
+from simulation.run_simulation import (
+    run_simulation,
+    run_simulation_async,
+    SimulationOrchestrator,
+)
 
 __all__ = [
-    "AgentMQTTClient",
     "init_ray_cluster",
     "shutdown_ray",
-    "call_llm_sync",
+    "GeminiLLM",
+    "GeminiActor",
     "configure_gemini",
+    "call_llm_sync",
+    "get_llm_pool",
+    "shutdown_llm_pool",
     "run_simulation",
-    "SimulationOrchestrator"
+    "run_simulation_async",
+    "SimulationOrchestrator",
 ]

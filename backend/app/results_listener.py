@@ -49,7 +49,11 @@ class ResultsListener:
     def _listen_loop(self):
         """Main listening loop"""
         try:
-            redis_client = redis.from_url(self.redis_url)
+            import ssl as ssl_module
+            redis_kwargs = {}
+            if self.redis_url.startswith("rediss://"):
+                redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
+            redis_client = redis.from_url(self.redis_url, **redis_kwargs)
             pubsub = redis_client.pubsub()
             pubsub.subscribe("simulation_results")
             
@@ -188,10 +192,12 @@ def get_results_listener() -> ResultsListener:
     return _results_listener
 
 
-def start_results_listener():
+def start_results_listener(redis_url: str = None):
     """Start the global results listener"""
-    listener = get_results_listener()
-    listener.start()
+    global _results_listener
+    if _results_listener is None:
+        _results_listener = ResultsListener(redis_url=redis_url)
+    _results_listener.start()
 
 
 def stop_results_listener():

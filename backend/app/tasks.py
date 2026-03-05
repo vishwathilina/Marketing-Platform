@@ -25,6 +25,8 @@ celery_app = Celery(
     backend=settings.redis_url
 )
 
+import ssl as ssl_module
+
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],
@@ -33,7 +35,15 @@ celery_app.conf.update(
     enable_utc=True,
     task_track_started=True,
     task_time_limit=3600,  # 1 hour max
+    broker_connection_retry_on_startup=True,  # silence CPendingDeprecationWarning in Celery 5/6
 )
+
+# Enable SSL for rediss:// connections (e.g. Upstash)
+if settings.redis_url.startswith("rediss://"):
+    celery_app.conf.update(
+        broker_use_ssl={"ssl_cert_reqs": ssl_module.CERT_REQUIRED},
+        redis_backend_use_ssl={"ssl_cert_reqs": ssl_module.CERT_REQUIRED},
+    )
 
 
 @celery_app.task(bind=True)
@@ -108,7 +118,10 @@ def run_simulation_task(self, simulation_id: str):
     import redis
     
     db = SessionLocal()
-    redis_client = redis.from_url(settings.redis_url)
+    redis_kwargs = {}
+    if settings.redis_url.startswith("rediss://"):
+        redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
+    redis_client = redis.from_url(settings.redis_url, **redis_kwargs)
     
     try:
         # Get simulation
