@@ -73,16 +73,31 @@ cd agent-society-platform
 cp .env.example .env
 ```
 
-Edit `.env` with your API keys:
+Edit `.env` with your API keys and service configurations. The default `.env` is pre-configured with cloud services (Neon DB, Upstash Redis, Hugging Face spaces):
 ```env
-# Required - Get from https://makersuite.google.com/app/apikey
-GEMINI_API_KEY=your_gemini_api_key_here
+# Required - Google Gemini APIs (For VLM analysis)
+GEMINI_API_KEY=your_primary_key
+GEMINI_API_KEYS=key1,key2,key3 # For automatic quota rotation
+
+# Required - External Services (Pre-configured in .env)
+DATABASE_URL=postgresql://...
+REDIS_URL=rediss://...
+MQTT_BROKER_HOST=...
+CHROMA_HOST=...
+
+# Required - Qwen LLM (For Agent Generation)
+QWEN_API_URL=https://...
+QWEN_MODEL_NAME=qwen3.5:397b-cloud
 
 # Optional - Change default JWT secret for production
 JWT_SECRET=your_secure_secret_here
 ```
 
-### 2. Start Docker Infrastructure
+### 2. Start Docker Infrastructure (Optional)
+
+> **Note**: The provided `.env` file is pre-configured to use cloud-hosted services (Neon DB PostgreSQL, Upstash Redis, Hugging Face EMQX and ChromaDB). If you use these cloud services, you can **skip this docker step** and proceed to Step 3.
+
+If you prefer to run services locally, you can use Docker Compose (ensure you update the `.env` file to point to `localhost`):
 
 ```bash
 # Start all required services (PostgreSQL, Redis, EMQX, ChromaDB)
@@ -202,12 +217,17 @@ agent-society-platform/
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `DATABASE_URL` | No | PostgreSQL connection (default: docker) |
-| `REDIS_URL` | No | Redis connection (default: docker) |
-| `GEMINI_API_KEY` | **Yes** | Google Gemini API key |
-| `JWT_SECRET` | No | Secret for JWT tokens |
+| `DATABASE_URL` | **Yes** | PostgreSQL connection (Neon DB or local docker) |
+| `REDIS_URL` | **Yes** | Redis connection (Upstash or local docker) |
+| `MQTT_BROKER_HOST` / `_PORT` | **Yes** | EMQX MQTT connection details |
+| `CHROMA_HOST` / `_PORT` / `_SSL`| **Yes** | ChromaDB vector database connection |
+| `GEMINI_API_KEY` | **Yes** | Google Gemini API key (for VLM analysis) |
+| `GEMINI_API_KEYS` | No | Multiple Gemini keys (comma-separated) for quota rotation |
+| `QWEN_API_URL` | **Yes** | Qwen LLM API URL for agent generation |
+| `QWEN_MODEL_NAME` | **Yes** | Qwen LLM model name |
+| `JWT_SECRET` | No | Secret for JWT tokens (default provided) |
 | `DEFAULT_NUM_AGENTS` | No | Default agent count (default: 10) |
-| `DEFAULT_SIMULATION_DAYS` | No | Simulation duration (default: 5) |
+| `DEFAULT_SIMULATION_DAYS`| No | Simulation duration (default: 5) |
 
 ---
 
@@ -246,7 +266,7 @@ celery -A app.tasks worker --loglevel=info --pool=solo
 ```
 
 ### Database connection failed
-**Cause**: PostgreSQL container not running
+**Cause**: PostgreSQL container not running (if using local database)
 ```bash
 docker-compose up -d postgres
 docker-compose logs postgres
