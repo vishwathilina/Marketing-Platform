@@ -1,6 +1,7 @@
 """Test Qwen LLM via HuggingFace Space (Ollama API)"""
 import os
 import json
+import time
 import requests
 from dotenv import load_dotenv
 from pathlib import Path
@@ -20,37 +21,62 @@ print(f"API URL: {API_URL}")
 print(f"Prompt: {prompt[:80]}...")
 print("Sending request (this may take 30-60s on free CPU)...\n")
 
-response = requests.post(
-    API_URL,
-    json={
-        "model": MODEL_NAME,
-        "prompt": prompt,
-        "stream": True,
-        "options": {
-            "num_predict": 500,
-            "temperature": 0.7,
+start_time = time.time()
+try:
+    response = requests.post(
+        API_URL,
+        json={
+            "model": MODEL_NAME,
+            "prompt": prompt,
+            "stream": True,
+            "format": "json"
         },
-    },
-    stream=True,
-    timeout=180,
-)
+        stream=True,
+        timeout=180,
+    )
 
-if response.status_code != 200:
-    print(f"ERROR: HTTP {response.status_code}")
-    print(response.text[:500])
-    exit(1)
+    print(f"--- HTTP Response Details ---")
+    print(f"Status Code: {response.status_code}")
+    print(f"Headers: {json.dumps(dict(response.headers), indent=2)}")
+    print(f"Elapsed Time so far: {time.time() - start_time:.2f}s\n")
 
-# Parse streaming NDJSON
-full_response = ""
-for line in response.iter_lines(decode_unicode=True):
-    if not line or not line.strip():
-        continue
-    try:
-        data = json.loads(line)
-        if data.get("response"):
-            full_response += data["response"]
-            print(data["response"], end="", flush=True)
-    except json.JSONDecodeError:
-        continue
+    if response.status_code != 200:
+        print(f"ERROR: HTTP {response.status_code}")
+        print(f"Raw response text: {response.text[:500]}")
+        exit(1)
 
-print(f"\n\nFull response ({len(full_response)} chars): {full_response}")
+    # Parse streaming NDJSON
+    full_response = ""
+    full_thinking = ""
+    print("--- Streaming Output ---")
+    for line in response.iter_lines():
+        if not line:
+            continue
+            
+        if isinstance(line, bytes):
+            line_str = line.decode('utf-8', errors='replace').strip()
+        else:
+            line_str = line.strip()
+            
+        if not line_str:
+            continue
+            
+        # print(f"[RAW] {line_str}") # Commenting out raw line to keep it clean
+        try:
+            data = json.loads(line_str)
+            if data.get("response"):
+                full_response += data["response"]
+                print(data["response"], end="", flush=True)
+            if data.get("thinking"):
+                full_thinking += data["thinking"]
+        except json.JSONDecodeError as e:
+            print(f"[JSON DECODE ERROR] {e} on line: {line_str}")
+            continue
+
+    print(f"\n--- Final Overview ---")
+    print(f"Total Elapsed Time: {time.time() - start_time:.2f}s")
+    print(f"Thinking content ({len(full_thinking)} chars): {full_thinking}")
+    print(f"Response content ({len(full_response)} chars): {full_response}")
+
+except Exception as e:
+    print(f"\n[EXCEPTION CAUGHT] {type(e).__name__}: {str(e)}")

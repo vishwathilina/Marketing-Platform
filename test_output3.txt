@@ -1,0 +1,546 @@
+Testing Qwen model: qwen3.5:397b-cloud
+API URL: https://vish85521-doc.hf.space/api/generate
+Prompt: You are a 35-year-old teacher from Colombo.
+You saw an ad for Watawala Tea showi...
+Sending request (this may take 30-60s on free CPU)...
+
+--- HTTP Response Details ---
+Status Code: 200
+Headers: {
+  "Date": "Wed, 11 Mar 2026 06:17:12 GMT",
+  "Content-Type": "application/x-ndjson",
+  "Transfer-Encoding": "chunked",
+  "Connection": "keep-alive",
+  "x-proxied-host": "http://10.108.43.78",
+  "x-proxied-replica": "jqqfzd3a-nv9hs",
+  "x-proxied-path": "/api/generate",
+  "link": "<https://huggingface.co/spaces/vish85521/doc>;rel=\"canonical\"",
+  "x-request-id": "8yBlIy",
+  "vary": "origin, access-control-request-method, access-control-request-headers",
+  "access-control-allow-credentials": "true"
+}
+Elapsed Time so far: 1.60s
+
+--- Streaming Output ---
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.134803621Z","response":"","thinking":"Thinking","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.145777789Z","response":"","thinking":" Process:\n\n1","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.157159679Z","response":"","thinking":".  **An","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.1720868Z","response":"","thinking":"alyze the Request:**","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.181975789Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.193256173Z","response":"","thinking":" **Persona:** ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.206084995Z","response":"","thinking":"35-year-old","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.21792078Z","response":"","thinking":" teacher from Colombo.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.229748163Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.242092716Z","response":"","thinking":" **Stimulus","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.254192289Z","response":"","thinking":":** Saw","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.266094801Z","response":"","thinking":" an ad for W","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.277783968Z","response":"","thinking":"atawala Tea","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.289850158Z","response":"","thinking":" showing a family having","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.302201462Z","response":"","thinking":" tea together.\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.314390387Z","response":"","thinking":"    *   **","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.326470786Z","response":"","thinking":"Output Format:** JSON","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.338234636Z","response":"","thinking":".\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.350668073Z","response":"","thinking":"   **Required","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.362352268Z","response":"","thinking":" Fields:** `emotion","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.374410137Z","response":"","thinking":"`,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.385953023Z","response":"","thinking":" `opinion`,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.411838776Z","response":"","thinking":" `reasoning`.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.412032393Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.421422949Z","response":"","thinking":" **Constraint:** The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.433693852Z","response":"","thinking":" reasoning","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.445896714Z","response":"","thinking":" must reflect","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.469923309Z","response":"","thinking":" the persona's","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.470594692Z","response":"","thinking":" perspective (","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.482110482Z","response":"","thinking":"Colombo,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.494329092Z","response":"","thinking":" teacher","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.505990348Z","response":"","thinking":", ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.518014303Z","response":"","thinking":"35 years","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.530459174Z","response":"","thinking":" old, cultural","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.54202337Z","response":"","thinking":" context).\n\n2","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.55457554Z","response":"","thinking":".  **Ad","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.566889425Z","response":"","thinking":"opt the Persona:**","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.578569822Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.590666527Z","response":"","thinking":" **Age:** ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.60254653Z","response":"","thinking":"35 (mid","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.614583481Z","response":"","thinking":"-life, likely has","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.626731385Z","response":"","thinking":" a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.6385932Z","response":"","thinking":" family or values","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.650072171Z","response":"","thinking":" family connections","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.662062444Z","response":"","thinking":").\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.674400698Z","response":"","thinking":"   **Occup","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.686368932Z","response":"","thinking":"ation:** Teacher (","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.698414721Z","response":"","thinking":"values education, tradition","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.710428226Z","response":"","thinking":", community","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.721641667Z","response":"","thinking":", perhaps","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.733210515Z","response":"","thinking":" stressed","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.745682009Z","response":"","thinking":" but finds","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.757067748Z","response":"","thinking":" comfort","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.768647096Z","response":"","thinking":" in routines","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.780367359Z","response":"","thinking":").\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.793835834Z","response":"","thinking":"   **Location:**","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.805159774Z","response":"","thinking":" Colombo (urban,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.816518609Z","response":"","thinking":" busy","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.828603876Z","response":"","thinking":", Sri Lankan","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.840565712Z","response":"","thinking":" context, tea","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.852330535Z","response":"","thinking":" is a staple cultural","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.863911523Z","response":"","thinking":" element","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.875626014Z","response":"","thinking":").\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.888419419Z","response":"","thinking":"   **C","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.899762139Z","response":"","thinking":"ultural Context:** Tea","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.911100907Z","response":"","thinking":" (Wataw","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.922480091Z","response":"","thinking":"ala) is a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.93417156Z","response":"","thinking":" iconic Sri Lankan","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.946480015Z","response":"","thinking":" brand. Family","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.957762722Z","response":"","thinking":" gatherings","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.969866759Z","response":"","thinking":" around","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.981401338Z","response":"","thinking":" tea are a common","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:12.993379903Z","response":"","thinking":" cultural trope (","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.008725367Z","response":"","thinking":"unity","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.025746511Z","response":"","thinking":", warmth","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.02886032Z","response":"","thinking":", break","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.040558839Z","response":"","thinking":" from busy","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.052349643Z","response":"","thinking":" life).\n\n3","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.064768843Z","response":"","thinking":".  **D","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.076332108Z","response":"","thinking":"etermine Em","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.088281806Z","response":"","thinking":"otion \u0026","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.100826751Z","response":"","thinking":" Opinion:**\n   ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.112626753Z","response":"","thinking":" *   **Em","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.124852007Z","response":"","thinking":"otion:** HAPP","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.135965156Z","response":"","thinking":"Y (as","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.1661959Z","response":"","thinking":" requested in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.167503114Z","response":"","thinking":" the prompt example","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.171908915Z","response":"","thinking":", but I need","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.184477888Z","response":"","thinking":" to align it","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.196248149Z","response":"","thinking":" with the persona's","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.207964998Z","response":"","thinking":" likely","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.219777766Z","response":"","thinking":" reaction). The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.23201263Z","response":"","thinking":" prompt *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.24396973Z","response":"","thinking":"asks","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.255840529Z","response":"","thinking":"* me to respond","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.267683399Z","response":"","thinking":" in JSON format with","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.279999059Z","response":"","thinking":" specific keys, but","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.291763661Z","response":"","thinking":" it","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.304374664Z","response":"","thinking":" doesn't strictly","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.316448773Z","response":"","thinking":" force the values","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.327832407Z","response":"","thinking":" to be \"H","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.341255505Z","response":"","thinking":"APPY\" and","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.351661267Z","response":"","thinking":" \"POSITIVE\"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.363819354Z","response":"","thinking":" regardless","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.375126784Z","response":"","thinking":" of my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.387071311Z","response":"","thinking":" actual simulation","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.410564171Z","response":"","thinking":". However, usually","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.410975782Z","response":"","thinking":", in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.422526827Z","response":"","thinking":" these tasks","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.434777705Z","response":"","thinking":", the user","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.447332875Z","response":"","thinking":" expects","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.458198386Z","response":"","thinking":" me","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.470343284Z","response":"","thinking":" to follow","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.482105029Z","response":"","thinking":" the schema","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.494361563Z","response":"","thinking":" provided in the example","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.506422139Z","response":"","thinking":" *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.518593846Z","response":"","thinking":"or* generate","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.530371812Z","response":"","thinking":" the appropriate","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.542916004Z","response":"","thinking":" values based on the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.55512039Z","response":"","thinking":" persona. Looking","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.567602683Z","response":"","thinking":" at the prompt:","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.579171561Z","response":"","thinking":" \"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.59055234Z","response":"","thinking":"Respond in JSON format","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.603474763Z","response":"","thinking":": {\"emotion\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.614723457Z","response":"","thinking":" \"HAPPY","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.626485587Z","response":"","thinking":"\", \"opinion","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.638138395Z","response":"","thinking":"\": \"POSITIVE","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.649907022Z","response":"","thinking":"\", \"reasoning","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.661385975Z","response":"","thinking":"\": \"Your explanation","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.673176759Z","response":"","thinking":" here\"}\". This","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.685807719Z","response":"","thinking":" looks like a template","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.698568003Z","response":"","thinking":". I should fill","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.71025074Z","response":"","thinking":" in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.721269374Z","response":"","thinking":" the values that","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.733432259Z","response":"","thinking":" match","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.746274268Z","response":"","thinking":" the persona's reaction","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.758566971Z","response":"","thinking":". Given the nostalgic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.770987358Z","response":"","thinking":"/w","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.78196944Z","response":"","thinking":"arm nature of the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.794045744Z","response":"","thinking":" ad for","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.830501037Z","response":"","thinking":" a Sri","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.834734141Z","response":"","thinking":" Lankan teacher,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.835260558Z","response":"","thinking":" \"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.841065553Z","response":"","thinking":"HAPPY\"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.85253953Z","response":"","thinking":" and \"POSITIVE","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.864655694Z","response":"","thinking":"\" are very","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.88321781Z","response":"","thinking":" likely accurate","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.888657857Z","response":"","thinking":". I","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.901121089Z","response":"","thinking":" will stick to these","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.912800363Z","response":"","thinking":" values","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.925001277Z","response":"","thinking":" as","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.936917696Z","response":"","thinking":" they fit the persona","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.948740514Z","response":"","thinking":" well.\n   ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.960892988Z","response":"","thinking":" *   **Op","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.972962891Z","response":"","thinking":"inion:** POS","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.98491942Z","response":"","thinking":"ITIVE.\n   ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:13.996126709Z","response":"","thinking":" *   **Reason","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.008002036Z","response":"","thinking":"ing:** Needs to","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.020424287Z","response":"","thinking":" sound","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.031801902Z","response":"","thinking":" like a ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.043830318Z","response":"","thinking":"35-year-old","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.056026874Z","response":"","thinking":" Colombo teacher. Mention","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.067883736Z","response":"","thinking":"ing work","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.079224853Z","response":"","thinking":" stress","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.090693784Z","response":"","thinking":", family","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.103243156Z","response":"","thinking":" time","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.114856855Z","response":"","thinking":", the brand","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.126365586Z","response":"","thinking":"'s","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.13786137Z","response":"","thinking":" reliability, and","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.150184907Z","response":"","thinking":" the cultural significance","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.161879577Z","response":"","thinking":" of tea.\n\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.173715898Z","response":"","thinking":"4.  **","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.185884977Z","response":"","thinking":"Draft the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.198944415Z","response":"","thinking":" Reasoning:**\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.209808283Z","response":"","thinking":"    *   *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.222414078Z","response":"","thinking":"Idea:*","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.233360977Z","response":"","thinking":" As a teacher,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.245548103Z","response":"","thinking":" I'm","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.258175131Z","response":"","thinking":" tired","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.269145175Z","response":"","thinking":" after","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.280724406Z","response":"","thinking":" school. Seeing","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.292330432Z","response":"","thinking":" families","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.30495491Z","response":"","thinking":" together reminds me of","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.316305286Z","response":"","thinking":" home. W","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.328207483Z","response":"","thinking":"atawala is","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.340026771Z","response":"","thinking":" a classic brand","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.355324225Z","response":"","thinking":".\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.363675607Z","response":"","thinking":"   *Ref","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.37563636Z","response":"","thinking":"inement:* \"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.387449369Z","response":"","thinking":"Living in Colombo,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.399811179Z","response":"","thinking":" life gets","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.411823911Z","response":"","thinking":" so busy","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.426528378Z","response":"","thinking":" between school","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.435553499Z","response":"","thinking":" and","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.447994891Z","response":"","thinking":" traffic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.458785521Z","response":"","thinking":". Seeing","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.471418505Z","response":"","thinking":" that","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.500537088Z","response":"","thinking":" ad reminded","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.500590999Z","response":"","thinking":" me of how","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.506401561Z","response":"","thinking":" important it is to","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.526843316Z","response":"","thinking":" sit down with my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.52991728Z","response":"","thinking":" parents and kids without","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.541517534Z","response":"","thinking":" phones","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.554178007Z","response":"","thinking":". W","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.565356546Z","response":"","thinking":"atawala has","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.577303167Z","response":"","thinking":" always been part","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.588803694Z","response":"","thinking":" of our home,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.601086918Z","response":"","thinking":" so it feels warm","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.612698908Z","response":"","thinking":" and trustworthy.\"\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.625345544Z","response":"","thinking":"    *   *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.636338917Z","response":"","thinking":"Tone:* Warm","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.648275677Z","response":"","thinking":", nostalgic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.660154147Z","response":"","thinking":", practical","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.671820594Z","response":"","thinking":".\n\n5.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.683811173Z","response":"","thinking":"  **Construct JSON","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.695878922Z","response":"","thinking":":**\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.721524875Z","response":"","thinking":"   Ensure valid JSON","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.721562058Z","response":"","thinking":" syntax (","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.73748366Z","response":"","thinking":"quotes, braces,","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.743949423Z","response":"","thinking":" no trailing commas).","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.756821251Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.767892495Z","response":"","thinking":" Escape any special characters","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.779713822Z","response":"","thinking":" if needed","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.791609239Z","response":"","thinking":" (none","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.80376021Z","response":"","thinking":" expected).","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.816211414Z","response":"","thinking":"\n\n6. ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.827970645Z","response":"","thinking":" **Final Review:**","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.840063261Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.859351063Z","response":"","thinking":" Does it match the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.870339273Z","response":"","thinking":" persona? Yes (","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.876268822Z","response":"","thinking":"mentions","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.887828933Z","response":"","thinking":" school, busy","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.900310877Z","response":"","thinking":" life, family","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.91211565Z","response":"","thinking":").\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.92438219Z","response":"","thinking":"   Is","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.936307446Z","response":"","thinking":" it valid","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.962587088Z","response":"","thinking":" JSON? Yes.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.964266153Z","response":"","thinking":"\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.972247795Z","response":"","thinking":" Does it follow the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.984601858Z","response":"","thinking":" requested structure","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:14.996782509Z","response":"","thinking":"? Yes.\n\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.008421295Z","response":"","thinking":"7.  **","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.020549821Z","response":"","thinking":"Final Output Generation:**","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.042049447Z","response":"","thinking":" (Self-cor","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.044441964Z","response":"","thinking":"rection: Ensure the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.056799504Z","response":"","thinking":" reasoning is concise","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.068732111Z","response":"","thinking":" but expressive","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.080948409Z","response":"","thinking":").\n\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.092743967Z","response":"","thinking":"   *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.105253335Z","response":"","thinking":"Reasoning Draft","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.116777414Z","response":"","thinking":":* \"As a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.128830695Z","response":"","thinking":" teacher living","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.140226234Z","response":"","thinking":" in Colombo, my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.152341972Z","response":"","thinking":" days are often","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.163903077Z","response":"","thinking":" rushed between","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.175762832Z","response":"","thinking":" school duties","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.187749948Z","response":"","thinking":" and traffic. This","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.200025933Z","response":"","thinking":" ad reminded me of","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.21149741Z","response":"","thinking":" the simple","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.226191799Z","response":"","thinking":" joy of gathering","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.235187073Z","response":"","thinking":" with","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.246430008Z","response":"","thinking":" my parents","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.25841982Z","response":"","thinking":" and children after","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.270420865Z","response":"","thinking":" a long day.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.281827135Z","response":"","thinking":" Watawala","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.293271009Z","response":"","thinking":" is a brand","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.305446528Z","response":"","thinking":" I","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.317579647Z","response":"","thinking":" grew up with","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.329694896Z","response":"","thinking":", so","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.341581831Z","response":"","thinking":" seeing it associated","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.353860766Z","response":"","thinking":" with family unity","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.365364068Z","response":"","thinking":" feels authentic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.37737776Z","response":"","thinking":" and war","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.38966357Z","response":"","thinking":"ms my heart.\"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.401225785Z","response":"","thinking":"\n\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.413130194Z","response":"","thinking":" *Check constraints","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.425873144Z","response":"","thinking":":* The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.437534631Z","response":"","thinking":" prompt shows","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.449812689Z","response":"","thinking":" a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.461680579Z","response":"","thinking":" template","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.473516232Z","response":"","thinking":" `","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.485249643Z","response":"","thinking":"{\"emotion\": \"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.496662658Z","response":"","thinking":"HAPPY\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.509028511Z","response":"","thinking":" \"opinion\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.520935919Z","response":"","thinking":" \"POSITIVE\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.532719176Z","response":"","thinking":" \"reasoning\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.544211061Z","response":"","thinking":" \"Your explanation here","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.556460084Z","response":"","thinking":"\"}`. I","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.568433549Z","response":"","thinking":" should use","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.580764647Z","response":"","thinking":" that","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.592123702Z","response":"","thinking":" structure.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.605082031Z","response":"","thinking":"\n\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.616075429Z","response":"","thinking":" *Wait, one","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.637946118Z","response":"","thinking":" nuance:* The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.640386534Z","response":"","thinking":" prompt says \"Respond","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.66354553Z","response":"","thinking":" in JSON format:","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.66429767Z","response":"","thinking":" {\"emotion\": \"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.675473871Z","response":"","thinking":"HAPPY\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.689063353Z","response":"","thinking":" \"opinion\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.700390823Z","response":"","thinking":" \"POSITIVE\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.712497034Z","response":"","thinking":" \"reasoning\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.723763136Z","response":"","thinking":" \"Your explanation here","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.736044309Z","response":"","thinking":"\"}\". It might","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.74819395Z","response":"","thinking":" be","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.759244459Z","response":"","thinking":" implying I should use","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.774794088Z","response":"","thinking":" those exact values or","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.783856919Z","response":"","thinking":" fill","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.796088738Z","response":"","thinking":" them in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.808099848Z","response":"","thinking":".","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.819896096Z","response":"","thinking":" Given the persona","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.832133256Z","response":"","thinking":",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.844223375Z","response":"","thinking":" HAPP","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.85596808Z","response":"","thinking":"Y/","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.867889877Z","response":"","thinking":"POSITIVE is appropriate","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.879767291Z","response":"","thinking":". I will use","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.891291676Z","response":"","thinking":" those values but","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.903929713Z","response":"","thinking":" fill the reasoning.","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.916163579Z","response":"","thinking":"\n\n    *  ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.927797319Z","response":"","thinking":" *Wait, another","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.940298967Z","response":"","thinking":" nuance:* The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.951812418Z","response":"","thinking":" prompt says \"You","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.963765026Z","response":"","thinking":" are a 3","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.975611799Z","response":"","thinking":"5-year-old teacher","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.987233581Z","response":"","thinking":" from","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:15.999864886Z","response":"","thinking":" Colombo.\" It implies","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.012028148Z","response":"","thinking":" I need","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.024113078Z","response":"","thinking":" to *act","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.035891147Z","response":"","thinking":"* as this","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.048298539Z","response":"","thinking":" persona. The JSON","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.059951498Z","response":"","thinking":" values","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.071778177Z","response":"","thinking":" should","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.084345741Z","response":"","thinking":" reflect the persona's","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.100044489Z","response":"","thinking":" true feelings","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.108570857Z","response":"","thinking":". Since","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.121009712Z","response":"","thinking":" the ad is wholesome","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.132905048Z","response":"","thinking":",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.144506998Z","response":"","thinking":" HAPPY/","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.15652252Z","response":"","thinking":"POSITIVE is correct","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.168590888Z","response":"","thinking":".\n\n    *","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.181330472Z","response":"","thinking":"   *Final","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.19326696Z","response":"","thinking":" Polish:* Make","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.205352416Z","response":"","thinking":" the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.217191655Z","response":"","thinking":" reasoning sound natural","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.232567543Z","response":"","thinking":".\n\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.241390735Z","response":"","thinking":"    ```","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.253250837Z","response":"","thinking":"json\n    {","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.265515755Z","response":"","thinking":"\n      \"emotion","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.277402804Z","response":"","thinking":"\": \"HAPP","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.288832017Z","response":"","thinking":"Y\",\n     ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.300238641Z","response":"","thinking":" \"opinion\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.312834117Z","response":"","thinking":" \"POSITIVE\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.324991187Z","response":"","thinking":"\n      \"reason","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.336410909Z","response":"","thinking":"ing\": \"Living","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.34853342Z","response":"","thinking":" in Colombo, life","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.360101188Z","response":"","thinking":" gets so busy between","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.372414727Z","response":"","thinking":" school duties","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.384078084Z","response":"","thinking":" and traffic. This","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.396078288Z","response":"","thinking":" ad reminded me of","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.408286327Z","response":"","thinking":" the simple joy of","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.419912547Z","response":"","thinking":" gathering with my parents","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.432362758Z","response":"","thinking":" and children after a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.479895885Z","response":"","thinking":" long day. W","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.482049876Z","response":"","thinking":"atawala is","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.482095098Z","response":"","thinking":" a brand I grew","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.482154829Z","response":"","thinking":" up with, so","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.490630135Z","response":"","thinking":" seeing it associated with","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.503654248Z","response":"","thinking":" family unity feels authentic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.515107177Z","response":"","thinking":" and warms my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.527048682Z","response":"","thinking":" heart.\"\n   ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.538660507Z","response":"","thinking":" }\n    ```","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.551941325Z","response":"","thinking":"\n\n    Wait","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.563532356Z","response":"","thinking":", I need to","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.575363453Z","response":"","thinking":" make sure I don","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.587570666Z","response":"","thinking":"'t include","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.599275502Z","response":"","thinking":" markdown code blocks if","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.611275641Z","response":"","thinking":" the user wants","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.62360886Z","response":"","thinking":" raw JSON, but","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.635804555Z","response":"","thinking":" usually, markdown","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.660030774Z","response":"","thinking":" blocks","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.660071748Z","response":"","thinking":" are safer for clarity","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.671352098Z","response":"","thinking":". The","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.683409144Z","response":"","thinking":" prompt says \"Respond","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.695508524Z","response":"","thinking":" in JSON format\".","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.707273724Z","response":"","thinking":" I will provide the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.719404887Z","response":"","thinking":" JSON within","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.731289408Z","response":"","thinking":" a code block for","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.743047724Z","response":"","thinking":" validity","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.755645201Z","response":"","thinking":".\n\n    Actually","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.767658337Z","response":"","thinking":", looking at the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.779249543Z","response":"","thinking":" instruction \"Respond in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.79148147Z","response":"","thinking":" JSON format:\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.803727192Z","response":"","thinking":" I should output just","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.815968339Z","response":"","thinking":" the JSON object","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.827817643Z","response":"","thinking":".","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.839989841Z","response":"","thinking":"\n\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.851655837Z","response":"","thinking":"    Let's refine","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.863790081Z","response":"","thinking":" the reasoning to be","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.875749058Z","response":"","thinking":" more specific to the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.88838278Z","response":"","thinking":" persona.\n   ","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.90008572Z","response":"","thinking":" \"As","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.911561174Z","response":"","thinking":" a teacher, I","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.923839631Z","response":"","thinking":" value","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.935617027Z","response":"","thinking":" moments","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.947922337Z","response":"","thinking":" of connection. After","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.959808399Z","response":"","thinking":" long","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:16.980317681Z","response":"","thinking":" hours","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.002064055Z","response":"","thinking":" at school, the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.002102259Z","response":"","thinking":" idea of sharing","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.01328103Z","response":"","thinking":" a cup","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.018781906Z","response":"","thinking":" of Wataw","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.030612576Z","response":"","thinking":"ala with my family","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.042176298Z","response":"","thinking":" resonates deeply","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.054700294Z","response":"","thinking":". It reminds me","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.066069575Z","response":"","thinking":" of traditional","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.078144834Z","response":"","thinking":" Sri Lankan hospitality","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.08997633Z","response":"","thinking":" and the comfort","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.101940837Z","response":"","thinking":" of home amidst","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.123681066Z","response":"","thinking":" the city","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.126098801Z","response":"","thinking":" rush","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.138811706Z","response":"","thinking":".\"\n\n    Okay","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.150097861Z","response":"","thinking":", ready to generate","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.161801916Z","response":"","thinking":".cw\n","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.173409548Z","response":"{","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.185019238Z","response":"\n  \"emotion","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.196670169Z","response":"\": \"HAPP","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.208929471Z","response":"Y\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.221062109Z","response":"\n  \"opinion\":","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.232347156Z","response":" \"POSITIVE\",","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.24387323Z","response":"\n  \"reason","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.26484924Z","response":"ing\": \"As","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.268390602Z","response":" a teacher living in","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.280415167Z","response":" Colombo, my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.292219453Z","response":" days are often rushed","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.304114079Z","response":" between school duties and","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.316118293Z","response":" city","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.328603758Z","response":" traffic. This ad","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.340960505Z","response":" reminded me of the","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.352737902Z","response":" simple joy of gathering","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.364191559Z","response":" with my parents","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.376172807Z","response":" and children after a","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.387649187Z","response":" long day. W","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.40044589Z","response":"atawala is","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.412108433Z","response":" a brand I grew","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.42370214Z","response":" up with, so","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.436135476Z","response":" seeing it associated with","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.447841925Z","response":" family unity feels authentic","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.45997937Z","response":" and warms my","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.47203719Z","response":" heart.\"\n}","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.484704239Z","response":"","done":false}
+[RAW] {"model":"qwen3.5:397b-cloud","remote_model":"qwen3.5:397b","remote_host":"https://ollama.com:443","created_at":"2026-03-11T06:17:17.554309279Z","response":"","done":true,"done_reason":"stop","total_duration":5602050023,"prompt_eval_count":72,"eval_count":1381}
+[INFO] Received 'done': True (Reason: stop)
+
+--- Final Overview ---
+Total Elapsed Time: 6.95s
+Thinking content (5168 chars): Thinking Process:
+
+1.  **Analyze the Request:**
+    *   **Persona:** 35-year-old teacher from Colombo.
+    *   **Stimulus:** Saw an ad for Watawala Tea showing a family having tea together.
+    *   **Output Format:** JSON.
+    *   **Required Fields:** `emotion`, `opinion`, `reasoning`.
+    *   **Constraint:** The reasoning must reflect the persona's perspective (Colombo, teacher, 35 years old, cultural context).
+
+2.  **Adopt the Persona:**
+    *   **Age:** 35 (mid-life, likely has a family or values family connections).
+    *   **Occupation:** Teacher (values education, tradition, community, perhaps stressed but finds comfort in routines).
+    *   **Location:** Colombo (urban, busy, Sri Lankan context, tea is a staple cultural element).
+    *   **Cultural Context:** Tea (Watawala) is a iconic Sri Lankan brand. Family gatherings around tea are a common cultural trope (unity, warmth, break from busy life).
+
+3.  **Determine Emotion & Opinion:**
+    *   **Emotion:** HAPPY (as requested in the prompt example, but I need to align it with the persona's likely reaction). The prompt *asks* me to respond in JSON format with specific keys, but it doesn't strictly force the values to be "HAPPY" and "POSITIVE" regardless of my actual simulation. However, usually, in these tasks, the user expects me to follow the schema provided in the example *or* generate the appropriate values based on the persona. Looking at the prompt: "Respond in JSON format: {"emotion": "HAPPY", "opinion": "POSITIVE", "reasoning": "Your explanation here"}". This looks like a template. I should fill in the values that match the persona's reaction. Given the nostalgic/warm nature of the ad for a Sri Lankan teacher, "HAPPY" and "POSITIVE" are very likely accurate. I will stick to these values as they fit the persona well.
+    *   **Opinion:** POSITIVE.
+    *   **Reasoning:** Needs to sound like a 35-year-old Colombo teacher. Mentioning work stress, family time, the brand's reliability, and the cultural significance of tea.
+
+4.  **Draft the Reasoning:**
+    *   *Idea:* As a teacher, I'm tired after school. Seeing families together reminds me of home. Watawala is a classic brand.
+    *   *Refinement:* "Living in Colombo, life gets so busy between school and traffic. Seeing that ad reminded me of how important it is to sit down with my parents and kids without phones. Watawala has always been part of our home, so it feels warm and trustworthy."
+    *   *Tone:* Warm, nostalgic, practical.
+
+5.  **Construct JSON:**
+    *   Ensure valid JSON syntax (quotes, braces, no trailing commas).
+    *   Escape any special characters if needed (none expected).
+
+6.  **Final Review:**
+    *   Does it match the persona? Yes (mentions school, busy life, family).
+    *   Is it valid JSON? Yes.
+    *   Does it follow the requested structure? Yes.
+
+7.  **Final Output Generation:** (Self-correction: Ensure the reasoning is concise but expressive).
+
+    *   *Reasoning Draft:* "As a teacher living in Colombo, my days are often rushed between school duties and traffic. This ad reminded me of the simple joy of gathering with my parents and children after a long day. Watawala is a brand I grew up with, so seeing it associated with family unity feels authentic and warms my heart."
+
+    *   *Check constraints:* The prompt shows a template `{"emotion": "HAPPY", "opinion": "POSITIVE", "reasoning": "Your explanation here"}`. I should use that structure.
+
+    *   *Wait, one nuance:* The prompt says "Respond in JSON format: {"emotion": "HAPPY", "opinion": "POSITIVE", "reasoning": "Your explanation here"}". It might be implying I should use those exact values or fill them in. Given the persona, HAPPY/POSITIVE is appropriate. I will use those values but fill the reasoning.
+
+    *   *Wait, another nuance:* The prompt says "You are a 35-year-old teacher from Colombo." It implies I need to *act* as this persona. The JSON values should reflect the persona's true feelings. Since the ad is wholesome, HAPPY/POSITIVE is correct.
+
+    *   *Final Polish:* Make the reasoning sound natural.
+
+    ```json
+    {
+      "emotion": "HAPPY",
+      "opinion": "POSITIVE",
+      "reasoning": "Living in Colombo, life gets so busy between school duties and traffic. This ad reminded me of the simple joy of gathering with my parents and children after a long day. Watawala is a brand I grew up with, so seeing it associated with family unity feels authentic and warms my heart."
+    }
+    ```
+
+    Wait, I need to make sure I don't include markdown code blocks if the user wants raw JSON, but usually, markdown blocks are safer for clarity. The prompt says "Respond in JSON format". I will provide the JSON within a code block for validity.
+
+    Actually, looking at the instruction "Respond in JSON format:", I should output just the JSON object.
+
+    Let's refine the reasoning to be more specific to the persona.
+    "As a teacher, I value moments of connection. After long hours at school, the idea of sharing a cup of Watawala with my family resonates deeply. It reminds me of traditional Sri Lankan hospitality and the comfort of home amidst the city rush."
+
+    Okay, ready to generate.cw
+
+Response content (376 chars): {
+  "emotion": "HAPPY",
+  "opinion": "POSITIVE",
+  "reasoning": "As a teacher living in Colombo, my days are often rushed between school duties and city traffic. This ad reminded me of the simple joy of gathering with my parents and children after a long day. Watawala is a brand I grew up with, so seeing it associated with family unity feels authentic and warms my heart."
+}

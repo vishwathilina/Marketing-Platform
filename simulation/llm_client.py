@@ -94,10 +94,7 @@ class QwenActor:
                     "model": model,
                     "prompt": prompt,
                     "stream": True,
-                    "options": {
-                        "num_predict": max_tokens,
-                        "temperature": temperature,
-                    },
+                    "format": "json"
                 }
 
                 response = self._session.post(
@@ -114,13 +111,25 @@ class QwenActor:
 
                 # Parse streaming NDJSON response
                 full_response = ""
-                for line in response.iter_lines(decode_unicode=True):
-                    if not line or not line.strip():
+                full_thinking = ""
+                for line in response.iter_lines():
+                    if not line:
                         continue
+                        
+                    if isinstance(line, bytes):
+                        line_str = line.decode('utf-8', errors='replace').strip()
+                    else:
+                        line_str = line.strip()
+                        
+                    if not line_str:
+                        continue
+                        
                     try:
-                        data = json.loads(line)
+                        data = json.loads(line_str)
                         if data.get("response"):
                             full_response += data["response"]
+                        if data.get("thinking"):
+                            full_thinking += data["thinking"]
                     except json.JSONDecodeError:
                         continue
 
@@ -129,6 +138,10 @@ class QwenActor:
                         f"[QwenActor] Success! Response: {len(full_response)} chars"
                     )
                     return full_response
+                elif full_thinking and not full_response:
+                     # Fallback in case it refused the JSON format and only gave thinking
+                     print(f"[QwenActor] Warning: Got {len(full_thinking)} chars of thinking but no response string. Returning thinking instead.")
+                     return full_thinking
                 else:
                     print("[QwenActor] Empty response from model")
                     return ""
