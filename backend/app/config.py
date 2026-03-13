@@ -8,17 +8,22 @@ from functools import lru_cache
 
 # Determine .env path - check both current dir and parent dir
 def find_env_file():
-    """Find .env file in current or parent directory"""
-    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+    """Find .env file in app, backend, or project root directory"""
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+    backend_dir = os.path.dirname(app_dir)
+    project_root_dir = os.path.dirname(backend_dir)
+
+    # Check app directory (this folder)
+    if os.path.exists(os.path.join(app_dir, ".env")):
+        return os.path.join(app_dir, ".env")
+
     # Check backend directory
-    if os.path.exists(os.path.join(current_dir, ".env")):
-        return os.path.join(current_dir, ".env")
-    
-    # Check parent directory (agent-society-platform)
-    parent_dir = os.path.dirname(current_dir)
-    if os.path.exists(os.path.join(parent_dir, ".env")):
-        return os.path.join(parent_dir, ".env")
+    if os.path.exists(os.path.join(backend_dir, ".env")):
+        return os.path.join(backend_dir, ".env")
+
+    # Check project root directory
+    if os.path.exists(os.path.join(project_root_dir, ".env")):
+        return os.path.join(project_root_dir, ".env")
     
     return ".env"
 
