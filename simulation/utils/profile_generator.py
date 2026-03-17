@@ -2,7 +2,10 @@
 Profile generator for creating diverse agent demographics
 """
 import random
+import logging
 from typing import List, Dict, Any, Optional
+
+logger = logging.getLogger(__name__)
 
 
 class ProfileGenerator:
@@ -160,6 +163,9 @@ class ProfileGenerator:
             values = random.sample(cls.VALUES, num_values)
         
         # Coordinates with jitter for map plotting
+        if location not in cls.BASE_COORDINATES:
+            logger.warning(f"Unknown location '{location}', falling back to center of Sri Lanka coordinates")
+            
         base_coords = cls.BASE_COORDINATES.get(location, [7.8731, 80.7718])  # fallback: center of Sri Lanka
         lat = base_coords[0] + random.uniform(-0.05, 0.05)
         lng = base_coords[1] + random.uniform(-0.05, 0.05)

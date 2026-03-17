@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
     Zap,
     Plus,
@@ -13,7 +13,8 @@ import {
     AlertCircle,
     LogOut,
     Loader2,
-    TrendingUp
+    TrendingUp,
+    Trash2
 } from 'lucide-react';
 import { projectsApi, authApi } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
@@ -42,11 +43,28 @@ export default function DashboardPage() {
         checkAuth();
     }, []);
 
+    const queryClient = useQueryClient();
+
     const { data: projects, isLoading } = useQuery({
         queryKey: ['projects'],
         queryFn: projectsApi.list,
         enabled: mounted,
     });
+
+    const deleteMutation = useMutation({
+        mutationFn: projectsApi.delete,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ['projects'] });
+        },
+    });
+
+    const handleDelete = (e: React.MouseEvent, id: string) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (confirm('Are you sure you want to delete this project?')) {
+            deleteMutation.mutate(id);
+        }
+    };
 
     const handleLogout = () => {
         authApi.logout();
@@ -166,6 +184,13 @@ export default function DashboardPage() {
                                         <div className="flex items-center space-x-2">
                                             {getStatusIcon(project.status)}
                                             <span className="text-sm">{getStatusText(project.status)}</span>
+                                            <button
+                                                onClick={(e) => handleDelete(e, project.id)}
+                                                className="ml-2 p-1.5 rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
+                                                title="Delete Project"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                         </div>
                                     </div>
 

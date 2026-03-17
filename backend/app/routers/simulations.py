@@ -126,13 +126,9 @@ async def get_simulation_status(
     
     if simulation.status == "RUNNING":
         # Get progress from Redis cache if available
-        import redis
-        import ssl as ssl_module
+        from app.redis_client import get_redis_client
         try:
-            redis_kwargs = {}
-            if settings.redis_url.startswith("rediss://"):
-                redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
-            r = redis.from_url(settings.redis_url, **redis_kwargs)
+            r = get_redis_client()
             cached = r.get(f"sim:{simulation_id}:status")
             if cached:
                 import json
@@ -204,7 +200,8 @@ async def get_simulation_results(
     return SimulationResultsResponse(
         simulation=simulation,
         risk_flags=risk_flags,
-        agent_sample=sample_data
+        agent_sample=sample_data,
+        opinion_trajectory=simulation.opinion_trajectory
     )
 
 

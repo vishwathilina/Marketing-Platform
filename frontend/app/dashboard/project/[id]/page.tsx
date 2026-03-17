@@ -44,6 +44,7 @@ import {
     Tooltip,
 } from 'recharts';
 import { projectsApi, simulationsApi } from '@/lib/api';
+import OpinionTrajectoryChart from '@/components/OpinionTrajectoryChart';
 
 const COLORS = {
     positive: '#10b981',
@@ -281,8 +282,8 @@ export default function ProjectDetailPage() {
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="glass-card rounded-xl p-4 text-center">
                                         <TrendingUp className="w-6 h-6 mx-auto mb-2 text-primary-400" />
-                                        <p className="text-2xl font-bold gradient-text">{results.virality_score}%</p>
-                                        <p className="text-sm text-white/60">Virality Score</p>
+                                        <p className="text-2xl font-bold gradient-text">{results.engagement_score}%</p>
+                                        <p className="text-sm text-white/60">Engagement Score</p>
                                     </div>
                                     <div className="glass-card rounded-xl p-4 text-center">
                                         <Users className="w-6 h-6 mx-auto mb-2 text-emerald-400" />
@@ -335,6 +336,14 @@ export default function ProjectDetailPage() {
                                         </div>
                                     </div>
                                 </div>
+
+                                {/* Opinion Trajectory Chart */}
+                                {results.opinion_trajectory && Object.keys(results.opinion_trajectory).length > 0 && (
+                                    <div className="glass-card rounded-2xl p-6">
+                                        <h3 className="text-lg font-semibold mb-4">Opinion Spread Over Time</h3>
+                                        <OpinionTrajectoryChart trajectoryData={results.opinion_trajectory} />
+                                    </div>
+                                )}
 
                                 {/* Risk Flags */}
                                 {results.risk_flags?.length > 0 && (

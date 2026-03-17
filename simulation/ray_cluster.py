@@ -38,10 +38,20 @@ def init_ray_cluster(
         logger.info(f"GEMINI_API_KEY found ({len(api_key)} chars, starts with {api_key[:8]}...)")
     else:
         logger.error("GEMINI_API_KEY is NOT set! LLM calls will fail.")
+        
+    qwen_api_url = os.getenv("QWEN_API_URL")
+    if not qwen_api_url:
+        logger.warning("QWEN_API_URL is not set, using default HuggingFace endpoint")
+        qwen_api_url = "https://vish85521-doc.hf.space/api/generate"
+        
+    qwen_model_name = os.getenv("QWEN_MODEL_NAME", "qwen3.5:397b-cloud")
+        
     runtime_env = {
         "env_vars": {
             "GEMINI_API_KEY": api_key,
             "GEMINI_API_KEYS": api_keys,
+            "QWEN_API_URL": qwen_api_url,
+            "QWEN_MODEL_NAME": qwen_model_name,
         }
     }
 

@@ -201,7 +201,7 @@ class SimulationWorker:
 
             logger.info(f"=== Simulation Complete: {simulation_id} ===")
             logger.info(
-                f"  Virality Score: {results.get('virality_score', 0):.2f}"
+                f"  Engagement Score: {results.get('engagement_score', 0):.2f}"
             )
             logger.info(
                 f"  Risk Flags: {len(results.get('risk_flags', []))}"

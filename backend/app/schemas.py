@@ -101,7 +101,7 @@ class SimulationResponse(BaseModel):
     status: str
     num_agents: int
     simulation_days: int
-    virality_score: Optional[float]
+    engagement_score: Optional[float]
     sentiment_breakdown: Optional[Dict[str, int]]
     started_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -124,6 +124,7 @@ class SimulationResultsResponse(BaseModel):
     simulation: SimulationResponse
     risk_flags: List[RiskFlagResponse]
     agent_sample: Optional[List[Dict[str, Any]]] = None
+    opinion_trajectory: Optional[Dict[str, Any]] = None
 
 
 # ----- Map Visualization Schemas -----

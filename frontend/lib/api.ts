@@ -112,6 +112,17 @@ export const simulationsApi = {
         const response = await api.get(`/simulations/project/${projectId}`);
         return response.data;
     },
+
+    getMapData: async (id: string) => {
+        const response = await api.get(`/simulations/${id}/map-data`);
+        return response.data;
+    },
+
+    getAgentDetail: async (id: string, agentId: string) => {
+        const response = await api.get(`/simulations/${id}/agents/${agentId}`);
+        return response.data;
+    },
+
 };
 
 export default api;

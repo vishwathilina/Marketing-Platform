@@ -48,10 +48,11 @@ class SimulationRun(Base):
     status = Column(String(20), default="PENDING")
     num_agents = Column(Integer, default=1000)
     simulation_days = Column(Integer, default=5)
-    virality_score = Column(Float, nullable=True)
+    engagement_score = Column(Float, nullable=True)
     sentiment_breakdown = Column(JSON, nullable=True)
     map_data = Column(JSON, nullable=True)          # lightweight per-agent coords/opinion/friends
     agent_states = Column(JSON, nullable=True)       # full agent profile/emotion/reasoning
+    opinion_trajectory = Column(JSON, nullable=True)
     started_at = Column(DateTime, nullable=True)
     completed_at = Column(DateTime, nullable=True)
     error_message = Column(Text, nullable=True)

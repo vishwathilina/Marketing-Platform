@@ -14,12 +14,25 @@ logger = logging.getLogger(__name__)
 
 # Configure Gemini client
 _client = None
+_key_index = 0
 
 def get_client():
     """Get or create Gemini client"""
-    global _client
-    if _client is None:
+    global _client, _key_index
+    
+    _client = None  # Always reset to ensure fresh client on next call
+    
+    key_list = []
+    if getattr(settings, 'gemini_api_keys', None):
+        key_list = [k.strip() for k in settings.gemini_api_keys.split(',') if k.strip()]
+        
+    if len(key_list) > 1:
+        current_key = key_list[_key_index % len(key_list)]
+        _key_index += 1
+        _client = genai.Client(api_key=current_key)
+    else:
         _client = genai.Client(api_key=settings.gemini_api_key)
+        
     return _client
 
 

@@ -73,7 +73,7 @@ class SimulationOrchestrator:
             redis_client: Redis client for progress updates
 
         Returns:
-            Simulation results with virality score, sentiment, risk flags
+            Simulation results with engagement score, sentiment, risk flags
         """
         logger.info(
             f"Starting simulation {self.experiment_id} "
@@ -122,7 +122,7 @@ class SimulationOrchestrator:
 
             logger.info(
                 f"Simulation complete. "
-                f"Virality score: {results['virality_score']:.1f}"
+                f"Engagement score: {results['engagement_score']:.1f}"
             )
 
             return results
@@ -248,12 +248,36 @@ class SimulationOrchestrator:
                 logger.info(f"Rate limit pause: {batch_delay}s...")
                 await asyncio.sleep(batch_delay)
 
+        agents_by_id = {a.agent_id: a for a in self.agents}
+
         # Simulate social influence over days
-        for day in range(1, simulation_days + 1):
-            self._update_progress(
-                redis_client, 80 + day * 3, day, len(all_states)
-            )
-            await asyncio.sleep(0.5)
+        for day in range(2, simulation_days + 1):
+            logger.info(f"Day {day} Social Loop - Messaging Phase")
+            for agent in self.agents:
+                if agent.has_seen_ad and agent.opinion_on_ad is not None:
+                    message = await agent.generate_social_message()
+                    for friend_id in agent.friends:
+                        friend = agents_by_id.get(friend_id)
+                        if friend:
+                            friend.receive_peer_message(agent.agent_id, agent.opinion_on_ad, message)
+
+            logger.info(f"Day {day} Social Loop - Deliberation Phase")
+            deliberation_tasks = [agent.social_deliberation(ad_content) for agent in self.agents]
+            await asyncio.gather(*deliberation_tasks, return_exceptions=True)
+
+            if redis_client:
+                try:
+                    redis_client.setex(
+                        f"sim:{self.experiment_id}:status",
+                        300,
+                        json.dumps({
+                            "progress": int((day / simulation_days) * 100),
+                            "current_day": day,
+                            "active_agents": len(self.agents)
+                        })
+                    )
+                except Exception as e:
+                    logger.debug(f"Failed to update progress: {e}")
 
         # Get final states (direct calls — agents are local objects)
         self._update_progress(
@@ -271,7 +295,7 @@ class SimulationOrchestrator:
     def _analyze_results(
         self, final_states: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """Calculate virality score, sentiment breakdown, and risk flags"""
+        """Calculate engagement score, sentiment breakdown, and risk flags"""
 
         opinions = [
             s.get("opinion") for s in final_states if s.get("opinion")
@@ -285,17 +309,25 @@ class SimulationOrchestrator:
 
         total = len(opinions) or 1
 
-        # Virality score: high if strong reactions (positive OR negative)
+        # Engagement score: high if strong reactions (positive OR negative)
         strong_reactions = (
             sentiment_counts["positive"] + sentiment_counts["negative"]
         )
-        virality_score = (strong_reactions / total) * 100
+        engagement_score = (strong_reactions / total) * 100
 
         # Detect controversies
         risk_flags = self._detect_controversies(final_states)
 
         # Prepare agent logs for storage
         agent_logs = self.event_logs[:1000]
+
+        # Extract opinion trajectory for top 50 agents
+        opinion_trajectory = {}
+        for state in final_states[:50]:
+            agent_id = state.get("agent_id")
+            opinion_history = state.get("opinion_history")
+            if agent_id and opinion_history is not None:
+                opinion_trajectory[agent_id] = opinion_history
 
         # Build map data (lightweight for map rendering)
         map_data = []
@@ -332,7 +364,7 @@ class SimulationOrchestrator:
             })
 
         return {
-            "virality_score": round(virality_score, 2),
+            "engagement_score": round(engagement_score, 2),
             "sentiment_breakdown": sentiment_counts,
             "total_agents": len(final_states),
             "responding_agents": len(opinions),
@@ -340,6 +372,7 @@ class SimulationOrchestrator:
             "agent_logs": agent_logs,
             "map_data": map_data,
             "agent_states": agent_states,
+            "opinion_trajectory": opinion_trajectory,
         }
 
     def _detect_controversies(

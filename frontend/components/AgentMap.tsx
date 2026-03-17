@@ -4,7 +4,6 @@ import { useState, useEffect, useMemo } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Polyline, Popup, useMap } from 'react-leaflet';
 import { X, User, Brain, Heart, MapPin, Users, Loader2 } from 'lucide-react';
 import { simulationsApi } from '@/lib/api';
-import 'leaflet/dist/leaflet.css';
 
 // ── Types ────────────────────────────────────────────────────────────────────
 

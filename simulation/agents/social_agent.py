@@ -61,6 +61,9 @@ class SocialAgent:
         self.opinion_on_ad = None
         self.has_seen_ad = False
         self.reasoning = ""
+        self.inbox: List[Dict] = []
+        self.opinion_history: List[Dict] = []
+        self.day: int = 0
 
         # Event log for this agent
         self.event_log: List[Dict[str, Any]] = []
@@ -157,6 +160,9 @@ class SocialAgent:
             self.opinion_on_ad = "NEUTRAL"
             self._log_event("ERROR", str(e))
 
+        # Capture initial opinion on Day 0
+        self.opinion_history.append({"day": 0, "opinion": self.opinion_on_ad})
+
         return self.get_state()
 
     def _build_reaction_prompt(
@@ -232,22 +238,90 @@ Be authentic to the character's values and background. If something in the ad co
 
         return default
 
-    def social_influence(self, peer_opinion: str, peer_agent_id: str):
-        """
-        Handle social influence from peers.
+    def receive_peer_message(self, from_agent_id: str, opinion: str, message: str):
+        """Receive a message from a peer and store it in inbox."""
+        self.inbox.append({
+            "from": from_agent_id,
+            "opinion": opinion,
+            "message": message
+        })
 
-        If a friend boycotts/endorses, consider changing opinion.
-        """
-        if self.opinion_on_ad and self.opinion_on_ad != peer_opinion:
-            influence_prob = 0.25
-            if random.random() < influence_prob:
-                old_opinion = self.opinion_on_ad
-                self.opinion_on_ad = peer_opinion
-                self._log_event(
-                    "OPINION_CHANGE",
-                    f"Changed from {old_opinion} to {peer_opinion} "
-                    f"due to {peer_agent_id}",
-                )
+    async def generate_social_message(self) -> str:
+        """Generate a custom message to share with a friend."""
+        if self.opinion_on_ad is None:
+            return ""
+
+        fallback = f"I thought the ad was {self.opinion_on_ad.lower()}, what did you think?"
+        
+        prompt = f"""You are Roleplaying as this person:
+- Age: {self.profile.get('age', 'Unknown')}
+- Gender: {self.profile.get('gender', 'Unknown')}
+- Location: {self.profile.get('location', 'Unknown')}
+- Core values: {", ".join(self.profile.get('values', []))}
+
+Your current opinion on the ad is {self.opinion_on_ad}.
+Write 1-2 casual sentences that you would send to a friend about the ad, in character. Do not include quotes."""
+
+        try:
+            if self.llm_pool:
+                response = await self.llm_pool.atext_request(prompt=prompt, max_tokens=100)
+                if response:
+                    return response.strip(' "')
+        except Exception:
+            pass
+            
+        return fallback
+
+    async def social_deliberation(self, ad_content: str) -> Dict[str, Any]:
+        """Review inbox messages from friends and reconsider opinion."""
+        if not self.inbox:
+            return self.get_state()
+
+        friends_summary = "\n".join(
+            f"- A friend thinks {msg['opinion']}: {msg['message']}" 
+            for msg in self.inbox
+        )
+
+        prompt = f"""You are Roleplaying as this person:
+- Age: {self.profile.get('age', 'Unknown')}
+- Gender: {self.profile.get('gender', 'Unknown')}
+- Location: {self.profile.get('location', 'Unknown')}
+- Core values: {", ".join(self.profile.get('values', []))}
+
+Your current opinion on the ad is {self.opinion_on_ad}.
+
+Here is a summary of what your friends said:
+{friends_summary}
+
+Given your values and what your friends think, do you change your opinion?
+Respond in JSON format:
+{{"new_opinion": "POSITIVE/NEUTRAL/NEGATIVE", "changed": true/false, "reasoning": "..."}}"""
+
+        try:
+            if self.llm_pool:
+                response = await self.llm_pool.atext_request(prompt=prompt, max_tokens=200)
+                json_match = re.search(r"\{[^{}]*\}", response, re.DOTALL)
+                
+                if json_match:
+                    data = json.loads(json_match.group())
+                    new_opinion = data.get("new_opinion", self.opinion_on_ad).upper()
+                    
+                    if new_opinion not in ["POSITIVE", "NEUTRAL", "NEGATIVE"]:
+                        new_opinion = self.opinion_on_ad
+                        
+                    if new_opinion != self.opinion_on_ad:
+                        self._log_event("OPINION_CHANGE", data.get("reasoning", "Influenced by friends"))
+                        self.opinion_on_ad = new_opinion
+
+        except Exception as e:
+            logger.warning(f"[{self.agent_id}] Failed social deliberation: {e}")
+
+        self.opinion_history.append({"day": self.day, "opinion": self.opinion_on_ad})
+        self.inbox.clear()
+        self.day += 1
+
+        return self.get_state()
+
 
     def _get_sharing_probability(self) -> float:
         """Calculate likelihood of sharing based on personality"""
@@ -281,6 +355,8 @@ Be authentic to the character's values and background. If something in the ad co
             "reasoning": self.reasoning,
             "has_seen_ad": self.has_seen_ad,
             "profile": self.profile,
+            "opinion_history": self.opinion_history,
+            "day": self.day,
         }
 
     def get_event_log(self) -> List[Dict[str, Any]]:

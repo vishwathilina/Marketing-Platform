@@ -55,9 +55,10 @@ def process_video_task(self, project_id: str):
     from app.models import Project
     from app.services.vlm_service import process_video
     
-    db = SessionLocal()
+    db = None
     
     try:
+        db = SessionLocal()
         # Get project
         project = db.query(Project).filter(Project.id == project_id).first()
         if not project:
@@ -66,18 +67,24 @@ def process_video_task(self, project_id: str):
         
         # Update status
         project.status = "PROCESSING"
+        video_path = project.video_path
         db.commit()
+        db.close()
         
         logger.info(f"Processing video for project {project_id}")
         
         # Process video
-        descriptions, duration = process_video(project.video_path)
+        descriptions, duration = process_video(video_path)
+        
+        db = SessionLocal()
+        project = db.query(Project).filter(Project.id == project_id).first()
         
         # Update project with results
-        project.vlm_generated_context = descriptions
-        project.video_duration_seconds = duration
-        project.status = "READY"
-        db.commit()
+        if project:
+            project.vlm_generated_context = descriptions
+            project.video_duration_seconds = duration
+            project.status = "READY"
+            db.commit()
         
         logger.info(f"Video processing complete for project {project_id}")
         
@@ -90,15 +97,18 @@ def process_video_task(self, project_id: str):
     except Exception as e:
         logger.error(f"Video processing failed for project {project_id}: {e}")
         try:
-            project = db.query(Project).filter(Project.id == project_id).first()
+            db_err = SessionLocal()
+            project = db_err.query(Project).filter(Project.id == project_id).first()
             if project:
                 project.status = "FAILED"
-                db.commit()
+                db_err.commit()
+            db_err.close()
         except:
             pass
         return {"error": str(e)}
     finally:
-        db.close()
+        if db is not None:
+            db.close()
 
 
 @celery_app.task(bind=True)
@@ -121,9 +131,10 @@ def run_simulation_task(self, simulation_id: str):
     redis_kwargs = {}
     if settings.redis_url.startswith("rediss://"):
         redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
-    redis_client = redis.from_url(settings.redis_url, **redis_kwargs)
     
+    redis_client = None
     try:
+        redis_client = redis.from_url(settings.redis_url, **redis_kwargs)
         # Get simulation
         simulation = db.query(SimulationRun).filter(SimulationRun.id == simulation_id).first()
         if not simulation:
@@ -156,7 +167,14 @@ def run_simulation_task(self, simulation_id: str):
             "simulation_days": simulation.simulation_days
         }
         
-        redis_client.publish("simulation_requests", json.dumps(request))
+        try:
+            redis_client.publish("simulation_requests", json.dumps(request))
+        except Exception as e:
+            logger.error(f"Redis publish failed: {e}")
+            simulation.status = "FAILED"
+            simulation.error_message = f"Failed to dispatch to simulation worker: {str(e)}"
+            db.commit()
+            return {"error": str(e)}
         
         logger.info(f"Simulation {simulation_id} published to Ray worker queue")
         
@@ -180,3 +198,5 @@ def run_simulation_task(self, simulation_id: str):
         return {"error": str(e)}
     finally:
         db.close()
+        if redis_client:
+            redis_client.close()

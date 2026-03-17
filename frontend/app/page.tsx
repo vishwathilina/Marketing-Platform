@@ -90,7 +90,7 @@ export default function HomePage() {
                         {
                             icon: <Shield className="w-8 h-8" />,
                             title: 'Risk Report',
-                            description: 'Get detailed risk analysis with sentiment breakdown, virality score, and controversy detection.',
+                            description: 'Get detailed risk analysis with sentiment breakdown, engagement score, and controversy detection.',
                         },
                     ].map((feature, i) => (
                         <div key={i} className="glass-card rounded-2xl p-8 hover-lift">
