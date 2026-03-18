@@ -3,25 +3,33 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, Mail, Lock, Loader2 } from 'lucide-react';
 import { authApi } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
 export default function LoginPage() {
-    const router = useRouter();
-    const { setUser } = useAuthStore();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    const router = useRouter();
+    const { setUser } = useAuthStore();
+
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!formData.email || !formData.password) {
+            setError('Please fill all the fields');
+            return;
+        }
+
         setError('');
         setLoading(true);
 
         try {
-            await authApi.login(email, password);
+            await authApi.login(formData.email, formData.password);
             const user = await authApi.getMe();
             setUser(user);
             router.push('/dashboard');
@@ -33,87 +41,87 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4">
-            {/* Background decoration */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-500/20 rounded-full blur-3xl" />
-                <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-accent-500/20 rounded-full blur-3xl" />
-            </div>
+        <div
+            className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
+            style={{ backgroundImage: "url('/bg.jpg')" }}
+        >
+            <div className="w-full max-w-[1100px] min-h-[650px] rounded-3xl shadow-2xl flex overflow-hidden">
+                <div className="w-1/2 relative text-white p-10 flex-col justify-between bg-white/5 backdrop-blur-sm border-r border-white/10 hidden md:flex">
+                    <div className="font-bold text-4xl">*</div>
 
-            <div className="relative w-full max-w-md">
-                {/* Logo */}
-                <div className="flex items-center justify-center mb-8">
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
-                            <Zap className="w-7 h-7 text-white" />
-                        </div>
-                        <span className="text-2xl font-bold gradient-text">AgentSociety</span>
-                    </Link>
+                    <div>
+                        <h1 className="text-4xl font-bold leading-tight">
+                            YOUR <br /> YOUR NEXT AD STRATEGY <br /> STARTS HERE
+                        </h1>
+
+                        <p className="mt-4 text-sm text-gray-200 max-w-sm">
+                            Log in to discover powerful AI insights, analyze upcoming ads, and make
+                            smarter marketing decisions. Turn data into results before your ads even
+                            go live.
+                        </p>
+
+                        <p className="mt-2 text-sm text-gray-300">Your success begins here.</p>
+                    </div>
                 </div>
 
-                {/* Login Card */}
-                <div className="glass-card rounded-2xl p-8">
-                    <h1 className="text-2xl font-bold text-center mb-2">Welcome Back</h1>
-                    <p className="text-white/60 text-center mb-8">
-                        Sign in to access your dashboard
-                    </p>
+                <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 bg-white/50 backdrop-blur-md">
+                    <div className="w-full max-w-sm">
+                        <h2 className="text-3xl font-bold text-gray-800">WELCOME BACK!</h2>
 
-                    {error && (
-                        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                            {error}
-                        </div>
-                    )}
+                        <p className="text-gray-500 mb-8">Welcome back! Please enter your details.</p>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Email</label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="you@example.com"
-                                    required
-                                />
+                        {error && (
+                            <div className="mb-4 p-3 rounded-lg bg-red-100 border border-red-400 text-red-700 text-sm">
+                                {error}
                             </div>
-                        </div>
+                        )}
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="••••••••"
-                                    required
-                                />
+                        <form onSubmit={handleLogin}>
+                            <label className="text-sm text-gray-600">Email</label>
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="w-full mt-1 mb-4 p-3 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
+
+                            <label className="text-sm text-gray-600">Password</label>
+                            <input
+                                type="password"
+                                placeholder="********"
+                                className="w-full mt-1 mb-4 p-3 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700"
+                                value={formData.password}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, password: e.target.value })
+                                }
+                            />
+
+                            <div className="flex justify-between items-center text-sm mb-6">
+                                <label className="flex items-center gap-2">
+                                    <input type="checkbox" />
+                                    Remember me
+                                </label>
+
+                                <span className="text-teal-700">Forgot password</span>
                             </div>
-                        </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full btn-primary py-4 flex items-center justify-center"
-                        >
-                            {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                'Sign In'
-                            )}
-                        </button>
-                    </form>
+                            <button
+                                type="submit"
+                                className="w-full bg-teal-800 text-white p-3 rounded-lg font-semibold hover:bg-teal-900 disabled:bg-teal-800/50"
+                                disabled={loading}
+                            >
+                                {loading ? 'Signing in...' : 'Sign in'}
+                            </button>
+                        </form>
 
-                    <p className="mt-6 text-center text-white/60">
-                        Don't have an account?{' '}
-                        <Link href="/register" className="text-primary-400 hover:text-primary-300">
-                            Sign up
-                        </Link>
-                    </p>
+                        <p className="text-center text-sm text-gray-500 mt-6">
+                            Don't have an account?{' '}
+                            <Link href="/register" className="text-teal-700 font-semibold">
+                                Sign up
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>
