@@ -2,6 +2,7 @@
 Simulation management routes - start, status, and results
 """
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -19,6 +20,7 @@ from app.schemas import (
 )
 from app.dependencies import get_current_user
 from app.config import get_settings
+from app.services.report_service import generate_simulation_report
 
 settings = get_settings()
 router = APIRouter(prefix="/simulations", tags=["Simulations"])
@@ -322,4 +324,42 @@ async def get_agent_detail(
             education=profile_raw.get("education"),
             values=profile_raw.get("values", []),
         ),
+    )
+
+
+@router.get("/{simulation_id}/report")
+async def download_simulation_report(
+    simulation_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    simulation = db.query(SimulationRun).join(Project).filter(
+        SimulationRun.id == simulation_id,
+        Project.user_id == current_user.id
+    ).first()
+
+    if not simulation:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+
+    if simulation.status != "COMPLETED":
+        raise HTTPException(status_code=400, detail="Simulation not completed")
+
+    risk_flags = db.query(RiskFlag).filter(
+        RiskFlag.simulation_run_id == simulation.id
+    ).all()
+
+    agent_logs = db.query(AgentLog).filter(
+        AgentLog.simulation_run_id == simulation.id
+    ).all()
+
+    report_path = generate_simulation_report(
+        simulation,
+        risk_flags,
+        agent_logs
+    )
+
+    return FileResponse(
+        report_path,
+        media_type="application/pdf",
+        filename="simulation_report.pdf"
     )
