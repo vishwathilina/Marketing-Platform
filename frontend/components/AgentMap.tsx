@@ -28,6 +28,14 @@ interface AgentDetail {
         location: string | null;
         occupation: string | null;
         education: string | null;
+        income_level: string | null;
+        religion: string | null;
+        ethnicity: string | null;
+        social_media_usage: string | null;
+        political_leaning: string | null;
+        personality_traits: string[];
+        name: string | null;
+        bio: string | null;
         values: string[];
     };
 }
@@ -309,7 +317,7 @@ export default function AgentMap({ simulationId }: AgentMapProps) {
                                             Agent Detail
                                         </div>
                                         <div style={{ fontSize: 18, fontWeight: 700, color: '#f1f5f9' }}>
-                                            {selectedAgent.agent_id}
+                                            {selectedAgent.profile?.name || selectedAgent.agent_id}
                                         </div>
                                     </div>
                                     <button
@@ -411,26 +419,41 @@ export default function AgentMap({ simulationId }: AgentMapProps) {
                                             { label: 'Age', value: selectedAgent.profile.age },
                                             { label: 'Gender', value: selectedAgent.profile.gender },
                                             { label: 'Location', value: selectedAgent.profile.location },
+                                            { label: 'Ethnicity', value: selectedAgent.profile.ethnicity },
+                                            { label: 'Religion', value: selectedAgent.profile.religion },
+                                            { label: 'Income', value: selectedAgent.profile.income_level },
                                             { label: 'Occupation', value: selectedAgent.profile.occupation },
-                                            { label: 'Education', value: selectedAgent.profile.education },
+                                            { label: 'Social Media', value: selectedAgent.profile.social_media_usage },
+                                            { label: 'Politics', value: selectedAgent.profile.political_leaning },
                                         ].map((item) => (
-                                            <div
-                                                key={item.label}
-                                                style={{
-                                                    background: 'rgba(255,255,255,0.03)',
-                                                    borderRadius: 8,
-                                                    padding: '8px 10px',
-                                                }}
-                                            >
-                                                <div style={{ fontSize: 10, textTransform: 'uppercase', opacity: 0.4, marginBottom: 2 }}>
-                                                    {item.label}
+                                            item.value ? (
+                                                <div
+                                                    key={item.label}
+                                                    style={{
+                                                        background: 'rgba(255,255,255,0.03)',
+                                                        borderRadius: 8,
+                                                        padding: '8px 10px',
+                                                    }}
+                                                >
+                                                    <div style={{ fontSize: 10, textTransform: 'uppercase', opacity: 0.4, marginBottom: 2 }}>
+                                                        {item.label}
+                                                    </div>
+                                                    <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                                        {item.value || '—'}
+                                                    </div>
                                                 </div>
-                                                <div style={{ fontSize: 13, fontWeight: 600, color: '#e2e8f0' }}>
-                                                    {item.value || '—'}
-                                                </div>
-                                            </div>
+                                            ) : null
                                         ))}
                                     </div>
+                                    
+                                    {selectedAgent.profile.bio && (
+                                        <div style={{ marginTop: 12, padding: 12, background: 'rgba(255,255,255,0.02)', borderRadius: 8, border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <div style={{ fontSize: 10, textTransform: 'uppercase', opacity: 0.4, marginBottom: 4 }}>Bio</div>
+                                            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', fontStyle: 'italic' }}>
+                                                {selectedAgent.profile.bio}
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Values */}
@@ -456,6 +479,35 @@ export default function AgentMap({ simulationId }: AgentMapProps) {
                                                     }}
                                                 >
                                                     {v.replace(/_/g, ' ')}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Traits */}
+                                {selectedAgent.profile.personality_traits && selectedAgent.profile.personality_traits.length > 0 && (
+                                    <div style={{ padding: '0 20px 16px' }}>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                                            <Brain size={14} style={{ color: '#38bdf8' }} />
+                                            <span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: 1, color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>
+                                                Personality Traits
+                                            </span>
+                                        </div>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                                            {selectedAgent.profile.personality_traits.map((t) => (
+                                                <span
+                                                    key={t}
+                                                    style={{
+                                                        background: 'rgba(56, 189, 248, 0.1)',
+                                                        border: '1px solid rgba(56, 189, 248, 0.2)',
+                                                        borderRadius: 6,
+                                                        padding: '4px 10px',
+                                                        fontSize: 12,
+                                                        color: '#7dd3fc',
+                                                    }}
+                                                >
+                                                    {t}
                                                 </span>
                                             ))}
                                         </div>

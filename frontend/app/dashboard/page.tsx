@@ -14,7 +14,8 @@ import {
     LogOut,
     Loader2,
     TrendingUp,
-    Trash2
+    Trash2,
+    Users
 } from 'lucide-react';
 import { projectsApi, authApi } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
@@ -118,6 +119,13 @@ export default function DashboardPage() {
                     >
                         <TrendingUp className="w-5 h-5" />
                         <span>Projects</span>
+                    </Link>
+                    <Link
+                        href="/dashboard/agents"
+                        className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/60 transition-colors"
+                    >
+                        <Users className="w-5 h-5" />
+                        <span>Agent Builder</span>
                     </Link>
                 </nav>
 

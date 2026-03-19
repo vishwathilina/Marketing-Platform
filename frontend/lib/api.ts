@@ -81,6 +81,11 @@ export const projectsApi = {
         return response.data;
     },
 
+    updateContext: async (id: string, context: string) => {
+        const response = await api.patch(`/projects/${id}/context`, { vlm_generated_context: context });
+        return response.data;
+    },
+
     delete: async (id: string) => {
         await api.delete(`/projects/${id}`);
     },
@@ -88,7 +93,7 @@ export const projectsApi = {
 
 // Simulations API
 export const simulationsApi = {
-    start: async (projectId: string, config?: { num_agents?: number; simulation_days?: number }) => {
+    start: async (projectId: string, config?: { num_agents?: number; simulation_days?: number; agent_ids?: string[]; use_custom_agents_only?: boolean; demographic_filter?: any }) => {
         const response = await api.post(`/simulations/${projectId}/start`, config || {});
         return response.data;
     },
@@ -123,6 +128,29 @@ export const simulationsApi = {
         return response.data;
     },
 
+};
+
+// Custom Agents API
+export const agentsApi = {
+    list: async () => {
+        const response = await api.get('/agents');
+        return response.data;
+    },
+    get: async (id: string) => {
+        const response = await api.get(`/agents/${id}`);
+        return response.data;
+    },
+    create: async (agentData: any) => {
+        const response = await api.post('/agents', agentData);
+        return response.data;
+    },
+    update: async (id: string, agentData: any) => {
+        const response = await api.put(`/agents/${id}`, agentData);
+        return response.data;
+    },
+    delete: async (id: string) => {
+        await api.delete(`/agents/${id}`);
+    },
 };
 
 export default api;
