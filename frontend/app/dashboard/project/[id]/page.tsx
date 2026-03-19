@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
@@ -33,6 +33,10 @@ import {
     MapPin,
     Download,
     Edit2,
+    History,
+    RefreshCw,
+    Clock,
+    XCircle,
 } from 'lucide-react';
 import {
     PieChart,
@@ -112,20 +116,8 @@ export default function ProjectDetailPage() {
         refetchOnWindowFocus: false, // prevent refetch on window focus from re-triggering the simulation useEffect
     });
 
-    // Restore the most recent COMPLETED simulation on page load.
-    // Do NOT auto-resume PENDING/RUNNING ones — they may be stale from a
-    // previous session and auto-resuming them causes the UI to incorrectly
-    // show "Running..." whenever the user clicks anywhere on the page.
-    useEffect(() => {
-        if (!activeSimulation && existingSimulations && existingSimulations.length > 0) {
-            const latest = existingSimulations[0];
-            setActiveSimulation(latest);
-
-            // Only re-enable polling if the simulation is genuinely still in-flight
-            // from THIS session (i.e. we already set pollingEnabled ourselves).
-            // Never auto-resume stale PENDING/RUNNING state from a previous session.
-        }
-    }, [existingSimulations, activeSimulation]);
+    // Do NOT auto-select a simulation on page load — let the user pick from history.
+    // (We intentionally removed the auto-load effect so users see all runs and choose.)
 
     // Poll simulation status
     const { data: simulationStatus } = useQuery({
@@ -169,10 +161,18 @@ export default function ProjectDetailPage() {
         startSimulation.mutate(payload);
     };
 
+    // Load results when:
+    //  - actively polling & simulation just completed, OR
+    //  - user selected an already-completed simulation from history
+    const selectedSimStatus = activeSimulation?.status as string | undefined;
+    const isSelectedCompleted =
+        simulationStatus?.status === 'COMPLETED' ||
+        (!pollingEnabled && selectedSimStatus === 'COMPLETED');
+
     const { data: results, isLoading: resultsLoading } = useQuery({
         queryKey: ['simulationResults', activeSimulation?.id],
-        queryFn: () => simulationsApi.getResults(activeSimulation.id),
-        enabled: simulationStatus?.status === 'COMPLETED',
+        queryFn: () => simulationsApi.getResults(activeSimulation!.id),
+        enabled: !!activeSimulation && isSelectedCompleted,
     });
 
     const updateContextMutation = useMutation({
@@ -533,6 +533,78 @@ export default function ProjectDetailPage() {
                                     <p className="text-sm text-white/40 mt-2">
                                         Day {simulationStatus.current_day} • {simulationStatus.active_agents} agents active
                                     </p>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* ── Simulation History Panel ── */}
+                        <div className="glass-card rounded-2xl p-6 mt-6">
+                            <div className="flex items-center justify-between mb-4">
+                                <h2 className="text-lg font-semibold flex items-center gap-2">
+                                    <History className="w-5 h-5 text-primary-400" />
+                                    Simulation History
+                                </h2>
+                                {activeSimulation && !pollingEnabled && (
+                                    <button
+                                        onClick={() => {
+                                            setActiveSimulation(null);
+                                            setPollingEnabled(false);
+                                        }}
+                                        className="flex items-center gap-1.5 text-xs text-white/50 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/10"
+                                        title="Deselect and run a new simulation"
+                                    >
+                                        <RefreshCw className="w-3.5 h-3.5" />
+                                        New Run
+                                    </button>
+                                )}
+                            </div>
+
+                            {!existingSimulations || existingSimulations.length === 0 ? (
+                                <p className="text-sm text-white/40 text-center py-4">No simulations yet for this project.</p>
+                            ) : (
+                                <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                                    {existingSimulations.map((sim: any) => {
+                                        const isActive = activeSimulation?.id === sim.id;
+                                        const simDate = new Date(sim.created_at).toLocaleString(undefined, {
+                                            month: 'short', day: 'numeric',
+                                            hour: '2-digit', minute: '2-digit',
+                                        });
+                                        const statusConfig: Record<string, { label: string; cls: string; icon: ReactNode }> = {
+                                            COMPLETED: { label: 'Completed', cls: 'text-emerald-400 bg-emerald-400/10', icon: <CheckCircle className="w-3 h-3" /> },
+                                            RUNNING:   { label: 'Running',   cls: 'text-primary-400 bg-primary-400/10', icon: <Loader2 className="w-3 h-3 animate-spin" /> },
+                                            PENDING:   { label: 'Pending',   cls: 'text-yellow-400 bg-yellow-400/10',  icon: <Clock className="w-3 h-3" /> },
+                                            FAILED:    { label: 'Failed',    cls: 'text-red-400 bg-red-400/10',        icon: <XCircle className="w-3 h-3" /> },
+                                        };
+                                        const sc = statusConfig[sim.status] ?? statusConfig.PENDING;
+
+                                        return (
+                                            <button
+                                                key={sim.id}
+                                                onClick={() => {
+                                                    if (isActive) return;
+                                                    setActiveSimulation(sim);
+                                                    setPollingEnabled(false);
+                                                }}
+                                                className={`w-full text-left rounded-xl px-3 py-3 transition-all border ${
+                                                    isActive
+                                                        ? 'border-primary-500/60 bg-primary-500/10'
+                                                        : 'border-white/5 bg-white/5 hover:bg-white/10 hover:border-white/20'
+                                                }`}
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-xs text-white/60">{simDate}</span>
+                                                    <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${sc.cls}`}>
+                                                        {sc.icon}
+                                                        {sc.label}
+                                                    </span>
+                                                </div>
+                                                <div className="flex gap-4 mt-1.5 text-xs text-white/50">
+                                                    {sim.num_agents && <span>{sim.num_agents} agents</span>}
+                                                    {sim.simulation_days && <span>{sim.simulation_days} days</span>}
+                                                </div>
+                                            </button>
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
