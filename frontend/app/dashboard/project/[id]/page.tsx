@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 
 const AgentMap = dynamic(
     () => import('@/components/AgentMap'),
@@ -32,6 +32,7 @@ import {
     AlertCircle,
     MapPin,
     Download,
+    Edit2,
 } from 'lucide-react';
 import {
     PieChart,
@@ -44,7 +45,10 @@ import {
     YAxis,
     Tooltip,
 } from 'recharts';
-import { projectsApi, simulationsApi } from '@/lib/api';
+import { projectsApi, simulationsApi, agentsApi } from '@/lib/api';
+import { 
+    ChevronDown, ChevronUp 
+} from 'lucide-react';
 import OpinionTrajectoryChart from '@/components/OpinionTrajectoryChart';
 
 const COLORS = {
@@ -62,6 +66,32 @@ export default function ProjectDetailPage() {
     const [simulationDays, setSimulationDays] = useState(5);
     const [activeSimulation, setActiveSimulation] = useState<any>(null);
     const [pollingEnabled, setPollingEnabled] = useState(false);
+    
+    const [agentTab, setAgentTab] = useState<'ai' | 'custom'>('ai');
+    const [selectedAgentIds, setSelectedAgentIds] = useState<string[]>([]);
+    const [useCustomAgentsOnly, setUseCustomAgentsOnly] = useState(false);
+    const [isDemographicsOpen, setIsDemographicsOpen] = useState(false);
+    
+    const [demoFilter, setDemoFilter] = useState({
+        age_range: [18, 65],
+        gender: 'All',
+        location: 'All',
+        income_level: [] as string[],
+        religion: [] as string[]
+    });
+
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => { setMounted(true); }, []);
+    
+    const queryClient = useQueryClient();
+    const [isEditingContext, setIsEditingContext] = useState(false);
+    const [contextValue, setContextValue] = useState("");
+
+    const { data: customAgents } = useQuery({
+        queryKey: ['customAgents'],
+        queryFn: agentsApi.list,
+        enabled: mounted,
+    });
 
     // Fetch project - poll while processing
     const { data: project, isLoading: projectLoading } = useQuery({
@@ -112,24 +142,49 @@ export default function ProjectDetailPage() {
         }
     }, [simulationStatus]);
 
-    // Start simulation mutation
     const startSimulation = useMutation({
-        mutationFn: () => simulationsApi.start(projectId, { num_agents: numAgents, simulation_days: simulationDays }),
+        mutationFn: (payload: any) => simulationsApi.start(projectId, payload),
         onSuccess: (data) => {
             setActiveSimulation(data);
             setPollingEnabled(true);
         },
     });
 
-    // Fetch results when completed
+    const handleStartSimulation = () => {
+        const payload: any = { num_agents: numAgents, simulation_days: simulationDays };
+        
+        if (agentTab === 'custom') {
+            payload.agent_ids = selectedAgentIds;
+            payload.use_custom_agents_only = useCustomAgentsOnly;
+        } else {
+            payload.demographic_filter = {
+                age_range: demoFilter.age_range,
+                gender: demoFilter.gender === 'All' ? null : demoFilter.gender,
+                location: demoFilter.location === 'All' ? null : demoFilter.location,
+                income_level: demoFilter.income_level.length ? demoFilter.income_level : null,
+                religion: demoFilter.religion.length ? demoFilter.religion : null,
+            };
+        }
+        
+        startSimulation.mutate(payload);
+    };
+
     const { data: results, isLoading: resultsLoading } = useQuery({
         queryKey: ['simulationResults', activeSimulation?.id],
         queryFn: () => simulationsApi.getResults(activeSimulation.id),
         enabled: simulationStatus?.status === 'COMPLETED',
     });
 
-    const handleStartSimulation = () => {
-        startSimulation.mutate();
+    const updateContextMutation = useMutation({
+        mutationFn: (context: string) => projectsApi.updateContext(projectId, context),
+        onSuccess: (updatedProject) => {
+            queryClient.setQueryData(['project', projectId], updatedProject);
+            setIsEditingContext(false);
+        },
+    });
+
+    const handleSaveContext = () => {
+        updateContextMutation.mutate(contextValue);
     };
 
     const handleDownloadReport = async () => {
@@ -218,6 +273,67 @@ export default function ProjectDetailPage() {
                     </div>
                 </div>
 
+                {/* VLM Context Editor */}
+                {project.status === 'READY' && project.vlm_generated_context && (
+                    <div className="glass-card rounded-2xl p-6 mb-8">
+                        <div className="flex items-center justify-between mb-4">
+                            <h2 className="text-lg font-semibold">Ad Analysis</h2>
+                            {!isEditingContext && (
+                                <button 
+                                    onClick={() => {
+                                        setContextValue(project.vlm_generated_context || "");
+                                        setIsEditingContext(true);
+                                    }}
+                                    className="p-1.5 rounded-lg glass hover:bg-white/10 transition-colors text-white/60 hover:text-white"
+                                    title="Edit Context"
+                                >
+                                    <Edit2 className="w-4 h-4" />
+                                </button>
+                            )}
+                        </div>
+                        {isEditingContext ? (
+                            <div className="space-y-4">
+                                <textarea
+                                    className="w-full h-48 bg-white/5 border border-white/10 rounded-xl p-3 text-sm text-white/80 resize-none focus:outline-none focus:border-primary-400"
+                                    value={contextValue}
+                                    onChange={(e) => setContextValue(e.target.value)}
+                                />
+                                {updateContextMutation.isError && (
+                                    <p className="text-xs text-red-500">Failed to save context.</p>
+                                )}
+                                <div className="flex justify-end gap-3">
+                                    <button 
+                                        className="px-4 py-2 rounded-xl text-sm font-medium glass hover:bg-white/10 transition-colors"
+                                        onClick={() => {
+                                            setIsEditingContext(false);
+                                            updateContextMutation.reset();
+                                        }}
+                                        disabled={updateContextMutation.isPending}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button 
+                                        className="btn-primary px-4 py-2 rounded-xl text-sm font-medium flex items-center"
+                                        onClick={handleSaveContext}
+                                        disabled={updateContextMutation.isPending}
+                                    >
+                                        {updateContextMutation.isPending && (
+                                            <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                                        )}
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="max-h-48 overflow-y-auto">
+                                <pre className="text-sm text-white/80 whitespace-pre-wrap font-sans">
+                                    {project.vlm_generated_context}
+                                </pre>
+                            </div>
+                        )}
+                    </div>
+                )}
+
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Left Column - Controls */}
                     <div className="lg:col-span-1">
@@ -232,40 +348,153 @@ export default function ProjectDetailPage() {
                                 </div>
                             ) : (
                                 <>
-                                    <div className="space-y-4 mb-6">
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2">
-                                                Number of Agents
-                                            </label>
-                                            <input
-                                                type="number"
-                                                value={numAgents}
-                                                onChange={(e) => setNumAgents(Math.max(5, Math.min(1000, parseInt(e.target.value) || 5)))}
-                                                onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
-                                                className="input-field"
-                                                min={5}
-                                                max={1000}
-                                                disabled={pollingEnabled}
-                                            />
-                                            <p className="text-xs text-white/40 mt-1">5 - 1,000 agents</p>
-                                        </div>
-
-                                        <div>
-                                            <label className="block text-sm font-medium mb-2">
-                                                Simulation Days
-                                            </label>
-                                            <input
-                                                type="number"
-                                                value={simulationDays}
-                                                onChange={(e) => setSimulationDays(Math.max(1, Math.min(30, parseInt(e.target.value) || 1)))}
-                                                onKeyDown={(e) => e.key === 'Enter' && e.preventDefault()}
-                                                className="input-field"
-                                                min={1}
-                                                max={30}
-                                                disabled={pollingEnabled}
-                                            />
-                                        </div>
+                                    <div className="flex border-b border-white/10 mb-6">
+                                        <button
+                                            className={`flex-1 pb-2 text-sm font-medium transition-colors border-b-2 ${agentTab === 'ai' ? 'border-primary-400 text-white' : 'border-transparent text-white/50 hover:text-white/80'}`}
+                                            onClick={() => setAgentTab('ai')}
+                                        >
+                                            AI Generated
+                                        </button>
+                                        <button
+                                            className={`flex-1 pb-2 text-sm font-medium transition-colors border-b-2 ${agentTab === 'custom' ? 'border-primary-400 text-white' : 'border-transparent text-white/50 hover:text-white/80'}`}
+                                            onClick={() => setAgentTab('custom')}
+                                        >
+                                            Custom Agents
+                                        </button>
                                     </div>
+
+                                    {agentTab === 'ai' ? (
+                                        <div className="space-y-4 mb-6">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-2">Number of AI Agents</label>
+                                                <input
+                                                    type="number" value={numAgents}
+                                                    onChange={(e) => setNumAgents(Math.max(5, Math.min(1000, parseInt(e.target.value) || 5)))}
+                                                    className="input-field" min={5} max={1000} disabled={pollingEnabled}
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <label className="block text-sm font-medium mb-2">Simulation Days</label>
+                                                <input
+                                                    type="number" value={simulationDays}
+                                                    onChange={(e) => setSimulationDays(Math.max(1, Math.min(30, parseInt(e.target.value) || 1)))}
+                                                    className="input-field" min={1} max={30} disabled={pollingEnabled}
+                                                />
+                                            </div>
+
+                                            <div className="border border-white/10 rounded-xl overflow-hidden mt-4">
+                                                <button
+                                                    onClick={() => setIsDemographicsOpen(!isDemographicsOpen)}
+                                                    className="w-full px-4 py-3 flex justify-between items-center bg-white/5 hover:bg-white/10 transition-colors"
+                                                >
+                                                    <span className="text-sm font-semibold">Demographic Filters (Optional)</span>
+                                                    {isDemographicsOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                                                </button>
+                                                
+                                                {isDemographicsOpen && (
+                                                    <div className="p-4 bg-white/5 space-y-4">
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div>
+                                                                <label className="block text-xs text-white/70 mb-1">Gender</label>
+                                                                <select 
+                                                                    className="input-field text-sm p-2"
+                                                                    value={demoFilter.gender}
+                                                                    onChange={e => setDemoFilter({...demoFilter, gender: e.target.value})}
+                                                                >
+                                                                    <option value="All">All</option>
+                                                                    <option value="Male">Male</option>
+                                                                    <option value="Female">Female</option>
+                                                                </select>
+                                                            </div>
+                                                            <div>
+                                                                <label className="block text-xs text-white/70 mb-1">Location target</label>
+                                                                <select 
+                                                                    className="input-field text-sm p-2"
+                                                                    value={demoFilter.location}
+                                                                    onChange={e => setDemoFilter({...demoFilter, location: e.target.value})}
+                                                                >
+                                                                    <option value="All">All of Sri Lanka</option>
+                                                                    <option value="Colombo">Colombo</option>
+                                                                    <option value="Kandy">Kandy</option>
+                                                                    <option value="Galle">Galle</option>
+                                                                    <option value="Jaffna">Jaffna</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4 mb-6">
+                                            {customAgents?.length === 0 ? (
+                                                <div className="text-center p-4 rounded-xl border border-white/10 bg-white/5">
+                                                    <p className="text-sm text-white/60 mb-3">You don't have any custom agents yet.</p>
+                                                    <Link href="/dashboard/agents" className="btn-primary py-2 text-sm">
+                                                        Go to Agent Builder
+                                                    </Link>
+                                                </div>
+                                            ) : (
+                                                <>
+                                                    <div className="flex items-center space-x-2 text-sm border border-white/10 rounded-xl p-3 bg-white/5">
+                                                        <input 
+                                                            type="checkbox" 
+                                                            id="useOnlyCustom" 
+                                                            className="rounded"
+                                                            checked={useCustomAgentsOnly}
+                                                            onChange={e => setUseCustomAgentsOnly(e.target.checked)}
+                                                        />
+                                                        <label htmlFor="useOnlyCustom">Use ONLY selected custom agents</label>
+                                                    </div>
+                                                    
+                                                    {!useCustomAgentsOnly && (
+                                                        <div>
+                                                            <label className="block text-sm font-medium mb-1">Total Agents (Mixed group)</label>
+                                                            <input
+                                                                type="number" value={numAgents}
+                                                                onChange={(e) => setNumAgents(Math.max(5, Math.min(1000, parseInt(e.target.value) || 5)))}
+                                                                className="input-field" min={5} max={1000} disabled={pollingEnabled}
+                                                            />
+                                                            <p className="text-xs text-white/50 mt-1">Remaining agent slots will be AI generated.</p>
+                                                        </div>
+                                                    )}
+
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-2">Select Agents ({selectedAgentIds.length} active)</label>
+                                                        <div className="max-h-48 overflow-y-auto space-y-1 p-2 border border-white/10 rounded-xl">
+                                                            {customAgents?.map((ca: any) => (
+                                                                <div key={ca.id} className="flex items-center space-x-3 p-2 hover:bg-white/5 rounded-lg cursor-pointer"
+                                                                     onClick={() => {
+                                                                         setSelectedAgentIds(prev => 
+                                                                             prev.includes(ca.id) ? prev.filter(id => id !== ca.id) : [...prev, ca.id]
+                                                                         )
+                                                                     }}
+                                                                >
+                                                                    <input 
+                                                                        type="checkbox"
+                                                                        checked={selectedAgentIds.includes(ca.id)}
+                                                                        readOnly
+                                                                        className="rounded text-primary-500 focus:ring-primary-500"
+                                                                    />
+                                                                    <span className="text-sm flex-1">{ca.name} <span className="text-white/40">({ca.age}yo)</span></span>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label className="block text-sm font-medium mb-2">Simulation Days</label>
+                                                        <input
+                                                            type="number" value={simulationDays}
+                                                            onChange={(e) => setSimulationDays(Math.max(1, Math.min(30, parseInt(e.target.value) || 1)))}
+                                                            className="input-field" min={1} max={30} disabled={pollingEnabled}
+                                                        />
+                                                    </div>
+                                                </>
+                                            )}
+                                        </div>
+                                    )}
 
                                     <button
                                         type="button"
