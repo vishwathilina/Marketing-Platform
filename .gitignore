@@ -56,7 +56,7 @@ uploads/
 *.mp4
 *.mov
 *.avi
-
+reports/
 # OS
 .DS_Store
 Thumbs.db

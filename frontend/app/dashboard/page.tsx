@@ -5,17 +5,10 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-    Zap,
     Plus,
     FileVideo,
-    Clock,
-    CheckCircle,
-    AlertCircle,
     LogOut,
     Loader2,
-    TrendingUp,
-    Trash2,
-    Users
 } from 'lucide-react';
 import { projectsApi, authApi } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
@@ -73,19 +66,6 @@ export default function DashboardPage() {
         router.push('/');
     };
 
-    const getStatusIcon = (status: string) => {
-        switch (status) {
-            case 'READY':
-                return <CheckCircle className="w-5 h-5 text-emerald-400" />;
-            case 'PROCESSING':
-                return <Loader2 className="w-5 h-5 text-primary-400 animate-spin" />;
-            case 'FAILED':
-                return <AlertCircle className="w-5 h-5 text-red-400" />;
-            default:
-                return <Clock className="w-5 h-5 text-yellow-400" />;
-        }
-    };
-
     const getStatusText = (status: string) => {
         switch (status) {
             case 'READY':
@@ -99,119 +79,118 @@ export default function DashboardPage() {
         }
     };
 
+    const getStatusClass = (status: string) => {
+        switch (status) {
+            case 'READY':
+                return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+            case 'PROCESSING':
+                return 'bg-blue-50 text-blue-700 border border-blue-200';
+            case 'FAILED':
+                return 'bg-red-50 text-red-700 border border-red-200';
+            default:
+                return 'bg-amber-50 text-amber-700 border border-amber-200';
+        }
+    };
+
     if (!mounted) return null;
 
     return (
-        <div className="min-h-screen">
-            {/* Sidebar */}
-            <aside className="fixed left-0 top-0 w-64 h-full glass border-r border-white/10 p-6">
-                <div className="flex items-center space-x-2 mb-8">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
-                        <Zap className="w-6 h-6 text-white" />
+        <div className="min-h-screen bg-[#f3f3f1] text-[#101828]">
+            <header className="border-b border-[#e5e7eb] bg-[#f8f8f7]">
+                <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
+                    <nav className="flex items-center gap-8 text-sm font-medium text-[#111827]">
+                        <Link href="/" className="hover:text-black">Home</Link>
+                        <span className="font-semibold">Projects</span>
+                        <span className="text-[#4b5563]">Solutions</span>
+                        <span className="text-[#4b5563]">Analytics Dashboards</span>
+                    </nav>
+                    <div className="flex items-center gap-6 text-sm">
+                        <span className="font-semibold">Help Centre</span>
+                        <button
+                            onClick={handleLogout}
+                            className="inline-flex items-center gap-2 rounded-md border border-[#d1d5db] px-2.5 py-1.5 text-[#374151] hover:bg-white"
+                        >
+                            <LogOut className="h-4 w-4" />
+                            Logout
+                        </button>
                     </div>
-                    <span className="text-xl font-bold gradient-text">AgentSociety</span>
+                </div>
+            </header>
+
+            <main className="mx-auto max-w-[1280px] px-6 py-8">
+                <div className="mb-7 flex items-start justify-between">
+                    <h1 className="text-5xl font-semibold tracking-tight">Projects</h1>
+                    <Link
+                        href="/dashboard/new"
+                        className="inline-flex items-center gap-2 rounded-md border border-[#111827] bg-white px-4 py-2 text-sm font-semibold text-[#111827] hover:bg-[#f9fafb]"
+                    >
+                        <Plus className="h-4 w-4" />
+                        New Project
+                    </Link>
                 </div>
 
-                <nav className="space-y-2">
-                    <Link
-                        href="/dashboard"
-                        className="flex items-center space-x-3 px-4 py-3 rounded-xl bg-white/10 text-white"
-                    >
-                        <TrendingUp className="w-5 h-5" />
-                        <span>Projects</span>
-                    </Link>
-                    <Link
-                        href="/dashboard/agents"
-                        className="flex items-center space-x-3 px-4 py-3 rounded-xl hover:bg-white/5 text-white/60 transition-colors"
-                    >
-                        <Users className="w-5 h-5" />
-                        <span>Agent Builder</span>
-                    </Link>
-                </nav>
-
-                <div className="absolute bottom-6 left-6 right-6">
-                    <div className="glass rounded-xl p-4 mb-4">
-                        <p className="text-sm text-white/60">Logged in as</p>
-                        <p className="text-sm font-medium truncate">{user?.email}</p>
+                {isLoading ? (
+                    <div className="flex items-center justify-center py-24">
+                        <Loader2 className="h-8 w-8 animate-spin text-[#4b5563]" />
                     </div>
-                    <button
-                        onClick={handleLogout}
-                        className="flex items-center space-x-2 text-white/60 hover:text-white transition-colors"
-                    >
-                        <LogOut className="w-5 h-5" />
-                        <span>Logout</span>
-                    </button>
-                </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="ml-64 p-8">
-                <div className="max-w-6xl mx-auto">
-                    {/* Header */}
-                    <div className="flex items-center justify-between mb-8">
-                        <div>
-                            <h1 className="text-3xl font-bold">Your Projects</h1>
-                            <p className="text-white/60 mt-1">Upload videos and run AI simulations</p>
-                        </div>
-
-                        <Link href="/dashboard/new" className="btn-primary flex items-center space-x-2">
-                            <Plus className="w-5 h-5" />
-                            <span>New Project</span>
+                ) : projects?.length === 0 ? (
+                    <div className="rounded-lg border border-[#d1d5db] bg-white p-14 text-center">
+                        <FileVideo className="mx-auto mb-4 h-12 w-12 text-[#9ca3af]" />
+                        <h3 className="mb-2 text-xl font-semibold">No projects yet</h3>
+                        <p className="mb-7 text-[#6b7280]">Create your first project to start simulation.</p>
+                        <Link
+                            href="/dashboard/new"
+                            className="inline-flex items-center gap-2 rounded-md border border-[#111827] bg-white px-4 py-2 text-sm font-semibold text-[#111827] hover:bg-[#f9fafb]"
+                        >
+                            <Plus className="h-4 w-4" />
+                            Create Project
                         </Link>
                     </div>
-
-                    {/* Projects Grid */}
-                    {isLoading ? (
-                        <div className="flex items-center justify-center py-24">
-                            <div className="spinner" />
-                        </div>
-                    ) : projects?.length === 0 ? (
-                        <div className="glass-card rounded-2xl p-12 text-center">
-                            <FileVideo className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                            <h3 className="text-xl font-semibold mb-2">No projects yet</h3>
-                            <p className="text-white/60 mb-6">
-                                Upload your first video to start simulating AI reactions
-                            </p>
-                            <Link href="/dashboard/new" className="btn-primary inline-flex items-center space-x-2">
-                                <Plus className="w-5 h-5" />
-                                <span>Create Project</span>
-                            </Link>
-                        </div>
-                    ) : (
-                        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {projects?.map((project: any) => (
-                                <Link
-                                    key={project.id}
-                                    href={`/dashboard/project/${project.id}`}
-                                    className="glass-card rounded-2xl p-6 hover-lift cursor-pointer"
-                                >
-                                    <div className="flex items-start justify-between mb-4">
-                                        <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500/20 to-accent-500/20 flex items-center justify-center">
-                                            <FileVideo className="w-6 h-6 text-primary-400" />
-                                        </div>
-                                        <div className="flex items-center space-x-2">
-                                            {getStatusIcon(project.status)}
-                                            <span className="text-sm">{getStatusText(project.status)}</span>
-                                            <button
-                                                onClick={(e) => handleDelete(e, project.id)}
-                                                className="ml-2 p-1.5 rounded-md bg-red-500/10 text-red-400 hover:bg-red-500/20 transition-colors"
-                                                title="Delete Project"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    <h3 className="text-lg font-semibold mb-2 truncate">{project.title}</h3>
-
-                                    <p className="text-sm text-white/40">
-                                        Created {new Date(project.created_at).toLocaleDateString()}
-                                    </p>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                ) : (
+                    <div className="overflow-hidden rounded-md border border-[#d1d5db] bg-white">
+                        <table className="w-full table-fixed">
+                            <thead className="bg-[#f3f4f6] text-left text-sm font-semibold text-[#374151]">
+                                <tr>
+                                    <th className="px-6 py-4">Project Name</th>
+                                    <th className="px-6 py-4">Status</th>
+                                    <th className="px-6 py-4">Date Created</th>
+                                    <th className="px-6 py-4">Created By</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {projects?.map((project: any) => (
+                                    <tr
+                                        key={project.id}
+                                        onClick={() => router.push(`/dashboard/project/${project.id}`)}
+                                        className="cursor-pointer border-t border-[#e5e7eb] transition-colors hover:bg-[#f9fafb]"
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-12 w-20 overflow-hidden rounded border border-[#e5e7eb] bg-[#eef2ff]">
+                                                    <div className="flex h-full w-full items-center justify-center">
+                                                        <FileVideo className="h-5 w-5 text-[#4f46e5]" />
+                                                    </div>
+                                                </div>
+                                                <span className="truncate font-semibold text-[#111827]">{project.title}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${getStatusClass(project.status)}`}>
+                                                {getStatusText(project.status)}
+                                            </span>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-[#4b5563]">
+                                            {new Date(project.created_at).toLocaleDateString()}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <span className="truncate text-sm text-[#4b5563]">{user?.email || 'Current User'}</span>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
             </main>
         </div>
     );
