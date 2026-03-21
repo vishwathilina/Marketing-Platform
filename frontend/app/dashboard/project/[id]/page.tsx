@@ -123,9 +123,9 @@ export default function ProjectDetailPage() {
 
     const statusConfig: Record<string, { label: string; cls: string; icon: ReactNode }> = {
         COMPLETED: { label: 'Completed', cls: 'text-emerald-400 bg-emerald-400/10', icon: <CheckCircle className="w-3 h-3" /> },
-        RUNNING:   { label: 'Running',   cls: 'text-primary-400 bg-primary-400/10', icon: <Loader2 className="w-3 h-3 animate-spin" /> },
-        PENDING:   { label: 'Pending',   cls: 'text-yellow-400 bg-yellow-400/10',   icon: <Clock className="w-3 h-3" /> },
-        FAILED:    { label: 'Failed',    cls: 'text-red-400 bg-red-400/10',         icon: <XCircle className="w-3 h-3" /> },
+        RUNNING: { label: 'Running', cls: 'text-primary-400 bg-primary-400/10', icon: <Loader2 className="w-3 h-3 animate-spin" /> },
+        PENDING: { label: 'Pending', cls: 'text-yellow-400 bg-yellow-400/10', icon: <Clock className="w-3 h-3" /> },
+        FAILED: { label: 'Failed', cls: 'text-red-400 bg-red-400/10', icon: <XCircle className="w-3 h-3" /> },
     };
 
     return (
@@ -156,6 +156,21 @@ export default function ProjectDetailPage() {
                         </button>
                     )}
                 </div>
+
+                {/* Video Preview (HuggingFace URL) */}
+                {project.video_path?.startsWith('https://') && (
+                    <div className="glass-card rounded-2xl p-6 mb-8">
+                        <h2 className="text-lg font-semibold mb-4">Ad Video Preview</h2>
+                        <video
+                            src={project.video_path}
+                            controls
+                            className="w-full rounded-xl max-h-96 bg-black/20"
+                            preload="metadata"
+                        >
+                            Your browser does not support the video tag.
+                        </video>
+                    </div>
+                )}
 
                 {/* Ad Analysis */}
                 {project.status === 'READY' && project.vlm_generated_context && (

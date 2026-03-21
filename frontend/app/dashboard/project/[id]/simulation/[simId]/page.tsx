@@ -39,7 +39,7 @@ import {
     Cell,
     ResponsiveContainer,
 } from 'recharts';
-import { simulationsApi } from '@/lib/api';
+import { simulationsApi, projectsApi } from '@/lib/api';
 import OpinionTrajectoryChart from '@/components/OpinionTrajectoryChart';
 
 const COLORS = {
@@ -53,8 +53,14 @@ export default function SimulationResultsPage() {
     const projectId = params.id as string;
     const simId = params.simId as string;
 
-
     const [pollingEnabled, setPollingEnabled] = useState(true);
+    const [showVideoPreview, setShowVideoPreview] = useState(false);
+
+    // Fetch parent project for video preview
+    const { data: project } = useQuery({
+        queryKey: ['project', projectId],
+        queryFn: () => projectsApi.get(projectId),
+    });
 
     // Poll simulation status
     const { data: simulationStatus } = useQuery({
@@ -217,6 +223,33 @@ export default function SimulationResultsPage() {
                 {/* Results */}
                 {results && (
                     <div className="space-y-6">
+                        {/* Video Preview (collapsible) */}
+                        {project?.video_path?.startsWith('https://') && (
+                            <div className="glass-card rounded-2xl overflow-hidden">
+                                <button
+                                    onClick={() => setShowVideoPreview(v => !v)}
+                                    className="w-full px-6 py-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
+                                >
+                                    <span className="font-semibold flex items-center gap-2">
+                                        <span>📹</span> Ad Video Preview
+                                    </span>
+                                    <span className="text-white/50 text-sm">{showVideoPreview ? '▲ Hide' : '▼ Show'}</span>
+                                </button>
+                                {showVideoPreview && (
+                                    <div className="px-6 pb-6">
+                                        <video
+                                            src={project.video_path}
+                                            controls
+                                            className="w-full rounded-xl max-h-72 bg-black/20"
+                                            preload="metadata"
+                                        >
+                                            Your browser does not support the video tag.
+                                        </video>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {/* Stats Cards */}
                         <div className="grid grid-cols-3 gap-4">
                             <div className="glass-card rounded-xl p-4 text-center">
