@@ -9,6 +9,7 @@ import {
     FileVideo,
     LogOut,
     Loader2,
+    Trash2,
 } from 'lucide-react';
 import { projectsApi, authApi } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
@@ -17,6 +18,7 @@ export default function DashboardPage() {
     const router = useRouter();
     const { user, setUser, logout } = useAuthStore();
     const [mounted, setMounted] = useState(false);
+    const [projectToDelete, setProjectToDelete] = useState<{ id: string; title: string } | null>(null);
 
     useEffect(() => {
         setMounted(true);
@@ -49,15 +51,19 @@ export default function DashboardPage() {
         mutationFn: projectsApi.delete,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['projects'] });
+            setProjectToDelete(null);
         },
     });
 
-    const handleDelete = (e: React.MouseEvent, id: string) => {
+    const openDeleteModal = (e: React.MouseEvent, id: string, title: string) => {
         e.preventDefault();
         e.stopPropagation();
-        if (confirm('Are you sure you want to delete this project?')) {
-            deleteMutation.mutate(id);
-        }
+        setProjectToDelete({ id, title });
+    };
+
+    const handleConfirmDelete = () => {
+        if (!projectToDelete) return;
+        deleteMutation.mutate(projectToDelete.id);
     };
 
     const handleLogout = () => {
@@ -82,13 +88,13 @@ export default function DashboardPage() {
     const getStatusClass = (status: string) => {
         switch (status) {
             case 'READY':
-                return 'bg-emerald-50 text-emerald-700 border border-emerald-200';
+                return 'text-emerald-700';
             case 'PROCESSING':
-                return 'bg-blue-50 text-blue-700 border border-blue-200';
+                return ' text-blue-700 ';
             case 'FAILED':
-                return 'bg-red-50 text-red-700 border border-red-200';
+                return 'text-red-700';
             default:
-                return 'bg-amber-50 text-amber-700 border border-amber-200';
+                return ' text-amber-700 ';
         }
     };
 
@@ -122,7 +128,7 @@ export default function DashboardPage() {
                     <h1 className="text-5xl font-semibold tracking-tight">Projects</h1>
                     <Link
                         href="/dashboard/new"
-                        className="inline-flex items-center gap-2 rounded-md border border-[#111827] bg-white px-4 py-2 text-sm font-semibold text-[#111827] hover:bg-[#f9fafb]"
+                        className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#00897f] to-[#00c2a8] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 hover:scale-105 transition"
                     >
                         <Plus className="h-4 w-4" />
                         New Project
@@ -183,7 +189,17 @@ export default function DashboardPage() {
                                             {new Date(project.created_at).toLocaleDateString()}
                                         </td>
                                         <td className="px-6 py-4">
-                                            <span className="truncate text-sm text-[#4b5563]">{user?.email || 'Current User'}</span>
+                                            <div className="flex items-center justify-between gap-3">
+                                                <span className="truncate text-sm text-[#4b5563]">{user?.email || 'Current User'}</span>
+                                                <button
+                                                    onClick={(e) => openDeleteModal(e, project.id, project.title)}
+                                                    className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-[#fecaca] text-[#ef4444] transition hover:bg-[#fef2f2]"
+                                                    aria-label={`Delete ${project.title}`}
+                                                    title="Delete project"
+                                                >
+                                                    <Trash2 className="h-4 w-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -192,6 +208,36 @@ export default function DashboardPage() {
                     </div>
                 )}
             </main>
+
+            {projectToDelete && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                    <div className="w-full max-w-md rounded-xl border border-[#e5e7eb] bg-white p-6 shadow-2xl">
+                        <h2 className="text-xl font-semibold text-[#111827]">Delete project?</h2>
+                        <p className="mt-3 text-sm text-[#4b5563]">
+                            Are you sure you want to delete
+                            <span className="font-semibold text-[#111827]"> {projectToDelete.title}</span>?
+                            This action cannot be undone.
+                        </p>
+                        <div className="mt-6 flex items-center justify-end gap-3">
+                            <button
+                                onClick={() => setProjectToDelete(null)}
+                                className="rounded-md border border-[#d1d5db] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]"
+                                disabled={deleteMutation.isPending}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleConfirmDelete}
+                                className="inline-flex items-center gap-2 rounded-md bg-[#ef4444] px-4 py-2 text-sm font-semibold text-white hover:bg-[#dc2626] disabled:cursor-not-allowed disabled:opacity-70"
+                                disabled={deleteMutation.isPending}
+                            >
+                                {deleteMutation.isPending && <Loader2 className="h-4 w-4 animate-spin" />}
+                                OK
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
