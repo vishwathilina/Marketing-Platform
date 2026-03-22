@@ -11,10 +11,40 @@ const api = axios.create({
     },
 });
 
+const AUTH_TOKEN_KEY = 'token';
+const AUTH_COOKIE_NAME = 'auth_token';
+
+const getCookieValue = (name: string): string | null => {
+    if (typeof document === 'undefined') return null;
+    const match = document.cookie.match(new RegExp(`(?:^|; )${name}=([^;]*)`));
+    return match ? decodeURIComponent(match[1]) : null;
+};
+
+export const getStoredToken = (): string | null => {
+    if (typeof window === 'undefined') return null;
+    const localToken = localStorage.getItem(AUTH_TOKEN_KEY);
+    if (localToken && localToken !== 'undefined' && localToken !== 'null') {
+        return localToken;
+    }
+    return getCookieValue(AUTH_COOKIE_NAME);
+};
+
+export const setStoredToken = (token: string) => {
+    if (typeof window === 'undefined') return;
+    localStorage.setItem(AUTH_TOKEN_KEY, token);
+    document.cookie = `${AUTH_COOKIE_NAME}=${encodeURIComponent(token)}; path=/; max-age=86400`;
+};
+
+export const clearStoredToken = () => {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(AUTH_TOKEN_KEY);
+    document.cookie = `${AUTH_COOKIE_NAME}=; path=/; max-age=0`;
+};
+
 // Add auth token to requests
 api.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('token');
+        const token = getStoredToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
@@ -28,7 +58,7 @@ api.interceptors.response.use(
     (error) => {
         if (error.response?.status === 401) {
             if (typeof window !== 'undefined') {
-                localStorage.removeItem('token');
+                clearStoredToken();
                 window.location.href = '/login';
             }
         }
@@ -46,7 +76,9 @@ export const authApi = {
     login: async (email: string, password: string) => {
         const response = await api.post('/auth/login', { email, password });
         const { access_token } = response.data;
-        localStorage.setItem('token', access_token);
+        if (access_token) {
+            setStoredToken(access_token);
+        }
         return response.data;
     },
 
@@ -56,7 +88,7 @@ export const authApi = {
     },
 
     logout: () => {
-        localStorage.removeItem('token');
+        clearStoredToken();
     },
 };
 
@@ -95,6 +127,11 @@ export const projectsApi = {
 export const simulationsApi = {
     start: async (projectId: string, config?: { num_agents?: number; simulation_days?: number; agent_ids?: string[]; use_custom_agents_only?: boolean; demographic_filter?: any }) => {
         const response = await api.post(`/simulations/${projectId}/start`, config || {});
+        return response.data;
+    },
+
+    cancel: async (id: string) => {
+        const response = await api.post(`/simulations/${id}/cancel`);
         return response.data;
     },
 
