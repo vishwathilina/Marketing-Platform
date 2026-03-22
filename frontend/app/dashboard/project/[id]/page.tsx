@@ -38,6 +38,10 @@ export default function ProjectDetailPage() {
         location: 'All',
         income_level: [] as string[],
         religion: [] as string[],
+        education: [] as string[],
+        ethnicity: [] as string[],
+        social_media_usage: [] as string[],
+        political_leaning: [] as string[],
     });
 
     const [isEditingContext, setIsEditingContext] = useState(false);
@@ -87,18 +91,28 @@ export default function ProjectDetailPage() {
     });
 
     const handleStartSimulation = () => {
-        const payload: any = { num_agents: numAgents, simulation_days: simulationDays };
+        const payload: any = { simulation_days: simulationDays };
 
         if (agentTab === 'custom') {
             payload.agent_ids = selectedAgentIds;
             payload.use_custom_agents_only = useCustomAgentsOnly;
+            if (useCustomAgentsOnly) {
+                payload.num_agents = selectedAgentIds.length || 1;
+            } else {
+                payload.num_agents = numAgents;
+            }
         } else {
+            payload.num_agents = numAgents;
             payload.demographic_filter = {
                 age_range: demoFilter.age_range,
                 gender: demoFilter.gender === 'All' ? null : demoFilter.gender,
                 location: demoFilter.location === 'All' ? null : demoFilter.location,
                 income_level: demoFilter.income_level.length ? demoFilter.income_level : null,
                 religion: demoFilter.religion.length ? demoFilter.religion : null,
+                education: demoFilter.education.length ? demoFilter.education : null,
+                ethnicity: demoFilter.ethnicity.length ? demoFilter.ethnicity : null,
+                social_media_usage: demoFilter.social_media_usage.length ? demoFilter.social_media_usage : null,
+                political_leaning: demoFilter.political_leaning.length ? demoFilter.political_leaning : null,
             };
         }
 
@@ -383,6 +397,26 @@ export default function ProjectDetailPage() {
 
                                     {isDemographicsOpen && (
                                         <div className="p-4 border-t border-[#e5e7eb] bg-white space-y-4">
+                                            <div>
+                                                <label className="block text-xs font-medium text-[#6b7280] mb-2">Age Range: {demoFilter.age_range[0]} - {demoFilter.age_range[1]}</label>
+                                                <div className="flex items-center gap-3">
+                                                    <input 
+                                                        type="number" 
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none" 
+                                                        value={demoFilter.age_range[0]} 
+                                                        min={16} max={demoFilter.age_range[1]} 
+                                                        onChange={e => setDemoFilter({ ...demoFilter, age_range: [parseInt(e.target.value) || 16, demoFilter.age_range[1]] })} 
+                                                    />
+                                                    <span className="text-[#6b7280] text-sm">to</span>
+                                                    <input 
+                                                        type="number" 
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none" 
+                                                        value={demoFilter.age_range[1]} 
+                                                        min={demoFilter.age_range[0]} max={90} 
+                                                        onChange={e => setDemoFilter({ ...demoFilter, age_range: [demoFilter.age_range[0], parseInt(e.target.value) || 90] })} 
+                                                    />
+                                                </div>
+                                            </div>
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div>
                                                     <label className="block text-xs font-medium text-[#6b7280] mb-1">Gender</label>
@@ -408,6 +442,93 @@ export default function ProjectDetailPage() {
                                                         <option value="Kandy">Kandy</option>
                                                         <option value="Galle">Galle</option>
                                                         <option value="Jaffna">Jaffna</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Income Level</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.income_level[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, income_level: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="Low">Low</option>
+                                                        <option value="Medium">Medium</option>
+                                                        <option value="High">High</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Religion</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.religion[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, religion: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="Buddhism">Buddhism</option>
+                                                        <option value="Hinduism">Hinduism</option>
+                                                        <option value="Islam">Islam</option>
+                                                        <option value="Christianity">Christianity</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Education</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.education[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, education: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="High School">High School</option>
+                                                        <option value="Bachelor's">Bachelor's</option>
+                                                        <option value="Master's">Master's</option>
+                                                        <option value="PhD">PhD</option>
+                                                        <option value="Professional Certification">Professional Certification</option>
+                                                        <option value="No Formal Education">No Formal Education</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Ethnicity</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.ethnicity[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, ethnicity: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="Sinhalese">Sinhalese</option>
+                                                        <option value="Tamil">Tamil</option>
+                                                        <option value="Moor">Moor</option>
+                                                        <option value="Burgher">Burgher</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Social Media</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.social_media_usage[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, social_media_usage: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All Levels</option>
+                                                        <option value="Very High">Very High</option>
+                                                        <option value="High">High</option>
+                                                        <option value="Moderate">Moderate</option>
+                                                        <option value="Low">Low</option>
+                                                        <option value="None">None</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-medium text-[#6b7280] mb-1">Political</label>
+                                                    <select
+                                                        className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]"
+                                                        value={demoFilter.political_leaning[0] || 'All'}
+                                                        onChange={e => setDemoFilter({ ...demoFilter, political_leaning: e.target.value === 'All' ? [] : [e.target.value] })}
+                                                    >
+                                                        <option value="All">All</option>
+                                                        <option value="Progressive">Progressive</option>
+                                                        <option value="Moderate">Moderate</option>
+                                                        <option value="Conservative">Conservative</option>
+                                                        <option value="Nationalist">Nationalist</option>
+                                                        <option value="Apolitical">Apolitical</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -451,24 +572,34 @@ export default function ProjectDetailPage() {
 
                                         <div>
                                             <label className="block text-sm font-semibold text-[#374151] mb-2">Select Agents ({selectedAgentIds.length} selected)</label>
-                                            <div className="max-h-48 overflow-y-auto space-y-1 p-2 border border-[#e5e7eb] rounded-lg bg-white custom-scrollbar">
+                                            <div className="max-h-60 overflow-y-auto space-y-2 p-2 border border-[#e5e7eb] rounded-lg bg-white custom-scrollbar">
                                                 {customAgents?.map((ca: any) => (
                                                     <div
                                                         key={ca.id}
-                                                        className="flex items-center space-x-3 p-2 hover:bg-[#f9fafb] rounded-md cursor-pointer border border-transparent hover:border-[#e5e7eb]"
+                                                        className="flex items-start space-x-3 p-3 hover:bg-[#f9fafb] rounded-md cursor-pointer border border-[#e5e7eb] transition-colors"
                                                         onClick={() => {
                                                             setSelectedAgentIds(prev =>
                                                                 prev.includes(ca.id) ? prev.filter(id => id !== ca.id) : [...prev, ca.id]
                                                             );
                                                         }}
                                                     >
-                                                        <input
-                                                            type="checkbox"
-                                                            checked={selectedAgentIds.includes(ca.id)}
-                                                            readOnly
-                                                            className="rounded border-[#d1d5db] text-[#00897f] focus:ring-[#00897f]"
-                                                        />
-                                                        <span className="text-sm font-medium text-[#111827] flex-1">{ca.name} <span className="text-[#6b7280] font-normal">({ca.age}yo)</span></span>
+                                                        <div className="pt-0.5">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedAgentIds.includes(ca.id)}
+                                                                readOnly
+                                                                className="rounded border-[#d1d5db] text-[#00897f] focus:ring-[#00897f]"
+                                                            />
+                                                        </div>
+                                                        <div className="flex-1">
+                                                            <div className="text-sm font-semibold text-[#111827]">
+                                                                {ca.name} <span className="text-[#6b7280] font-normal">({ca.age}yo)</span>
+                                                            </div>
+                                                            <div className="text-xs text-[#4b5563] mt-1 space-y-0.5">
+                                                                <p><span className="font-medium text-[#374151]">Demographics:</span> {ca.gender}, {ca.location}, {ca.income_level}</p>
+                                                                <p><span className="font-medium text-[#374151]">Traits:</span> {ca.traits && ca.traits.length > 0 ? ca.traits.join(', ') : 'None'}</p>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 ))}
                                             </div>
