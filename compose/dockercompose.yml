@@ -1,0 +1,91 @@
+services:
+  chromadb:
+    image: chromadb/chroma:latest
+    container_name: marketing_chromadb
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - chroma_data:/chroma/chroma
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: marketing_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: agentsociety_db
+      POSTGRES_USER: agentsociety
+      POSTGRES_PASSWORD: dev_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U agentsociety -d agentsociety_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: marketing_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: marketing_backend
+    restart: unless-stopped
+    depends_on:
+      chromadb:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    environment:
+      DATABASE_URL: postgresql://agentsociety:dev_password@postgres:5432/agentsociety_db
+      REDIS_URL: redis://redis:6379/0
+      CHROMA_HOST: chromadb
+      CHROMA_PORT: "8000"
+      CHROMA_SSL: "false"
+      PORT: "7860"
+    ports:
+      - "8001:7860"
+    volumes:
+      - ./backend/backend/uploads:/app/backend/uploads
+      - ./backend/backend/reports:/app/backend/reports
+
+  frontend:
+    image: node:20-alpine
+    container_name: marketing_frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    working_dir: /app
+    environment:
+      BACKEND_PROXY_URL: http://backend:7860
+      NEXT_TELEMETRY_DISABLED: "1"
+    command: sh -c "npm install && npm run dev -- -H 0.0.0.0 -p 3000"
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+
+volumes:
+  chroma_data:
+  postgres_data:
+  redis_data:
