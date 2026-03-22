@@ -11,7 +11,7 @@ const AgentMap = dynamic(
     {
         ssr: false,
         loading: () => (
-            <div className="glass-card rounded-2xl h-[600px] flex items-center justify-center">
+            <div className="glass-card h-[600px] flex items-center justify-center">
                 <div className="text-center">
                     <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4 text-primary-400" />
                     <p className="text-white/60">Loading map component...</p>
@@ -163,7 +163,7 @@ export default function SimulationResultsPage() {
     })();
 
     return (
-        <div className="min-h-screen bg-slate-100 text-slate-900">
+        <div className="bg-slate-100 text-slate-900">
             <div className="border-b border-slate-200 bg-white">
                 <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-5 flex items-start md:items-center justify-between gap-4">
                     <div>
@@ -175,7 +175,7 @@ export default function SimulationResultsPage() {
                     <div className="flex items-center gap-3">
                         <Link
                             href={`/dashboard/project/${projectId}`}
-                            className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                            className="inline-flex items-center gap-2 border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             Back
@@ -183,7 +183,7 @@ export default function SimulationResultsPage() {
                         {isCompleted && (
                             <button
                                 onClick={handleDownloadReport}
-                                className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
+                                className="inline-flex items-center gap-2 bg-slate-900 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800"
                             >
                                 <Download className="w-4 h-4" />
                                 Export
@@ -198,16 +198,16 @@ export default function SimulationResultsPage() {
                 <div className="mb-6 flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-bold">{project?.title || 'Ad'}</h1>
-                        <span className={`px-3 py-1 text-xs font-semibold rounded-full border ${statusBadgeClass}`}>
+                        <span className={`px-3 py-1 text-xs font-semibold border ${statusBadgeClass}`}>
                             {currentStatus || 'LOADING'}
                         </span>
                     </div>
-                    <p className="text-sm text-slate-500">Select up to 15 ads to compare results</p>
+                    
                 </div>
 
                 {/* Running / Pending state */}
                 {isRunning && !isCompleted && !isFailed && (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center mb-6">
+                    <div className="border border-slate-200 bg-white p-8 text-center mb-6">
                         <Loader2 className="w-10 h-10 animate-spin mx-auto mb-4 text-slate-600" />
                         <h3 className="text-xl font-semibold mb-2">Simulation Running</h3>
                         {simulationStatus && (
@@ -217,9 +217,9 @@ export default function SimulationResultsPage() {
                                         <span>Progress</span>
                                         <span>{simulationStatus.progress}%</span>
                                     </div>
-                                    <div className="h-2 rounded-full bg-slate-200 overflow-hidden">
+                                    <div className="h-2 bg-slate-200 overflow-hidden">
                                         <div
-                                            className="h-full rounded-full bg-slate-900 transition-all duration-500"
+                                            className="h-full bg-slate-900 transition-all duration-500"
                                             style={{ width: `${simulationStatus.progress}%` }}
                                         />
                                     </div>
@@ -234,7 +234,7 @@ export default function SimulationResultsPage() {
 
                 {/* Failed state */}
                 {isFailed && (
-                    <div className="rounded-2xl border border-red-200 bg-white p-12 text-center">
+                    <div className="border border-red-200 bg-white p-12 text-center">
                         <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">Simulation Failed</h3>
                         <p className="text-slate-600 mb-6">
@@ -242,7 +242,7 @@ export default function SimulationResultsPage() {
                         </p>
                         <Link
                             href={`/dashboard/project/${projectId}`}
-                            className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
+                            className="inline-flex items-center gap-2 bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
                         >
                             <ArrowLeft className="w-4 h-4" />
                             <span>Back to Project</span>
@@ -252,7 +252,7 @@ export default function SimulationResultsPage() {
 
                 {/* Loading results after completion */}
                 {isCompleted && resultsLoading && (
-                    <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
+                    <div className="border border-slate-200 bg-white p-12 text-center">
                         <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
                         <p>Loading results...</p>
                     </div>
@@ -262,17 +262,17 @@ export default function SimulationResultsPage() {
                 {results && (
                     <div className="grid grid-cols-1 xl:grid-cols-12 gap-6">
                         <aside className="xl:col-span-3 space-y-4">
-                            <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                            <div className="border border-slate-200 bg-white p-4">
                                 <h3 className="text-lg font-semibold mb-4">Metrics</h3>
                                 <div className="space-y-2 text-sm">
-                                    <div className="rounded-lg bg-slate-100 px-3 py-2 font-medium">Overview</div>
-                                    <div className="rounded-lg bg-slate-100 px-3 py-2 font-medium">In-market impact</div>
-                                    <div className="rounded-lg bg-slate-50 px-3 py-2 text-slate-600">Engagement</div>
-                                    <div className="rounded-lg bg-slate-50 px-3 py-2 text-slate-600">Brand Predisposition</div>
+                                    <div className="bg-slate-100 px-3 py-2 font-medium">Overview</div>
+                                    <div className="bg-slate-100 px-3 py-2 font-medium">In-market impact</div>
+                                    <div className="bg-slate-50 px-3 py-2 text-slate-600">Engagement</div>
+                                    <div className="bg-slate-50 px-3 py-2 text-slate-600">Brand Predisposition</div>
                                 </div>
                             </div>
 
-                            <div className="rounded-2xl border border-slate-200 bg-white p-4 space-y-3 text-sm">
+                            <div className="border border-slate-200 bg-white p-4 space-y-3 text-sm">
                                 <div className="flex justify-between gap-3">
                                     <span className="text-slate-500">Simulation ID</span>
                                     <span className="font-medium text-right break-all">{simulationRow?.id}</span>
@@ -307,7 +307,7 @@ export default function SimulationResultsPage() {
                                 </div>
                             </div>
 
-                            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-600 space-y-2">
+                            <div className="border border-slate-200 bg-white p-4 text-xs text-slate-600 space-y-2">
                                 <p className="font-semibold text-slate-700">Sentiment summary</p>
                                 {sentimentData.map((item) => {
                                     const pct = totalSentiment > 0 ? Math.round((item.value / totalSentiment) * 100) : 0;
@@ -317,9 +317,9 @@ export default function SimulationResultsPage() {
                                                 <span>{item.name}</span>
                                                 <span>{item.value} ({pct}%)</span>
                                             </div>
-                                            <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                                            <div className="h-2 bg-slate-100 overflow-hidden">
                                                 <div
-                                                    className="h-full rounded-full"
+                                                    className="h-full"
                                                     style={{ width: `${pct}%`, backgroundColor: item.color }}
                                                 />
                                             </div>
@@ -331,7 +331,7 @@ export default function SimulationResultsPage() {
 
                         <main className="xl:col-span-9 space-y-6">
                             {project?.video_path?.startsWith('https://') && (
-                                <div className="rounded-2xl border border-slate-200 bg-white p-5">
+                                <div className="border border-slate-200 bg-white p-5">
                                     <div className="flex items-center justify-between mb-4">
                                         <h2 className="text-2xl font-bold">Insights</h2>
                                     </div>
@@ -339,14 +339,14 @@ export default function SimulationResultsPage() {
                                         <video
                                             src={project.video_path}
                                             controls
-                                            className="w-full max-w-[320px] rounded-xl bg-black border border-slate-200"
+                                            className="w-full max-w-[320px] bg-black border border-slate-200"
                                             preload="metadata"
                                         >
                                             Your browser does not support the video tag.
                                         </video>
                                         <div className="pt-2">
                                             <p className="text-sm font-semibold text-slate-800">vlm_generated_context</p>
-                                            <div className="mt-2 h-52 overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 p-3">
+                                            <div className="mt-2 h-52 overflow-y-auto border border-slate-200 bg-slate-50 p-3">
                                                 <p className="text-sm text-slate-700 whitespace-pre-wrap leading-6">
                                                     {project?.vlm_generated_context || 'N/A'}
                                                 </p>
@@ -356,16 +356,16 @@ export default function SimulationResultsPage() {
                                 </div>
                             )}
 
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5">
+                            <section className="border border-slate-200 bg-white p-5">
                                 <div className="flex items-center justify-between mb-4">
                                     <h3 className="text-3xl font-bold">Overview</h3>
-                                    <button className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+                                    <button className="border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
                                         View Overview
                                     </button>
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                    <div className="rounded-xl border border-slate-200 p-4">
+                                    <div className="border border-slate-200 p-4">
                                         <div className="flex items-center justify-between mb-2">
                                             <TrendingUp className="w-5 h-5 text-slate-500" />
                                             <span className="text-xs text-slate-500">KPI</span>
@@ -373,7 +373,7 @@ export default function SimulationResultsPage() {
                                         <p className="text-3xl font-bold">{simulationRow?.engagement_score ?? 0}</p>
                                         <p className="text-sm text-slate-500">Engagement score</p>
                                     </div>
-                                    <div className="rounded-xl border border-slate-200 p-4">
+                                    <div className="border border-slate-200 p-4">
                                         <div className="flex items-center justify-between mb-2">
                                             <Users className="w-5 h-5 text-slate-500" />
                                             <span className="text-xs text-slate-500">Scale</span>
@@ -381,7 +381,7 @@ export default function SimulationResultsPage() {
                                         <p className="text-3xl font-bold">{simulationRow?.num_agents ?? 0}</p>
                                         <p className="text-sm text-slate-500">Total agents</p>
                                     </div>
-                                    <div className="rounded-xl border border-slate-200 p-4">
+                                    <div className="border border-slate-200 p-4">
                                         <div className="flex items-center justify-between mb-2">
                                             <AlertTriangle className="w-5 h-5 text-slate-500" />
                                             <span className="text-xs text-slate-500">Risk</span>
@@ -392,9 +392,9 @@ export default function SimulationResultsPage() {
                                 </div>
                             </section>
 
-                            <section className="rounded-2xl border border-slate-200 bg-white p-5">
+                            <section className="border border-slate-200 bg-white p-5">
                                 <h3 className="text-3xl font-bold mb-4">In-market impact</h3>
-                                <div className="rounded-xl border border-slate-200 p-4">
+                                <div className="border border-slate-200 p-4">
                                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                         <div>
                                             <div className="flex items-center gap-2 text-slate-500 mb-1">
@@ -430,7 +430,7 @@ export default function SimulationResultsPage() {
 
                             {/* Opinion Trajectory Chart */}
                             {results.opinion_trajectory && Object.keys(results.opinion_trajectory).length > 0 && (
-                                <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                                <div className="border border-slate-200 bg-white p-6">
                                     <h3 className="text-lg font-semibold mb-4">Opinion Spread Over Time</h3>
                                     <OpinionTrajectoryChart trajectoryData={results.opinion_trajectory} />
                                 </div>
@@ -438,7 +438,7 @@ export default function SimulationResultsPage() {
 
                             {/* Risk Flags */}
                             {results.risk_flags?.length > 0 && (
-                                <div className="rounded-2xl border border-slate-200 bg-white p-6">
+                                <div className="border border-slate-200 bg-white p-6">
                                     <h3 className="text-lg font-semibold mb-4 flex items-center">
                                         <AlertCircle className="w-5 h-5 mr-2 text-red-500" />
                                         Risk Flags
@@ -447,11 +447,11 @@ export default function SimulationResultsPage() {
                                         {results.risk_flags.map((flag: any, index: number) => (
                                             <div
                                                 key={index}
-                                                className={`p-4 rounded-xl border ${getSeverityClass(flag.severity)}`}
+                                                className={`p-4 border ${getSeverityClass(flag.severity)}`}
                                             >
                                                 <div className="flex items-center justify-between mb-2">
                                                     <span className="font-medium">{flag.flag_type.replace(/_/g, ' ')}</span>
-                                                    <span className="text-sm px-2 py-1 rounded-lg bg-white/70 border border-white/70">
+                                                    <span className="text-sm px-2 py-1 bg-white/70 border border-white/70">
                                                         {flag.severity}
                                                     </span>
                                                 </div>

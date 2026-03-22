@@ -1,12 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
-    Users, Plus, ArrowLeft, Loader2, Edit2, Trash2, MapPin, Briefcase, GraduationCap 
+    Users, Plus, ArrowLeft, Loader2, Edit2, Trash2, MapPin, Briefcase, GraduationCap, LogOut, FileBadge2, MoreVertical
 } from 'lucide-react';
-import { agentsApi } from '@/lib/api';
+import { agentsApi, authApi } from '@/lib/api';
+import { useAuthStore } from '@/lib/store';
+
+
 
 const LOCATIONS = [
     "Colombo", "Dehiwala-Mount Lavinia", "Moratuwa", "Negombo", "Sri Jayawardenepura Kotte", 
@@ -33,9 +37,39 @@ const PERSONALITY_TRAITS = [
 ];
 
 export default function AgentBuilderPage() {
+    const router = useRouter();
+    const { user, setUser, logout } = useAuthStore();
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+        // Check auth on mount
+        const checkAuth = async () => {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                router.push('/login');
+                return;
+            }
+            try {
+                const userData = await authApi.getMe();
+                setUser(userData);
+            } catch {
+                router.push('/login');
+            }
+        };
+        checkAuth();
+    }, []);
+
+    const handleLogout = () => {
+        authApi.logout();
+        logout();
+        router.push('/');
+    };
+
     const queryClient = useQueryClient();
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [editingAgent, setEditingAgent] = useState<any>(null);
+    const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
 
     const [formData, setFormData] = useState({
         name: '',
@@ -149,116 +183,133 @@ export default function AgentBuilderPage() {
         }
     };
 
+    const toggleMenu = (id: string) => {
+        if (menuOpenId === id) {
+            setMenuOpenId(null);
+        } else {
+            setMenuOpenId(id);
+        }
+    };
+
+    if (!mounted) return null;
+
     return (
-        <div className="min-h-screen p-8">
-            <div className="max-w-6xl mx-auto">
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center space-x-4">
-                        <Link href="/dashboard" className="p-2 rounded-xl glass hover:bg-white/10 transition-colors">
-                            <ArrowLeft className="w-5 h-5" />
+        
+        <div onClick={() => setMenuOpenId(null)}>
+            <main className="mx-auto max-w-[1280px] px-6 py-8">
+                <div className="mb-7 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <Link href="/dashboard" className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-[#d1d5db] bg-white text-[#374151] hover:bg-[#f9fafb] transition-colors">
+                            <ArrowLeft className="h-5 w-5" />
                         </Link>
-                        <div>
-                            <h1 className="text-3xl font-bold flex items-center">
-                                <Users className="w-8 h-8 mr-3 text-primary-400" />
-                                Agent Builder
-                            </h1>
-                            <p className="text-white/60">Design custom demographic profiles for simulations</p>
-                        </div>
+                        <h1 className="text-5xl font-semibold tracking-tight">Agents</h1>
                     </div>
                     <button 
                         onClick={openCreateForm}
-                        className="btn-primary flex items-center space-x-2"
+                        className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#00897f] to-[#00c2a8] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 hover:scale-105 transition"
                     >
-                        <Plus className="w-5 h-5" />
-                        <span>Create Agent</span>
+                        <Plus className="h-4 w-4" />
+                        New Agent
                     </button>
                 </div>
 
                 {isLoading ? (
                     <div className="flex justify-center py-24">
-                        <Loader2 className="w-8 h-8 animate-spin text-primary-400" />
+                        <Loader2 className="w-8 h-8 animate-spin text-[#4b5563]" />
                     </div>
                 ) : agents?.length === 0 ? (
-                    <div className="glass-card rounded-3xl p-16 text-center">
-                        <Users className="w-16 h-16 text-white/20 mx-auto mb-4" />
-                        <h3 className="text-xl font-semibold mb-2">No Custom Agents</h3>
-                        <p className="text-white/60 mb-6 max-w-md mx-auto">
-                            You haven't built any custom agents yet. Create some to use them in your simulations alongside or instead of AI-generated agents.
+                    <div className="rounded-lg border border-[#d1d5db] bg-white p-14 text-center">
+                        <Users className="mx-auto mb-4 h-12 w-12 text-[#9ca3af]" />
+                        <h3 className="mb-2 text-xl font-semibold">No Custom Agents</h3>
+                        <p className="mb-7 text-[#6b7280]">
+                            You haven't built any custom agents yet. Create some to use them in your simulations.
                         </p>
-                        <button onClick={openCreateForm} className="btn-primary inline-flex items-center space-x-2">
+                        <button onClick={openCreateForm} className="inline-flex items-center gap-2 rounded-md border border-cyan-500/40 shadow-lg shadow-cyan-500/40 bg-white px-4 py-2 text-sm font-semibold text-[#111827] hover:bg-[#f9fafb]">
                             <Plus className="w-5 h-5" />
                             <span>Create First Agent</span>
                         </button>
                     </div>
                 ) : (
-                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {agents?.map((agent: any) => (
-                            <div key={agent.id} className="glass-card rounded-2xl overflow-hidden hover-lift flex flex-col">
-                                <div className="p-6 flex-1">
-                                    <div className="flex justify-between items-start mb-4">
-                                        <h3 className="text-xl font-bold gradient-text pb-1 truncate pr-2">{agent.name}</h3>
-                                        <div className="flex gap-2 shrink-0">
-                                            <button 
-                                                onClick={() => openEditForm(agent)}
-                                                className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors"
-                                            >
-                                                <Edit2 className="w-4 h-4" />
-                                            </button>
-                                            <button 
-                                                onClick={() => {
-                                                    if(confirm('Delete this custom agent?')) {
-                                                        deleteMutation.mutate(agent.id);
-                                                    }
-                                                }}
-                                                className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition-colors"
-                                            >
-                                                <Trash2 className="w-4 h-4" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="space-y-3 mb-6">
-                                        <div className="flex items-center text-sm text-white/80">
-                                            <span className="w-16 text-white/50">Demog:</span>
-                                            <span>{agent.age} yo {agent.gender}, {agent.ethnicity}</span>
-                                        </div>
-                                        <div className="flex items-center text-sm text-white/80">
-                                            <MapPin className="w-4 h-4 mr-2 text-primary-400/70" />
-                                            <span className="truncate">{agent.location}</span>
-                                        </div>
-                                        <div className="flex items-center text-sm text-white/80">
-                                            <Briefcase className="w-4 h-4 mr-2 text-accent-400/70" />
-                                            <span className="truncate">{agent.occupation || 'Unspecified'}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="flex flex-wrap gap-2">
-                                        {agent.personality_traits?.slice(0,3).map((t: string) => (
-                                            <span key={t} className="text-xs px-2 py-1 rounded-full bg-primary-500/20 text-primary-200 border border-primary-500/10">
-                                                {t}
-                                            </span>
-                                        ))}
-                                        {agent.values?.slice(0,2).map((v: string) => (
-                                            <span key={v} className="text-xs px-2 py-1 rounded-full bg-accent-500/20 text-accent-200 border border-accent-500/10">
-                                                {v.replace('_', ' ')}
-                                            </span>
-                                        ))}
-                                        {(agent.personality_traits?.length > 3 || agent.values?.length > 2) && (
-                                            <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/60">...</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    <div className=" rounded-md border border-[#d1d5db] bg-white">
+                        <table className="w-full table-fixed">
+                            <thead className="bg-[#f3f4f6] text-left text-sm font-semibold text-[#374151]">
+                                <tr>
+                                    <th className="px-6 py-4">Name</th>
+                                    <th className="px-6 py-4 w-24">Age</th>
+                                    <th className="px-6 py-4 w-32">Gender</th>
+                                    <th className="px-6 py-4">Location</th>
+                                    <th className="px-6 py-4">Career</th>
+                                    <th className="px-6 py-4 w-40 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {agents?.map((agent: any) => (
+                                    <tr
+                                        key={agent.id}
+                                        className="border-t border-[#e5e7eb] transition-colors hover:bg-[#f9fafb]"
+                                    >
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center gap-3">
+                                                <div className="flex h-12 w-16 overflow-hidden rounded border border-[#e5e7eb] bg-[#eef2ff] items-center justify-center shrink-0">
+                                                    <Users className="h-5 w-5 text-[#4f46e5]" />
+                                                </div>
+                                                <span className="truncate font-semibold text-[#111827]">{agent.name}</span>
+                                            </div>
+                                        </td>
+                                        <td className="px-6 py-4 text-sm text-[#4b5563]">{agent.age}</td>
+                                        <td className="px-6 py-4 text-sm text-[#4b5563]">{agent.gender}</td>
+                                        <td className="px-6 py-4 text-sm text-[#4b5563]">{agent.location}</td>
+                                        <td className="px-6 py-4 text-sm text-[#4b5563] truncate" title={agent.occupation || 'Unspecified'}>
+                                            {agent.occupation || 'Unspecified'}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            <div className="flex items-center justify-end relative" onClick={e => e.stopPropagation()}>
+                                                <button
+                                                    onClick={() => toggleMenu(agent.id)}
+                                                    className="inline-flex h-8 w-8 items-center justify-center rounded-md text-[#6b7280] hover:bg-[#f3f4f6] transition-colors"
+                                                >
+                                                    <MoreVertical className="h-5 w-5" />
+                                                </button>
+                                                
+                                                {menuOpenId === agent.id && (
+                                                    <div className="absolute right-0 top-full mt-1 w-32 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50 border border-[#e5e7eb] divide-y divide-[#f3f4f6]">
+                                                        <button
+                                                            onClick={() => {
+                                                                setMenuOpenId(null);
+                                                                openEditForm(agent);
+                                                            }}
+                                                            className="block w-full px-4 py-2 text-sm text-left text-[#374151] hover:bg-[#f9fafb] font-medium"
+                                                        >
+                                                            See More
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                setMenuOpenId(null);
+                                                                if(confirm('Delete this custom agent?')) {
+                                                                    deleteMutation.mutate(agent.id);
+                                                                }
+                                                            }}
+                                                            className="block w-full px-4 py-2 text-sm text-left text-[#ef4444] hover:bg-[#fef2f2] font-medium"
+                                                        >
+                                                            Delete
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 )}
-            </div>
+            </main>
 
             {/* Form Modal */}
             {isFormOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closeForm} />
-                    <div className="relative glass-card w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-3xl p-8 border border-white/20 shadow-2xl">
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+                    <div className="absolute inset-0" onClick={closeForm} />
+                    <div className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto rounded-xl border border-[#e5e7eb] bg-white p-8 shadow-2xl text-[#111827]">
                         <h2 className="text-2xl font-bold mb-6">
                             {editingAgent ? 'Edit Custom Agent' : 'Create New Agent'}
                         </h2>
@@ -267,43 +318,43 @@ export default function AgentBuilderPage() {
                             <div className="grid md:grid-cols-2 gap-6">
                                 {/* Basic Info */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold border-b border-white/10 pb-2">Basic Info</h3>
+                                    <h3 className="text-lg font-semibold border-b border-[#e5e7eb] pb-2">Basic Info</h3>
                                     
                                     <div>
-                                        <label className="block text-sm mb-1 text-white/70">Full Name</label>
-                                        <input required name="name" value={formData.name} onChange={handleChange} className="input-field" placeholder="e.g. Nuwan Perera" />
+                                        <label className="block text-sm mb-1 text-[#4b5563]">Full Name</label>
+                                        <input required name="name" value={formData.name} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]" placeholder="e.g. Nuwan Perera" />
                                     </div>
                                     
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Age</label>
-                                            <input required type="number" name="age" value={formData.age} onChange={handleNumberChange} min={18} max={100} className="input-field" />
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Age</label>
+                                            <input required type="number" name="age" value={formData.age} onChange={handleNumberChange} min={18} max={100} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]" />
                                         </div>
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Gender</label>
-                                            <select name="gender" value={formData.gender} onChange={handleChange} className="input-field">
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Gender</label>
+                                            <select name="gender" value={formData.gender} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                                 {GENDERS.map(g => <option key={g} value={g}>{g}</option>)}
                                             </select>
                                         </div>
                                     </div>
                                     
                                     <div>
-                                        <label className="block text-sm mb-1 text-white/70">Location</label>
-                                        <select name="location" value={formData.location} onChange={handleChange} className="input-field">
+                                        <label className="block text-sm mb-1 text-[#4b5563]">Location</label>
+                                        <select name="location" value={formData.location} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                             {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                                         </select>
                                     </div>
                                     
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Religion</label>
-                                            <select name="religion" value={formData.religion} onChange={handleChange} className="input-field">
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Religion</label>
+                                            <select name="religion" value={formData.religion} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                                 {RELIGIONS.map(r => <option key={r} value={r}>{r}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Ethnicity</label>
-                                            <select name="ethnicity" value={formData.ethnicity} onChange={handleChange} className="input-field">
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Ethnicity</label>
+                                            <select name="ethnicity" value={formData.ethnicity} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                                 {ETHNICITIES.map(e => <option key={e} value={e}>{e}</option>)}
                                             </select>
                                         </div>
@@ -312,35 +363,35 @@ export default function AgentBuilderPage() {
 
                                 {/* Socioeconomic Info */}
                                 <div className="space-y-4">
-                                    <h3 className="text-lg font-semibold border-b border-white/10 pb-2">Socioeconomic</h3>
+                                    <h3 className="text-lg font-semibold border-b border-[#e5e7eb] pb-2">Socioeconomic</h3>
                                     
                                     <div>
-                                        <label className="block text-sm mb-1 text-white/70">Occupation</label>
-                                        <input name="occupation" value={formData.occupation} onChange={handleChange} className="input-field" placeholder="e.g. Software Engineer" />
+                                        <label className="block text-sm mb-1 text-[#4b5563]">Occupation</label>
+                                        <input name="occupation" value={formData.occupation} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]" placeholder="e.g. Software Engineer" />
                                     </div>
                                     
                                     <div>
-                                        <label className="block text-sm mb-1 text-white/70">Education</label>
-                                        <input name="education" value={formData.education} onChange={handleChange} className="input-field" placeholder="e.g. Bachelor's Degree" />
+                                        <label className="block text-sm mb-1 text-[#4b5563]">Education</label>
+                                        <input name="education" value={formData.education} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]" placeholder="e.g. Bachelor's Degree" />
                                     </div>
                                     
                                     <div>
-                                        <label className="block text-sm mb-1 text-white/70">Income Level</label>
-                                        <select name="income_level" value={formData.income_level} onChange={handleChange} className="input-field">
+                                        <label className="block text-sm mb-1 text-[#4b5563]">Income Level</label>
+                                        <select name="income_level" value={formData.income_level} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                             {INCOME_LEVELS.map(i => <option key={i} value={i}>{i}</option>)}
                                         </select>
                                     </div>
                                     
                                     <div className="grid grid-cols-2 gap-4">
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Social Media</label>
-                                            <select name="social_media_usage" value={formData.social_media_usage} onChange={handleChange} className="input-field">
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Social Media</label>
+                                            <select name="social_media_usage" value={formData.social_media_usage} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                                 {SOCIAL_MEDIA_USAGE.map(s => <option key={s} value={s}>{s}</option>)}
                                             </select>
                                         </div>
                                         <div>
-                                            <label className="block text-sm mb-1 text-white/70">Politics</label>
-                                            <select name="political_leaning" value={formData.political_leaning} onChange={handleChange} className="input-field">
+                                            <label className="block text-sm mb-1 text-[#4b5563]">Politics</label>
+                                            <select name="political_leaning" value={formData.political_leaning} onChange={handleChange} className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f]">
                                                 {POLITICAL_LEANING.map(p => <option key={p} value={p}>{p}</option>)}
                                             </select>
                                         </div>
@@ -350,19 +401,19 @@ export default function AgentBuilderPage() {
 
                             {/* Traits & Values */}
                             <div className="space-y-4">
-                                <h3 className="text-lg font-semibold border-b border-white/10 pb-2">Psychographics</h3>
+                                <h3 className="text-lg font-semibold border-b border-[#e5e7eb] pb-2">Psychographics</h3>
                                 
                                 <div className="grid md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-sm mb-2 text-white/70">Personality Traits</label>
+                                        <label className="block text-sm mb-2 text-[#4b5563]">Personality Traits</label>
                                         <div className="flex flex-wrap gap-2">
                                             {PERSONALITY_TRAITS.map(trait => (
                                                 <button
                                                     key={trait} type="button"
                                                     onClick={() => toggleArrayItem('personality_traits', trait)}
-                                                    className={`px-3 py-1.5 rounded-xl text-xs transition-colors ${
+                                                    className={`px-3 py-1.5 rounded-full border text-xs transition-colors ${
                                                         formData.personality_traits.includes(trait)
-                                                        ? 'bg-primary-500 text-white' : 'glass hover:bg-white/10 text-white/60'
+                                                        ? 'bg-[#00897f] border-[#00897f] text-white' : 'bg-[#f9fafb] border-[#d1d5db] text-[#4b5563] hover:bg-[#f3f4f6]'
                                                     }`}
                                                 >
                                                     {trait}
@@ -371,15 +422,15 @@ export default function AgentBuilderPage() {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-sm mb-2 text-white/70">Core Values</label>
+                                        <label className="block text-sm mb-2 text-[#4b5563]">Core Values</label>
                                         <div className="flex flex-wrap gap-2">
                                             {VALUES_LIST.map(val => (
                                                 <button
                                                     key={val} type="button"
                                                     onClick={() => toggleArrayItem('values', val)}
-                                                    className={`px-3 py-1.5 rounded-xl text-xs transition-colors ${
+                                                    className={`px-3 py-1.5 rounded-full border text-xs transition-colors ${
                                                         formData.values.includes(val)
-                                                        ? 'bg-accent-500 text-white' : 'glass hover:bg-white/10 text-white/60'
+                                                        ? 'bg-[#00897f] border-[#00897f] text-white' : 'bg-[#f9fafb] border-[#d1d5db] text-[#4b5563] hover:bg-[#f3f4f6]'
                                                     }`}
                                                 >
                                                     {val.replace('_', ' ')}
@@ -392,24 +443,24 @@ export default function AgentBuilderPage() {
                             
                             {/* Bio */}
                             <div>
-                                <label className="block text-sm mb-1 text-white/70">Background / Bio (Optional)</label>
+                                <label className="block text-sm mb-1 text-[#4b5563]">Background / Bio (Optional)</label>
                                 <textarea 
                                     name="bio" value={formData.bio} onChange={handleChange} 
-                                    className="input-field h-24 resize-none" 
+                                    className="w-full rounded-md border border-[#d1d5db] bg-white px-3 py-2 text-sm focus:border-[#00897f] focus:outline-none focus:ring-1 focus:ring-[#00897f] h-24 resize-none" 
                                     placeholder="Add any specific background details or context for this agent..."
                                 />
                             </div>
 
-                            <div className="flex justify-end gap-4 pt-6 border-t border-white/10">
-                                <button type="button" onClick={closeForm} className="px-6 py-2.5 rounded-xl glass hover:bg-white/10 transition-colors">
+                            <div className="flex justify-end gap-3 pt-6 border-t border-[#e5e7eb]">
+                                <button type="button" onClick={closeForm} className="rounded-md border border-[#d1d5db] px-4 py-2 text-sm font-medium text-[#374151] hover:bg-[#f9fafb]">
                                     Cancel
                                 </button>
                                 <button 
                                     type="submit" 
                                     disabled={createMutation.isPending || updateMutation.isPending}
-                                    className="btn-primary px-8 py-2.5 flex items-center"
+                                    className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#00897f] to-[#00c2a8] px-4 py-2 text-sm font-semibold text-white shadow-md shadow-cyan-500/30 hover:scale-105 transition disabled:opacity-70 disabled:hover:scale-100"
                                 >
-                                    {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-5 h-5 mr-2 animate-spin" />}
+                                    {(createMutation.isPending || updateMutation.isPending) && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
                                     {editingAgent ? 'Save Changes' : 'Create Agent'}
                                 </button>
                             </div>

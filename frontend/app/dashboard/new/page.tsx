@@ -87,7 +87,7 @@ export default function NewProjectPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#f3f6f5] text-[#1a3840] font-sans absolute inset-0 z-50 overflow-auto flex items-center justify-center">
+        <div className="bg-[#f3f6f5] text-[#1a3840] font-sans flex items-center justify-center py-12">
             <div className="w-full max-w-5xl mx-auto p-8">
                 {/* Header */}
                 <div className="flex items-center space-x-4 mb-8">
@@ -112,7 +112,7 @@ export default function NewProjectPage() {
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Left Column: Project Information */}
-                        <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex flex-col justify-between">
+                        <div className="bg-white  p-8 shadow-sm border border-gray-100 flex flex-col justify-between">
                             <div>
                                 <h2 className="text-2xl font-bold text-[#113a40] mb-6">Project Information</h2>
                                 
@@ -146,7 +146,7 @@ export default function NewProjectPage() {
 
                         {/* Right Column: Video Source */}
                         <div className="flex flex-col gap-6">
-                            <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100 flex-1 flex flex-col">
+                            <div className="bg-white  p-8 shadow-sm border border-gray-100 flex-1 flex flex-col">
                                 <h2 className="text-2xl font-bold text-[#113a40] mb-6">Video Source</h2>
                                 
                                 <div className="flex-1">
