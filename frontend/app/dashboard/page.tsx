@@ -13,7 +13,7 @@ import {
     Search,
     ArrowUpDown,
 } from 'lucide-react';
-import { projectsApi, authApi } from '@/lib/api';
+import { projectsApi, authApi, getStoredToken } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
 type SortField = 'title' | 'created_at';
@@ -42,7 +42,7 @@ export default function DashboardPage() {
         
         // Check auth on mount
         const checkAuth = async () => {
-            const token = localStorage.getItem('token');
+            const token = getStoredToken();
             if (!token) {
                 router.push('/login');
                 return;
@@ -50,8 +50,11 @@ export default function DashboardPage() {
             try {
                 const userData = await authApi.getMe();
                 setUser(userData);
-            } catch {
-                router.push('/login');
+            } catch (error: any) {
+                const status = error?.response?.status;
+                if (status === 401 || status === 403) {
+                    router.push('/login');
+                }
             }
         };
         checkAuth();
@@ -225,9 +228,19 @@ export default function DashboardPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-12 w-20 overflow-hidden rounded border border-[#e5e7eb] bg-[#eef2ff]">
-                                                    <div className="flex h-full w-full items-center justify-center">
-                                                        <FileVideo className="h-5 w-5 text-[#4f46e5]" />
-                                                    </div>
+                                                    {project.video_path ? (
+                                                        <video 
+                                                            src={`${project.video_path.startsWith('http') ? project.video_path : 'http://localhost:8001' + project.video_path}#t=0.1`} 
+                                                            className="h-full w-full object-cover" 
+                                                            preload="metadata" 
+                                                            muted 
+                                                            playsInline 
+                                                        />
+                                                    ) : (
+                                                        <div className="flex h-full w-full items-center justify-center">
+                                                            <FileVideo className="h-5 w-5 text-[#4f46e5]" />
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <span className="truncate font-semibold text-[#111827]">{project.title}</span>
                                             </div>
