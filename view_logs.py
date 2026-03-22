@@ -7,7 +7,7 @@ conn = engine.connect()
 
 # Get latest simulation
 result = conn.execute(text("""
-    SELECT id, status, virality_score 
+    SELECT id, status, engagement_score 
     FROM simulation_runs 
     ORDER BY created_at DESC 
     LIMIT 1
@@ -15,7 +15,7 @@ result = conn.execute(text("""
 
 sim = result.fetchone()
 print(f"Simulation: {sim[0]}")
-print(f"Virality: {sim[2]}")
+print(f"Engagement: {sim[2]}")
 print("=" * 60)
 
 # Get agent logs with full data

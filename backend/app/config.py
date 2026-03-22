@@ -8,17 +8,22 @@ from functools import lru_cache
 
 # Determine .env path - check both current dir and parent dir
 def find_env_file():
-    """Find .env file in current or parent directory"""
-    current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    
+    """Find .env file in app, backend, or project root directory"""
+    app_dir = os.path.dirname(os.path.abspath(__file__))
+    backend_dir = os.path.dirname(app_dir)
+    project_root_dir = os.path.dirname(backend_dir)
+
+    # Check app directory (this folder)
+    if os.path.exists(os.path.join(app_dir, ".env")):
+        return os.path.join(app_dir, ".env")
+
     # Check backend directory
-    if os.path.exists(os.path.join(current_dir, ".env")):
-        return os.path.join(current_dir, ".env")
-    
-    # Check parent directory (agent-society-platform)
-    parent_dir = os.path.dirname(current_dir)
-    if os.path.exists(os.path.join(parent_dir, ".env")):
-        return os.path.join(parent_dir, ".env")
+    if os.path.exists(os.path.join(backend_dir, ".env")):
+        return os.path.join(backend_dir, ".env")
+
+    # Check project root directory
+    if os.path.exists(os.path.join(project_root_dir, ".env")):
+        return os.path.join(project_root_dir, ".env")
     
     return ".env"
 
@@ -54,6 +59,12 @@ class Settings(BaseSettings):
     # Qwen LLM (HuggingFace Space - Ollama API, used by simulation agents)
     qwen_api_url: str = "https://vish85521-doc.hf.space/api/generate"
     qwen_model_name: str = "qwen3.5:397b-cloud"
+
+    # Hugging Face video storage
+    hf_access_token: str = ""
+    hf_video_repo_id: str = "vish85521/videos"
+    hf_video_repo_type: str = "dataset"
+    hf_video_path_prefix: str = "videos"
     
     # Security
     jwt_secret: str = "change_this_to_a_random_32_character_string"

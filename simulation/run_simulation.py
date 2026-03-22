@@ -62,6 +62,8 @@ class SimulationOrchestrator:
         demographic_filter: Optional[Dict[str, Any]] = None,
         simulation_days: int = 5,
         redis_client=None,
+        custom_agent_profiles: Optional[List[Dict]] = None,
+        use_custom_agents_only: bool = False,
     ) -> Dict[str, Any]:
         """
         Run full simulation (async).
@@ -73,7 +75,7 @@ class SimulationOrchestrator:
             redis_client: Redis client for progress updates
 
         Returns:
-            Simulation results with virality score, sentiment, risk flags
+            Simulation results with engagement score, sentiment, risk flags
         """
         logger.info(
             f"Starting simulation {self.experiment_id} "
@@ -89,23 +91,9 @@ class SimulationOrchestrator:
             self.llm_pool = QwenLLM(num_actors=num_actors)
             logger.info(f"LLM actor pool created with {num_actors} actors")
 
-            # Generate profiles
+            # Profiles and spawning agents
             self._update_progress(redis_client, 5, 0, 0)
-            self.profiles = ProfileGenerator.generate_profiles(
-                self.num_agents, demographic_filter
-            )
-            logger.info(f"Generated {len(self.profiles)} agent profiles")
-
-            # Create social network
-            self._update_progress(redis_client, 10, 0, 0)
-            self.social_network = ProfileGenerator.generate_social_network(
-                self.profiles, avg_friends=8
-            )
-            logger.info("Social network created")
-
-            # Spawn agents (plain objects, not Ray actors)
-            self._update_progress(redis_client, 15, 0, 0)
-            self._spawn_agents()
+            self._spawn_agents(custom_agent_profiles, use_custom_agents_only, demographic_filter)
             logger.info(f"Spawned {len(self.agents)} agents")
 
             # Have all agents perceive the ad
@@ -122,7 +110,7 @@ class SimulationOrchestrator:
 
             logger.info(
                 f"Simulation complete. "
-                f"Virality score: {results['virality_score']:.1f}"
+                f"Engagement score: {results['engagement_score']:.1f}"
             )
 
             return results
@@ -132,9 +120,29 @@ class SimulationOrchestrator:
             self._cleanup()
             raise
 
-    def _spawn_agents(self):
-        """Spawn all agents as plain Python objects"""
+    def _spawn_agents(
+        self, 
+        custom_agent_profiles: Optional[List[Dict]] = None, 
+        use_custom_agents_only: bool = False,
+        demographic_filter: Optional[Dict[str, Any]] = None
+    ):
+        """Spawn all agents as plain Python objects and configure network"""
         self.agents = []
+
+        if custom_agent_profiles and use_custom_agents_only:
+            self.profiles = list(custom_agent_profiles)
+        elif custom_agent_profiles:
+            self.profiles = list(custom_agent_profiles)
+            remaining = self.num_agents - len(self.profiles)
+            if remaining > 0:
+                self.profiles.extend(ProfileGenerator.generate_profiles(remaining, demographic_filter))
+            self.profiles = self.profiles[:self.num_agents]
+        else:
+            self.profiles = ProfileGenerator.generate_profiles(self.num_agents, demographic_filter)
+            
+        self.social_network = ProfileGenerator.generate_social_network(
+            self.profiles, avg_friends=8
+        )
 
         # Try to create a shared memory store (optional)
         memory_store = self._create_memory_store()
@@ -248,12 +256,36 @@ class SimulationOrchestrator:
                 logger.info(f"Rate limit pause: {batch_delay}s...")
                 await asyncio.sleep(batch_delay)
 
+        agents_by_id = {a.agent_id: a for a in self.agents}
+
         # Simulate social influence over days
-        for day in range(1, simulation_days + 1):
-            self._update_progress(
-                redis_client, 80 + day * 3, day, len(all_states)
-            )
-            await asyncio.sleep(0.5)
+        for day in range(2, simulation_days + 1):
+            logger.info(f"Day {day} Social Loop - Messaging Phase")
+            for agent in self.agents:
+                if agent.has_seen_ad and agent.opinion_on_ad is not None:
+                    message = await agent.generate_social_message()
+                    for friend_id in agent.friends:
+                        friend = agents_by_id.get(friend_id)
+                        if friend:
+                            friend.receive_peer_message(agent.agent_id, agent.opinion_on_ad, message)
+
+            logger.info(f"Day {day} Social Loop - Deliberation Phase")
+            deliberation_tasks = [agent.social_deliberation(ad_content) for agent in self.agents]
+            await asyncio.gather(*deliberation_tasks, return_exceptions=True)
+
+            if redis_client:
+                try:
+                    redis_client.setex(
+                        f"sim:{self.experiment_id}:status",
+                        300,
+                        json.dumps({
+                            "progress": int((day / simulation_days) * 100),
+                            "current_day": day,
+                            "active_agents": len(self.agents)
+                        })
+                    )
+                except Exception as e:
+                    logger.debug(f"Failed to update progress: {e}")
 
         # Get final states (direct calls — agents are local objects)
         self._update_progress(
@@ -271,7 +303,7 @@ class SimulationOrchestrator:
     def _analyze_results(
         self, final_states: List[Dict[str, Any]]
     ) -> Dict[str, Any]:
-        """Calculate virality score, sentiment breakdown, and risk flags"""
+        """Calculate engagement score, sentiment breakdown, and risk flags"""
 
         opinions = [
             s.get("opinion") for s in final_states if s.get("opinion")
@@ -285,11 +317,11 @@ class SimulationOrchestrator:
 
         total = len(opinions) or 1
 
-        # Virality score: high if strong reactions (positive OR negative)
+        # Engagement score: high if strong reactions (positive OR negative)
         strong_reactions = (
             sentiment_counts["positive"] + sentiment_counts["negative"]
         )
-        virality_score = (strong_reactions / total) * 100
+        engagement_score = (strong_reactions / total) * 100
 
         # Detect controversies
         risk_flags = self._detect_controversies(final_states)
@@ -297,13 +329,65 @@ class SimulationOrchestrator:
         # Prepare agent logs for storage
         agent_logs = self.event_logs[:1000]
 
+        # Extract opinion trajectory for top 50 agents
+        opinion_trajectory = {}
+        for state in final_states[:50]:
+            agent_id = state.get("agent_id")
+            opinion_history = state.get("opinion_history")
+            if agent_id and opinion_history is not None:
+                opinion_trajectory[agent_id] = opinion_history
+
+        # Build map data (lightweight for map rendering)
+        map_data = []
+        for state in final_states:
+            profile = state.get("profile", {})
+            agent_id = state.get("agent_id", "")
+            map_data.append({
+                "agent_id": agent_id,
+                "coordinates": profile.get("coordinates", [0, 0]),
+                "opinion": state.get("opinion", "NEUTRAL"),
+                "friends": self.social_network.get(agent_id, []),
+            })
+
+        # Build enriched agent states (for detail popups)
+        agent_states = []
+        for state in final_states:
+            profile = state.get("profile", {})
+            agent_states.append({
+                "agent_id": state.get("agent_id", ""),
+                "coordinates": profile.get("coordinates", [0, 0]),
+                "opinion": state.get("opinion", "NEUTRAL"),
+                "emotion": state.get("emotion", "neutral"),
+                "emotion_intensity": state.get("emotion_intensity", 0),
+                "reasoning": state.get("reasoning", ""),
+                "friends": self.social_network.get(state.get("agent_id", ""), []),
+                "profile": {
+                    "name": profile.get("name"),
+                    "age": profile.get("age"),
+                    "gender": profile.get("gender"),
+                    "location": profile.get("location"),
+                    "occupation": profile.get("occupation"),
+                    "education": profile.get("education"),
+                    "income_level": profile.get("income_level"),
+                    "religion": profile.get("religion"),
+                    "ethnicity": profile.get("ethnicity"),
+                    "social_media_usage": profile.get("social_media_usage"),
+                    "political_leaning": profile.get("political_leaning"),
+                    "personality_traits": profile.get("personality_traits", []),
+                    "values": profile.get("values", []),
+                },
+            })
+
         return {
-            "virality_score": round(virality_score, 2),
+            "engagement_score": round(engagement_score, 2),
             "sentiment_breakdown": sentiment_counts,
             "total_agents": len(final_states),
             "responding_agents": len(opinions),
             "risk_flags": risk_flags,
             "agent_logs": agent_logs,
+            "map_data": map_data,
+            "agent_states": agent_states,
+            "opinion_trajectory": opinion_trajectory,
         }
 
     def _detect_controversies(
@@ -425,6 +509,8 @@ async def run_simulation_async(
     num_agents: int = 10,
     simulation_days: int = 5,
     redis_client=None,
+    custom_agent_profiles: Optional[List[Dict]] = None,
+    use_custom_agents_only: bool = False,
 ) -> Dict[str, Any]:
     """
     Async convenience function to run a simulation.
@@ -454,6 +540,8 @@ async def run_simulation_async(
         demographic_filter=demographic_filter,
         simulation_days=simulation_days,
         redis_client=redis_client,
+        custom_agent_profiles=custom_agent_profiles,
+        use_custom_agents_only=use_custom_agents_only,
     )
 
 
@@ -464,6 +552,8 @@ def run_simulation(
     num_agents: int = 10,
     simulation_days: int = 5,
     redis_client=None,
+    custom_agent_profiles: Optional[List[Dict]] = None,
+    use_custom_agents_only: bool = False,
 ) -> Dict[str, Any]:
     """
     Synchronous convenience function to run a simulation.
@@ -477,5 +567,7 @@ def run_simulation(
             num_agents=num_agents,
             simulation_days=simulation_days,
             redis_client=redis_client,
+            custom_agent_profiles=custom_agent_profiles,
+            use_custom_agents_only=use_custom_agents_only,
         )
     )

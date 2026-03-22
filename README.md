@@ -54,7 +54,7 @@ AgentSociety is a marketing simulation platform that uses AI agents to predict h
 ## 📋 Prerequisites
 
 - **Docker Desktop** (with Docker Compose)
-- **Python 3.10+**
+- **Python 3.10**
 - **Node.js 18+**
 - **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
 
@@ -118,8 +118,11 @@ Expected output:
 ### 3. Setup Python Environment
 
 ```bash
-# Create virtual environment
-python -m venv venv
+# Create virtual environment using Python 3.10
+# Windows:
+py -3.10 -m venv venv
+# macOS/Linux:
+python3.10 -m venv venv
 
 # Activate virtual environment
 # Windows:
@@ -139,9 +142,28 @@ npm install
 cd ..
 ```
 
-### 5. Start All Services
+### 5. Start All Services (Recommended)
 
-You need **3 terminal windows**:
+Use the startup script to launch Backend API, Celery worker, Ray simulation worker, and Frontend in separate terminals:
+
+```bat
+start_services.bat
+```
+
+The script opens all required windows automatically and prints service URLs.
+
+### 6. Access the Application
+
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Frontend** | http://localhost:3000 | Main application UI |
+| **Backend API** | http://localhost:8001 | REST API |
+| **API Docs** | http://localhost:8001/docs | Swagger documentation |
+| **EMQX Dashboard** | http://localhost:18083 | MQTT monitoring (admin/public) |
+
+### 7. Manual Startup (Alternative)
+
+If you prefer to run services manually, use separate terminals:
 
 **Terminal 1 - Backend API:**
 ```bash
@@ -157,20 +179,17 @@ cd backend
 celery -A app.tasks worker --loglevel=info --pool=solo
 ```
 
-**Terminal 3 - Frontend:**
+**Terminal 3 - Ray Simulation Worker:**
+```bash
+.\venv\Scripts\activate  # Windows
+python simulation\simulation_worker.py
+```
+
+**Terminal 4 - Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
-
-### 6. Access the Application
-
-| Service | URL | Description |
-|---------|-----|-------------|
-| **Frontend** | http://localhost:3000 | Main application UI |
-| **Backend API** | http://localhost:8001 | REST API |
-| **API Docs** | http://localhost:8001/docs | Swagger documentation |
-| **EMQX Dashboard** | http://localhost:18083 | MQTT monitoring (admin/public) |
 
 ---
 
@@ -228,6 +247,23 @@ agent-society-platform/
 | `JWT_SECRET` | No | Secret for JWT tokens (default provided) |
 | `DEFAULT_NUM_AGENTS` | No | Default agent count (default: 10) |
 | `DEFAULT_SIMULATION_DAYS`| No | Simulation duration (default: 5) |
+
+### Cloud Services Used by Default
+
+The default `.env` and `.env.example` are configured to run with cloud-hosted infrastructure:
+
+| Service | Provider | Env Variables | Purpose |
+|---------|----------|---------------|---------|
+| PostgreSQL | Neon | `DATABASE_URL` | Main relational database |
+| Redis | Upstash | `REDIS_URL` | Celery broker/results and simulation pub/sub |
+| MQTT Broker | Hugging Face Space (EMQX) | `MQTT_BROKER_HOST`, `MQTT_BROKER_PORT`, `MQTT_TRANSPORT`, `MQTT_PATH` | Agent messaging |
+| ChromaDB | Hugging Face Space | `CHROMA_HOST`, `CHROMA_PORT`, `CHROMA_SSL` | Agent memory vector store |
+| LLM Endpoint | Hugging Face Space | `QWEN_API_URL`, `QWEN_MODEL_NAME` | Agent text generation |
+| Vision Analysis | Google Gemini | `GEMINI_API_KEY`, `GEMINI_API_KEYS` | Video ad analysis |
+
+Important:
+- If multiple developers share the same cloud `REDIS_URL`, workers can pick up each other's jobs.
+- For isolated local development, switch env values to local Docker services.
 
 ---
 
@@ -314,22 +350,16 @@ curl http://localhost:8001/health
 | Layer | Technology |
 |-------|------------|
 | Frontend | Next.js 14, TypeScript, TailwindCSS |
-| Backend | FastAPI, Python 3.10+, Celery |
+| Backend | FastAPI, Python 3.10, Celery |
 | Database | PostgreSQL 15, ChromaDB (vectors), Redis |
 | Simulation | Ray, MQTT (EMQX) |
 | AI/ML | Google Gemini Vision API |
 | Infrastructure | Docker, Docker Compose |
 
----
 
-## 📄 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
----
 
 <div align="center">
 
-**Built with ❤️ for the AgentSociety Research Project**
+**Built with ❤️ for the CGP Project**
 
 </div>

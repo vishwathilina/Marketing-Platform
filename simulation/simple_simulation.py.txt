@@ -278,7 +278,7 @@ def run_simulation_simple(
         
         total = len(opinions) or 1
         strong_reactions = sentiment_counts['positive'] + sentiment_counts['negative']
-        virality_score = (strong_reactions / total) * 100
+        engagement_score = (strong_reactions / total) * 100
         
         # Detect controversies
         risk_flags = detect_controversies(reactions)
@@ -304,10 +304,10 @@ def run_simulation_simple(
                 "progress": 100, "current_day": simulation_days, "active_agents": len(reactions)
             }))
         
-        logger.info(f"Simulation complete. Virality score: {virality_score:.1f}")
+        logger.info(f"Simulation complete. Engagement score: {engagement_score:.1f}")
         
         return {
-            "virality_score": round(virality_score, 2),
+            "engagement_score": round(engagement_score, 2),
             "sentiment_breakdown": sentiment_counts,
             "total_agents": len(reactions),
             "responding_agents": len(opinions),

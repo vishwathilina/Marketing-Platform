@@ -94,7 +94,8 @@ class QwenActor:
                     "model": model,
                     "prompt": prompt,
                     "stream": True,
-                    "format": "json"
+                    "format": "json",
+                    "think": False
                 }
 
                 response = self._session.post(
@@ -188,7 +189,6 @@ class QwenLLM:
 
         self._actors = [QwenActor.remote() for _ in range(num_actors)]
         self._next_index = 0
-        self._lock = asyncio.Lock()
         logger.info(f"QwenLLM initialized with {num_actors} actors")
 
     def _get_next_actor(self):
@@ -220,8 +220,7 @@ class QwenLLM:
         Returns:
             Generated text response
         """
-        async with self._lock:
-            actor = self._get_next_actor()
+        actor = self._get_next_actor()
 
         actor_idx = self._actors.index(actor) if actor in self._actors else '?'
         logger.info(f"LLM request dispatched to actor {actor_idx}")

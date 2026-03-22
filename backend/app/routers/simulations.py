@@ -2,6 +2,7 @@
 Simulation management routes - start, status, and results
 """
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List
 from datetime import datetime
@@ -12,10 +13,14 @@ from app.schemas import (
     SimulationResponse, 
     SimulationStatusResponse,
     SimulationResultsResponse,
-    RiskFlagResponse
+    RiskFlagResponse,
+    MapDataResponse,
+    AgentDetailResponse,
+    AgentProfileData,
 )
 from app.dependencies import get_current_user
 from app.config import get_settings
+from app.services.report_service import generate_simulation_report
 
 settings = get_settings()
 router = APIRouter(prefix="/simulations", tags=["Simulations"])
@@ -59,6 +64,8 @@ async def start_simulation(
         project_id=project.id,
         num_agents=config.num_agents,
         simulation_days=config.simulation_days,
+        use_custom_agents_only=config.use_custom_agents_only,
+        agent_ids=config.agent_ids,
         status="PENDING"
     )
     
@@ -123,13 +130,9 @@ async def get_simulation_status(
     
     if simulation.status == "RUNNING":
         # Get progress from Redis cache if available
-        import redis
-        import ssl as ssl_module
+        from app.redis_client import get_redis_client
         try:
-            redis_kwargs = {}
-            if settings.redis_url.startswith("rediss://"):
-                redis_kwargs["ssl_cert_reqs"] = ssl_module.CERT_REQUIRED
-            r = redis.from_url(settings.redis_url, **redis_kwargs)
+            r = get_redis_client()
             cached = r.get(f"sim:{simulation_id}:status")
             if cached:
                 import json
@@ -201,7 +204,8 @@ async def get_simulation_results(
     return SimulationResultsResponse(
         simulation=simulation,
         risk_flags=risk_flags,
-        agent_sample=sample_data
+        agent_sample=sample_data,
+        opinion_trajectory=simulation.opinion_trajectory
     )
 
 
@@ -230,3 +234,141 @@ async def list_project_simulations(
     ).order_by(SimulationRun.created_at.desc()).all()
     
     return simulations
+
+
+@router.get("/{simulation_id}/map-data", response_model=MapDataResponse)
+async def get_simulation_map_data(
+    simulation_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get lightweight map data for all agents in a completed simulation.
+    Returns coordinates, opinion and friends for each agent.
+    """
+    simulation = db.query(SimulationRun).join(Project).filter(
+        SimulationRun.id == simulation_id,
+        Project.user_id == current_user.id
+    ).first()
+    
+    if not simulation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Simulation not found"
+        )
+    
+    if simulation.status != "COMPLETED":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Simulation has not completed yet"
+        )
+    
+    map_data = simulation.map_data or []
+    return MapDataResponse(map_data=map_data)
+
+
+@router.get("/{simulation_id}/agents/{agent_id}", response_model=AgentDetailResponse)
+async def get_agent_detail(
+    simulation_id: str,
+    agent_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Get full detail for a specific agent in a simulation.
+    Returns profile, emotion, opinion, reasoning and friends.
+    """
+    simulation = db.query(SimulationRun).join(Project).filter(
+        SimulationRun.id == simulation_id,
+        Project.user_id == current_user.id
+    ).first()
+    
+    if not simulation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Simulation not found"
+        )
+    
+    if simulation.status != "COMPLETED":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Simulation has not completed yet"
+        )
+    
+    # Find the agent in agent_states
+    agent_states = simulation.agent_states or []
+    agent_data = None
+    for state in agent_states:
+        if state.get("agent_id") == agent_id:
+            agent_data = state
+            break
+    
+    if not agent_data:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Agent {agent_id} not found in simulation"
+        )
+    
+    profile_raw = agent_data.get("profile", {})
+    return AgentDetailResponse(
+        agent_id=agent_data["agent_id"],
+        coordinates=agent_data.get("coordinates", [0, 0]),
+        opinion=agent_data.get("opinion", "NEUTRAL"),
+        emotion=agent_data.get("emotion", "neutral"),
+        emotion_intensity=agent_data.get("emotion_intensity", 0),
+        reasoning=agent_data.get("reasoning", ""),
+        friends=agent_data.get("friends", []),
+        profile=AgentProfileData(
+            name=profile_raw.get("name"),
+            age=profile_raw.get("age"),
+            gender=profile_raw.get("gender"),
+            location=profile_raw.get("location"),
+            occupation=profile_raw.get("occupation"),
+            education=profile_raw.get("education"),
+            income_level=profile_raw.get("income_level"),
+            religion=profile_raw.get("religion"),
+            ethnicity=profile_raw.get("ethnicity"),
+            social_media_usage=profile_raw.get("social_media_usage"),
+            political_leaning=profile_raw.get("political_leaning"),
+            values=profile_raw.get("values", []),
+            personality_traits=profile_raw.get("personality_traits", []),
+        ),
+    )
+
+
+@router.get("/{simulation_id}/report")
+async def download_simulation_report(
+    simulation_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    simulation = db.query(SimulationRun).join(Project).filter(
+        SimulationRun.id == simulation_id,
+        Project.user_id == current_user.id
+    ).first()
+
+    if not simulation:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+
+    if simulation.status != "COMPLETED":
+        raise HTTPException(status_code=400, detail="Simulation not completed")
+
+    risk_flags = db.query(RiskFlag).filter(
+        RiskFlag.simulation_run_id == simulation.id
+    ).all()
+
+    agent_logs = db.query(AgentLog).filter(
+        AgentLog.simulation_run_id == simulation.id
+    ).all()
+
+    report_path = generate_simulation_report(
+        simulation,
+        risk_flags,
+        agent_logs
+    )
+
+    return FileResponse(
+        report_path,
+        media_type="application/pdf",
+        filename="simulation_report.pdf"
+    )

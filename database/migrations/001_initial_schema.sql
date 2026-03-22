@@ -35,7 +35,7 @@ CREATE TABLE simulation_runs (
         CHECK (status IN ('PENDING', 'RUNNING', 'COMPLETED', 'FAILED')),
     num_agents INT DEFAULT 1000,
     simulation_days INT DEFAULT 5,
-    virality_score FLOAT,
+    engagement_score FLOAT,
     sentiment_breakdown JSONB,
     started_at TIMESTAMP,
     completed_at TIMESTAMP,

@@ -1,11 +1,17 @@
 /** @type {import('next').NextConfig} */
+const backendUrl = (
+    process.env.BACKEND_PROXY_URL ||
+    process.env.NEXT_PUBLIC_API_URL ||
+    'http://127.0.0.1:8001'
+).replace(/\/$/, '');
+
 const nextConfig = {
     reactStrictMode: true,
     async rewrites() {
         return [
             {
                 source: '/api/:path*',
-                destination: 'http://127.0.0.1:8001/:path*',
+                destination: `${backendUrl}/:path*`,
             },
         ];
     },

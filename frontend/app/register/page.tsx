@@ -3,35 +3,42 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Zap, Mail, Lock, Loader2 } from 'lucide-react';
 import { authApi } from '@/lib/api';
 
 export default function RegisterPage() {
-    const router = useRouter();
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+        confirmPassword: '',
+    });
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+    const router = useRouter();
 
-        if (password !== confirmPassword) {
+    const handleRegister = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!formData.email || !formData.password || !formData.confirmPassword) {
+            setError('Please fill all the fields');
+            return;
+        }
+
+        if (formData.password !== formData.confirmPassword) {
             setError('Passwords do not match');
             return;
         }
 
-        if (password.length < 8) {
+        if (formData.password.length < 8) {
             setError('Password must be at least 8 characters');
             return;
         }
 
+        setError('');
         setLoading(true);
 
         try {
-            await authApi.register(email, password);
+            await authApi.register(formData.email, formData.password);
             router.push('/login?registered=true');
         } catch (err: any) {
             setError(err.response?.data?.detail || 'Registration failed. Please try again.');
@@ -41,102 +48,88 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center px-4">
-            {/* Background decoration */}
-            <div className="absolute inset-0 overflow-hidden">
-                <div className="absolute -top-40 -left-40 w-80 h-80 bg-accent-500/20 rounded-full blur-3xl" />
-                <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-primary-500/20 rounded-full blur-3xl" />
-            </div>
+        <div
+            className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
+            style={{ backgroundImage: "url('/bg.jpg')" }}
+        >
+            <div className="w-full max-w-[1100px] min-h-[650px] rounded-3xl shadow-2xl flex overflow-hidden">
+                <div className="w-1/2 relative text-white p-10 flex-col justify-between bg-white/5 backdrop-blur-sm border-r border-white/10 hidden md:flex">
+                    <div className="font-bold text-4xl">*</div>
 
-            <div className="relative w-full max-w-md">
-                {/* Logo */}
-                <div className="flex items-center justify-center mb-8">
-                    <Link href="/" className="flex items-center space-x-2">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
-                            <Zap className="w-7 h-7 text-white" />
-                        </div>
-                        <span className="text-2xl font-bold gradient-text">AgentSociety</span>
-                    </Link>
+                    <div>
+                        <h1 className="text-4xl font-bold leading-tight">
+                            YOUR <br /> YOUR NEXT AD STRATEGY <br /> STARTS HERE
+                        </h1>
+
+                        <p className="mt-4 text-sm text-gray-200 max-w-sm">
+                            Sign up to access AI-powered insights, test ad campaigns before launch,
+                            and make smarter decisions with confidence.
+                        </p>
+
+                        <p className="mt-2 text-sm text-gray-300">Your success begins here.</p>
+                    </div>
                 </div>
 
-                {/* Register Card */}
-                <div className="glass-card rounded-2xl p-8">
-                    <h1 className="text-2xl font-bold text-center mb-2">Create Account</h1>
-                    <p className="text-white/60 text-center mb-8">
-                        Start simulating AI reactions today
-                    </p>
+                <div className="w-full md:w-1/2 flex items-center justify-center p-8 md:p-16 bg-white/50 backdrop-blur-md">
+                    <div className="w-full max-w-sm">
+                        <h2 className="text-3xl font-bold text-gray-800">CREATE ACCOUNT</h2>
 
-                    {error && (
-                        <div className="mb-6 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
-                            {error}
-                        </div>
-                    )}
+                        <p className="text-gray-500 mb-8">Sign up to start using the platform.</p>
 
-                    <form onSubmit={handleSubmit} className="space-y-6">
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Email</label>
-                            <div className="relative">
-                                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                                <input
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="you@example.com"
-                                    required
-                                />
+                        {error && (
+                            <div className="mb-4 p-3 rounded-lg bg-red-100 border border-red-400 text-red-700 text-sm">
+                                {error}
                             </div>
-                        </div>
+                        )}
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </div>
-                        </div>
+                        <form onSubmit={handleRegister}>
+                            <label className="text-sm text-gray-600">Email</label>
+                            <input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="w-full mt-1 mb-4 p-3 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700"
+                                value={formData.email}
+                                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                            />
 
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Confirm Password</label>
-                            <div className="relative">
-                                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-white/40" />
-                                <input
-                                    type="password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="input-field pl-12"
-                                    placeholder="••••••••"
-                                    required
-                                />
-                            </div>
-                        </div>
+                            <label className="text-sm text-gray-600">Password</label>
+                            <input
+                                type="password"
+                                placeholder="********"
+                                className="w-full mt-1 mb-4 p-3 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700"
+                                value={formData.password}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, password: e.target.value })
+                                }
+                            />
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full btn-primary py-4 flex items-center justify-center"
-                        >
-                            {loading ? (
-                                <Loader2 className="w-5 h-5 animate-spin" />
-                            ) : (
-                                'Create Account'
-                            )}
-                        </button>
-                    </form>
+                            <label className="text-sm text-gray-600">Confirm Password</label>
+                            <input
+                                type="password"
+                                placeholder="********"
+                                className="w-full mt-1 mb-4 p-3 text-black border rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-700"
+                                value={formData.confirmPassword}
+                                onChange={(e) =>
+                                    setFormData({ ...formData, confirmPassword: e.target.value })
+                                }
+                            />
 
-                    <p className="mt-6 text-center text-white/60">
-                        Already have an account?{' '}
-                        <Link href="/login" className="text-primary-400 hover:text-primary-300">
-                            Sign in
-                        </Link>
-                    </p>
+                            <button
+                                type="submit"
+                                className="w-full bg-teal-800 text-white p-3 rounded-lg font-semibold hover:bg-teal-900 disabled:bg-teal-800/50"
+                                disabled={loading}
+                            >
+                                {loading ? 'Signing up...' : 'Sign up'}
+                            </button>
+                        </form>
+
+                        <p className="text-center text-sm text-gray-500 mt-6">
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-teal-700 font-semibold">
+                                Sign in
+                            </Link>
+                        </p>
+                    </div>
                 </div>
             </div>
         </div>

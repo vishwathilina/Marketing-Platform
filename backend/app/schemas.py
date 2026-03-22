@@ -13,6 +13,45 @@ class UserCreate(BaseModel):
     password: str = Field(min_length=8, max_length=100)
 
 
+# ----- Custom Agent Schemas -----
+class CustomAgentCreate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    age: int = Field(ge=16, le=90)
+    gender: str
+    location: str
+    occupation: str
+    education: str
+    income_level: str
+    religion: Optional[str] = None
+    ethnicity: Optional[str] = None
+    social_media_usage: str
+    political_leaning: Optional[str] = None
+    values: List[str] = Field(default=[])
+    personality_traits: List[str] = Field(default=[])
+    bio: Optional[str] = None
+
+class CustomAgentResponse(BaseModel):
+    id: UUID
+    name: str
+    age: int
+    gender: str
+    location: str
+    occupation: str
+    education: str
+    income_level: str
+    religion: Optional[str]
+    ethnicity: Optional[str]
+    social_media_usage: str
+    political_leaning: Optional[str]
+    values: List[str]
+    personality_traits: List[str]
+    bio: Optional[str]
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
@@ -46,6 +85,10 @@ class ProjectCreate(BaseModel):
     demographic_filter: Optional[DemographicFilter] = None
 
 
+class ProjectContextUpdate(BaseModel):
+    vlm_generated_context: str = Field(min_length=1, max_length=50000)
+
+
 class ProjectResponse(BaseModel):
     id: UUID
     title: str
@@ -74,6 +117,8 @@ class ProjectListResponse(BaseModel):
 class SimulationCreate(BaseModel):
     num_agents: int = Field(default=10, ge=1, le=10000)
     simulation_days: int = Field(default=5, ge=1, le=30)
+    agent_ids: Optional[List[str]] = None
+    use_custom_agents_only: bool = False
 
 
 class SentimentBreakdown(BaseModel):
@@ -101,7 +146,7 @@ class SimulationResponse(BaseModel):
     status: str
     num_agents: int
     simulation_days: int
-    virality_score: Optional[float]
+    engagement_score: Optional[float]
     sentiment_breakdown: Optional[Dict[str, int]]
     started_at: Optional[datetime]
     completed_at: Optional[datetime]
@@ -124,3 +169,44 @@ class SimulationResultsResponse(BaseModel):
     simulation: SimulationResponse
     risk_flags: List[RiskFlagResponse]
     agent_sample: Optional[List[Dict[str, Any]]] = None
+    opinion_trajectory: Optional[Dict[str, Any]] = None
+
+
+# ----- Map Visualization Schemas -----
+class MapAgentData(BaseModel):
+    agent_id: str
+    coordinates: List[float]
+    opinion: str
+    friends: List[str]
+
+
+class MapDataResponse(BaseModel):
+    map_data: List[MapAgentData]
+
+
+class AgentProfileData(BaseModel):
+    name: Optional[str] = None
+    age: Optional[int] = None
+    gender: Optional[str] = None
+    location: Optional[str] = None
+    occupation: Optional[str] = None
+    education: Optional[str] = None
+    income_level: Optional[str] = None
+    religion: Optional[str] = None
+    ethnicity: Optional[str] = None
+    social_media_usage: Optional[str] = None
+    political_leaning: Optional[str] = None
+    values: List[str] = []
+    personality_traits: List[str] = []
+
+
+class AgentDetailResponse(BaseModel):
+    agent_id: str
+    coordinates: List[float]
+    opinion: str
+    emotion: str
+    emotion_intensity: float = 0
+    reasoning: str = ""
+    friends: List[str] = []
+    profile: AgentProfileData
+

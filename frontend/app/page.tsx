@@ -1,54 +1,100 @@
+'use client';
 import Link from 'next/link';
-import { Zap, Shield, BarChart3, Users } from 'lucide-react';
+import { Zap, Shield, BarChart3, Users, ArrowRight } from 'lucide-react';
+import DashboardNavbar from '@/components/DashboardNavbar';
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
-    return (
-        <div className="min-h-screen">
-            {/* Hero Section */}
-            <div className="relative overflow-hidden">
-                {/* Animated background */}
-                <div className="absolute inset-0 animate-gradient-bg opacity-20" />
+    const [cookie,setCookie] = useState<string[]>([]);
+    useEffect(()=>{
+         setCookie(document.cookie.split('; '));
+        console.log("Cookies:", cookie);
+    },[]);
+   
+    const userCookie = cookie.find(row => row.startsWith('user='));
 
-                {/* Navigation */}
-                <nav className="relative z-10 flex items-center justify-between p-6 max-w-7xl mx-auto">
-                    <div className="flex items-center space-x-2">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-primary-500 to-accent-500 flex items-center justify-center">
-                            <Zap className="w-6 h-6 text-white" />
+    return (
+        <div className="min-h-screen bg-[#f3f3f1] text-[#101828] font-sans overflow-hidden">
+            {/* Top Navigation Bar mimicking the Dashboard */}
+            {userCookie ?
+            <DashboardNavbar/>
+            :
+            <header className="border-b border-[#e5e7eb] bg-[#f8f8f7] relative z-50">
+                <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
+                    <div className="flex items-center space-x-3">
+                        <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-[#00897f] to-[#00c2a8] flex items-center justify-center shadow-lg shadow-cyan-500/30">
+                            <Zap className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-xl font-bold gradient-text">AgentSociety</span>
+                        <span className="text-xl font-bold font-heading text-[#101828]">AgentSociety</span>
                     </div>
 
-                    <div className="flex items-center space-x-4">
-                        <Link href="/login" className="btn-secondary">
+                    <div className="flex items-center gap-4 text-sm font-medium">
+                        <Link href="/login" className="rounded-md px-4 py-2 text-[#374151] hover:bg-[#e5e7eb]/50 transition-colors">
                             Login
                         </Link>
-                        <Link href="/register" className="btn-primary">
+                        <Link href="/register" className="inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#00897f] to-[#00c2a8] px-4 py-2 text-sm font-semibold text-white shadow-lg shadow-cyan-500/40 hover:-translate-y-0.5 hover:shadow-cyan-500/50 transition-all duration-300">
                             Get Started
                         </Link>
                     </div>
-                </nav>
+                </div>
+            </header>
+            }
+            {/* Hero Section */}
+            <div className="relative">
+                {/* Subtle light mode decorative background elements */}
+                <div className="absolute inset-0 z-0">
+                    <div className="absolute top-[10%] left-[20%] w-[30rem] h-[30rem] bg-[#00c2a8] rounded-full mix-blend-multiply filter blur-[128px] opacity-10 animate-pulse" style={{ animationDuration: '8s' }} />
+                    <div className="absolute top-[30%] right-[15%] w-[25rem] h-[25rem] bg-amber-200 rounded-full mix-blend-multiply filter blur-[128px] opacity-20 animate-pulse" style={{ animationDuration: '12s' }} />
+                </div>
 
                 {/* Hero Content */}
-                <div className="relative z-10 max-w-7xl mx-auto px-6 py-24">
-                    <div className="text-center">
-                        <h1 className="text-5xl md:text-7xl font-bold mb-6">
-                            <span className="gradient-text">AI-Powered</span>
-                            <br />
-                            Marketing Risk Detection
-                        </h1>
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-32">
+                    <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+                        <div className="text-center lg:text-left">
+                            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 font-heading transform hover:scale-[1.02] transition-transform duration-500 leading-tight">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#00897f] to-[#025c56]">AI-Powered</span>
+                                <br />
+                                Risk Detection
+                            </h1>
 
-                        <p className="text-xl text-white/60 max-w-2xl mx-auto mb-12">
-                            Simulate 1,000+ AI agents reacting to your advertisements.
-                            Detect potential PR crises before they happen.
-                        </p>
+                            <p className="text-xl text-[#4b5563] max-w-2xl mx-auto lg:mx-0 mb-12">
+                                Simulate 1,000+ AI agents reacting to your advertisements.
+                                Detect potential PR crises before they happen.
+                            </p>
 
-                        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link href="/register" className="btn-primary text-lg px-8 py-4">
-                                Try Free Simulation
-                            </Link>
-                            <Link href="#how-it-works" className="btn-secondary text-lg px-8 py-4">
-                                See How It Works
-                            </Link>
+                            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 group">
+                                <Link href="/register" className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#00897f] to-[#00c2a8] px-8 py-4 text-lg font-semibold text-white shadow-xl shadow-cyan-900/20 hover:-translate-y-1 hover:shadow-2xl transition-all duration-300 w-full sm:w-auto">
+                                    Try Free Simulation
+                                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                </Link>
+                                <Link href="#how-it-works" className="inline-flex items-center justify-center rounded-xl border border-[#d1d5db] bg-white px-8 py-4 text-lg font-semibold text-[#374151] shadow-sm hover:bg-[#f9fafb] hover:-translate-y-1 hover:shadow-md transition-all duration-300 w-full sm:w-auto">
+                                    See How It Works
+                                </Link>
+                            </div>
+                        </div>
+
+                        {/* 3D Video Container */}
+                        <div className="relative w-full aspect-square max-w-[500px] mx-auto lg:max-w-none">
+                            {/* Decorative background framing */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-[#00c2a8]/30 to-amber-200/30 rounded-[3rem] transform rotate-3 scale-105 transition-transform duration-700 hover:rotate-6"></div>
+                            <div className="absolute inset-0 bg-gradient-to-bl from-[#00897f]/20 to-transparent rounded-[3rem] transform -rotate-2 scale-105 transition-transform duration-700"></div>
+                            
+                            {/* Video Element */}
+                            <div className="absolute inset-0 bg-white rounded-[2.5rem] shadow-2xl overflow-hidden border border-[#e5e7eb] group z-10 w-full h-full flex items-center justify-center">
+                                <video 
+                                    autoPlay 
+                                    loop 
+                                    muted 
+                                    playsInline 
+                                    className="w-full h-full object-cover scale-[1.05] transform transition-transform duration-1000 group-hover:scale-110"
+                                >
+                                    <source src="/tech.mp4" type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                                
+                                {/* Aesthetic glass overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none mix-blend-overlay"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -60,9 +106,9 @@ export default function HomePage() {
                             { value: '95%', label: 'Accuracy' },
                             { value: '24/7', label: 'Available' },
                         ].map((stat, i) => (
-                            <div key={i} className="glass-card rounded-2xl p-6 text-center hover-lift">
-                                <div className="text-3xl font-bold gradient-text">{stat.value}</div>
-                                <div className="text-white/60 mt-1">{stat.label}</div>
+                            <div key={i} className="rounded-2xl border border-[#d1d5db] bg-white p-6 text-center shadow-sm hover:-translate-y-2 hover:shadow-xl hover:rotate-1 transition-all duration-300">
+                                <div className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#00897f] to-[#025c56]">{stat.value}</div>
+                                <div className="text-[#6b7280] mt-1 font-medium">{stat.label}</div>
                             </div>
                         ))}
                     </div>
@@ -70,9 +116,9 @@ export default function HomePage() {
             </div>
 
             {/* Features Section */}
-            <section id="how-it-works" className="py-24 max-w-7xl mx-auto px-6">
-                <h2 className="text-4xl font-bold text-center mb-16">
-                    How It <span className="gradient-text">Works</span>
+            <section id="how-it-works" className="py-24 max-w-7xl mx-auto px-6 relative z-10">
+                <h2 className="text-4xl font-bold text-center mb-16 font-heading text-[#111827]">
+                    How It <span className="text-[#00897f]">Works</span>
                 </h2>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -90,31 +136,31 @@ export default function HomePage() {
                         {
                             icon: <Shield className="w-8 h-8" />,
                             title: 'Risk Report',
-                            description: 'Get detailed risk analysis with sentiment breakdown, virality score, and controversy detection.',
+                            description: 'Get detailed risk analysis with sentiment breakdown, engagement score, and controversy detection.',
                         },
                     ].map((feature, i) => (
-                        <div key={i} className="glass-card rounded-2xl p-8 hover-lift">
-                            <div className="w-16 h-16 rounded-xl bg-gradient-to-r from-primary-500/20 to-accent-500/20 flex items-center justify-center mb-6 text-primary-400">
+                        <div key={i} className="group rounded-2xl border border-[#d1d5db] bg-white p-8 shadow-sm hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 transform perspective-1000">
+                            <div className="w-16 h-16 rounded-xl bg-[#e6f4f2] text-[#00897f] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
                                 {feature.icon}
                             </div>
-                            <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
-                            <p className="text-white/60">{feature.description}</p>
+                            <h3 className="text-xl font-semibold mb-3 text-[#111827]">{feature.title}</h3>
+                            <p className="text-[#6b7280]">{feature.description}</p>
                         </div>
                     ))}
                 </div>
             </section>
 
             {/* CTA Section */}
-            <section className="py-24">
+            <section className="py-24 relative z-10">
                 <div className="max-w-4xl mx-auto px-6">
-                    <div className="glass-card rounded-3xl p-12 text-center">
-                        <h2 className="text-3xl font-bold mb-4">
+                    <div className="rounded-3xl border border-[#00c2a8]/30 bg-gradient-to-br from-white to-[#f0f9f8] p-12 text-center shadow-2xl hover:shadow-[#00897f]/10 transition-shadow duration-500">
+                        <h2 className="text-3xl font-bold mb-4 font-heading text-[#101828]">
                             Ready to Protect Your Brand?
                         </h2>
-                        <p className="text-white/60 mb-8">
-                            Start your first simulation free. No credit card required.
+                        <p className="text-[#4b5563] mb-8 max-w-lg mx-auto">
+                            Start your first simulation free. No credit card required. Detect the blind spots in your campaigns.
                         </p>
-                        <Link href="/register" className="btn-primary text-lg px-8 py-4">
+                        <Link href="/register" className="inline-flex items-center gap-2 rounded-xl bg-[#101828] px-8 py-4 text-lg font-semibold text-white hover:bg-[#1f2937] hover:scale-105 transition-all duration-300">
                             Get Started Now
                         </Link>
                     </div>
@@ -122,8 +168,8 @@ export default function HomePage() {
             </section>
 
             {/* Footer */}
-            <footer className="border-t border-white/10 py-8">
-                <div className="max-w-7xl mx-auto px-6 text-center text-white/40">
+            <footer className="border-t border-[#e5e7eb] bg-white py-8 relative z-10">
+                <div className="max-w-7xl mx-auto px-6 text-center text-[#9ca3af] text-sm">
                     <p>© 2024 AgentSociety. Powered by AI.</p>
                 </div>
             </footer>

@@ -10,7 +10,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+!frontend/lib/
 lib64/
 parts/
 sdist/
@@ -53,10 +53,9 @@ logs/
 # Local data
 chroma_db/
 uploads/
-*.mp4
 *.mov
 *.avi
-
+reports/
 # OS
 .DS_Store
 Thumbs.db

@@ -7,6 +7,10 @@ module.exports = {
     ],
     theme: {
         extend: {
+            fontFamily: {
+                sans: ['"SF Pro Text"', 'sans-serif'],
+                heading: ['"SF Pro"', 'sans-serif'],
+            },
             colors: {
                 primary: {
                     50: '#f0f9ff',
