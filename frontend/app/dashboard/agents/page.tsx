@@ -7,7 +7,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
     Users, Plus, ArrowLeft, Loader2, Edit2, Trash2, MapPin, Briefcase, GraduationCap, LogOut, FileBadge2, MoreVertical
 } from 'lucide-react';
-import { agentsApi, authApi } from '@/lib/api';
+import { agentsApi, authApi, getStoredToken } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
 
@@ -45,7 +45,7 @@ export default function AgentBuilderPage() {
         setMounted(true);
         // Check auth on mount
         const checkAuth = async () => {
-            const token = localStorage.getItem('token');
+            const token = getStoredToken();
             if (!token) {
                 router.push('/login');
                 return;
@@ -53,8 +53,11 @@ export default function AgentBuilderPage() {
             try {
                 const userData = await authApi.getMe();
                 setUser(userData);
-            } catch {
-                router.push('/login');
+            } catch (error: any) {
+                const status = error?.response?.status;
+                if (status === 401 || status === 403) {
+                    router.push('/login');
+                }
             }
         };
         checkAuth();

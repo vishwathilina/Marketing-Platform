@@ -4,8 +4,11 @@ import 'leaflet/dist/leaflet.css';
 import { Providers } from './providers';
 
 export const metadata: Metadata = {
-    title: 'AgentSociety - AI Marketing Simulation',
+    title: 'AgenticMarketing - AI Marketing Simulation',
     description: 'Simulate 1000+ AI agents reacting to your advertisements before launch',
+    icons: {
+        icon: '/logo.png',
+    },
 };
 
 export default function RootLayout({

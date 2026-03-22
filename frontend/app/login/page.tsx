@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { authApi } from '@/lib/api';
+import { authApi, getStoredToken } from '@/lib/api';
 import { useAuthStore } from '@/lib/store';
 
 export default function LoginPage() {
@@ -30,14 +30,17 @@ export default function LoginPage() {
 
         try {
             await authApi.login(formData.email, formData.password);
+            if (!getStoredToken()) {
+                throw new Error('Token was not stored after login');
+            }
             const user = await authApi.getMe();
             console.log("user response:", user);
             setUser(user);
-            
+
             // Set user response as cookie
             document.cookie = `user=${encodeURIComponent(JSON.stringify(user))}; path=/; max-age=86400`;
-            
-            router.push('/');
+
+            router.push('/dashboard');
         } catch (err: any) {
             setError(err.response?.data?.detail || 'Login failed. Please try again.');
         } finally {
@@ -102,14 +105,7 @@ export default function LoginPage() {
                                 }
                             />
 
-                            <div className="flex justify-between items-center text-sm mb-6">
-                                <label className="flex items-center gap-2">
-                                    <input type="checkbox" />
-                                    Remember me
-                                </label>
 
-                                <span className="text-teal-700">Forgot password</span>
-                            </div>
 
                             <button
                                 type="submit"
