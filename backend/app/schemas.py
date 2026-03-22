@@ -108,6 +108,7 @@ class ProjectListResponse(BaseModel):
     title: str
     status: str
     created_at: datetime
+    video_path: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -119,6 +120,7 @@ class SimulationCreate(BaseModel):
     simulation_days: int = Field(default=5, ge=1, le=30)
     agent_ids: Optional[List[str]] = None
     use_custom_agents_only: bool = False
+    demographic_filter: Optional[Dict[str, Any]] = None
 
 
 class SentimentBreakdown(BaseModel):
@@ -170,6 +172,7 @@ class SimulationResultsResponse(BaseModel):
     risk_flags: List[RiskFlagResponse]
     agent_sample: Optional[List[Dict[str, Any]]] = None
     opinion_trajectory: Optional[Dict[str, Any]] = None
+    agent_states: Optional[List[Dict[str, Any]]] = None
 
 
 # ----- Map Visualization Schemas -----
@@ -209,4 +212,3 @@ class AgentDetailResponse(BaseModel):
     reasoning: str = ""
     friends: List[str] = []
     profile: AgentProfileData
-

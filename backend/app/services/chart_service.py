@@ -9,7 +9,10 @@ def generate_reaction_chart(boycott_count, endorse_count, simulation_id):
     values = [boycott_count, endorse_count]
 
     plt.figure()
-    plt.pie(values, labels=labels, autopct='%1.1f%%')
+    if sum(values) == 0:
+        plt.pie([1], labels=['No Data'], colors=['#e5e7eb'])
+    else:
+        plt.pie(values, labels=labels, autopct='%1.1f%%')
     plt.title('Agent Reaction Distribution')
 
     os.makedirs('reports', exist_ok=True)
