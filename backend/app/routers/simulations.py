@@ -58,6 +58,11 @@ async def start_simulation(
     # Use default config if not provided
     if config is None:
         config = SimulationCreate()
+        
+    # Update project demographic filters for this new simulation pass
+    if config.demographic_filter is not None:
+        project.demographic_filter = config.demographic_filter
+        db.commit()
     
     # Create simulation run record
     simulation = SimulationRun(
@@ -99,8 +104,49 @@ async def get_simulation(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Simulation not found"
         )
-    
     return simulation
+
+
+@router.post("/{simulation_id}/cancel")
+async def cancel_simulation(
+    simulation_id: str,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db)
+):
+    """
+    Cancel a running or pending simulation gracefully.
+    """
+    simulation = db.query(SimulationRun).join(Project).filter(
+        SimulationRun.id == simulation_id,
+        Project.user_id == current_user.id
+    ).first()
+    
+    if not simulation:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Simulation not found"
+        )
+    
+    if simulation.status not in ["PENDING", "RUNNING"]:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only pending or running simulations can be cancelled"
+        )
+    
+    # Set cancel flag in Redis
+    from app.redis_client import get_redis_client
+    try:
+        r = get_redis_client()
+        r.setex(f"sim:{simulation_id}:cancel", 86400, "1")
+    except Exception as e:
+        import logging
+        logging.getLogger(__name__).error(f"Failed to set cancel flag: {e}")
+        
+    simulation.status = "FAILED"
+    simulation.error_message = "Cancelled by user"
+    db.commit()
+    
+    return {"message": "Simulation cancellation requested"}
 
 
 @router.get("/{simulation_id}/status", response_model=SimulationStatusResponse)
@@ -205,7 +251,8 @@ async def get_simulation_results(
         simulation=simulation,
         risk_flags=risk_flags,
         agent_sample=sample_data,
-        opinion_trajectory=simulation.opinion_trajectory
+        opinion_trajectory=simulation.opinion_trajectory,
+        agent_states=simulation.agent_states
     )
 
 

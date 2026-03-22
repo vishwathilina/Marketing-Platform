@@ -20,6 +20,11 @@ from simulation.llm_client import QwenLLM, shutdown_llm_pool
 logger = logging.getLogger(__name__)
 
 
+def _clean_env(name: str, default: str = "") -> str:
+    """Read env var and trim surrounding whitespace/newlines."""
+    return (os.getenv(name, default) or default).strip()
+
+
 class SimulationOrchestrator:
     """
     Orchestrate large-scale agent simulations.
@@ -129,8 +134,16 @@ class SimulationOrchestrator:
         """Spawn all agents as plain Python objects and configure network"""
         self.agents = []
 
-        if custom_agent_profiles and use_custom_agents_only:
-            self.profiles = list(custom_agent_profiles)
+        if use_custom_agents_only:
+            # Only use the explicitly provided custom profiles — no AI padding
+            if custom_agent_profiles:
+                self.profiles = list(custom_agent_profiles)
+            else:
+                logger.warning(
+                    "use_custom_agents_only=True but no custom profiles were provided. "
+                    "Simulation will run with 0 agents."
+                )
+                self.profiles = []
         elif custom_agent_profiles:
             self.profiles = list(custom_agent_profiles)
             remaining = self.num_agents - len(self.profiles)
@@ -209,6 +222,17 @@ class SimulationOrchestrator:
             batch = self.agents[i : i + batch_size]
             batch_num = (i // batch_size) + 1
 
+            # Check for cancellation
+            if redis_client:
+                try:
+                    if redis_client.get(f"sim:{self.experiment_id}:cancel"):
+                        logger.warning(f"Simulation {self.experiment_id} was cancelled by user.")
+                        raise Exception("Cancelled by user")
+                except Exception as e:
+                    if str(e) == "Cancelled by user":
+                        raise e
+                    logger.debug(f"Redis check failed: {e}")
+
             logger.info(
                 f"Batch {batch_num}/{total_batches}: "
                 f"Processing {len(batch)} agents..."
@@ -260,6 +284,16 @@ class SimulationOrchestrator:
 
         # Simulate social influence over days
         for day in range(2, simulation_days + 1):
+            if redis_client:
+                try:
+                    if redis_client.get(f"sim:{self.experiment_id}:cancel"):
+                        logger.warning(f"Simulation {self.experiment_id} was cancelled by user.")
+                        raise Exception("Cancelled by user")
+                except Exception as e:
+                    if str(e) == "Cancelled by user":
+                        raise e
+                    logger.debug(f"Redis check failed: {e}")
+                    
             logger.info(f"Day {day} Social Loop - Messaging Phase")
             for agent in self.agents:
                 if agent.has_seen_ad and agent.opinion_on_ad is not None:
@@ -396,13 +430,17 @@ class SimulationOrchestrator:
         """Identify controversial reactions by demographic segment"""
         flags = []
 
-        groups = {"age": {}, "gender": {}, "location": {}, "values": {}}
+        # Add an 'overall' bucket to catch widespread backlash regardless of demographic
+        groups = {"overall": {"All Agents": []}, "age": {}, "gender": {}, "location": {}, "values": {}}
 
         for state in final_states:
             profile = state.get("profile", {})
             opinion = state.get("opinion")
             if not opinion:
                 continue
+
+            # Overall
+            groups["overall"]["All Agents"].append(state)
 
             # Age groups
             age = profile.get("age", 0)
@@ -421,56 +459,70 @@ class SimulationOrchestrator:
             for value in profile.get("values", []):
                 groups["values"].setdefault(value, []).append(state)
 
-        # Check each group for high negativity
+        total_responding = len(groups["overall"]["All Agents"])
+        min_group_size = 5 if total_responding >= 20 else 1
+
+        overall_states = groups["overall"]["All Agents"]
+        overall_negative_rate = sum(1 for s in overall_states if s.get("opinion") == "NEGATIVE") / max(1, total_responding)
+
+        seen_reasonings = set()
+
         for group_type, group_data in groups.items():
             for group_name, states in group_data.items():
-                if len(states) < 5:
+                if len(states) < min_group_size and group_type != "overall":
                     continue
 
-                negative_count = sum(
-                    1 for s in states if s.get("opinion") == "NEGATIVE"
-                )
+                negative_count = sum(1 for s in states if s.get("opinion") == "NEGATIVE")
                 total = len(states)
-                negative_rate = negative_count / total
+                negative_rate = negative_count / max(1, total)
 
-                if negative_rate > 0.5:
-                    if negative_rate > 0.8:
-                        severity = "CRITICAL"
-                    elif negative_rate > 0.7:
-                        severity = "HIGH"
-                    elif negative_rate > 0.6:
-                        severity = "MEDIUM"
-                    else:
-                        severity = "LOW"
+                # Skip if not generally negative
+                if negative_rate < 0.5:
+                    continue
 
+                # If this is a subset demographic, only flag it distinctively if it is notably worse than the general population.
+                # If the general population already hates it (e.g. overall = 90%), we don't need to report every single trait individually.
+                if group_type != "overall" and negative_rate < (overall_negative_rate + 0.15):
+                    continue
+
+                if negative_rate > 0.8:
+                    severity = "CRITICAL"
+                elif negative_rate > 0.7:
+                    severity = "HIGH"
+                elif negative_rate > 0.6:
+                    severity = "MEDIUM"
+                else:
+                    severity = "LOW"
+
+                sample_reactions = []
+                for s in states:
+                    if s.get("opinion") == "NEGATIVE":
+                        reasoning = s.get("reasoning", "")[:120]
+                        if reasoning and reasoning not in seen_reasonings:
+                            sample_reactions.append({
+                                "agent_id": s.get("agent_id"),
+                                "reasoning": reasoning
+                            })
+                            seen_reasonings.add(reasoning)
+                    if len(sample_reactions) >= 3:
+                        break
+
+                # Fallback if no uniquely new reasonings exist
+                if not sample_reactions:
                     sample_reactions = [
-                        {
-                            "agent_id": s.get("agent_id"),
-                            "reasoning": s.get("reasoning", "")[:100],
-                        }
-                        for s in states
-                        if s.get("opinion") == "NEGATIVE"
+                        {"agent_id": s.get("agent_id"), "reasoning": s.get("reasoning", "")[:120]}
+                        for s in states if s.get("opinion") == "NEGATIVE"
                     ][:3]
 
-                    flags.append(
-                        {
-                            "flag_type": f"{group_type.upper()}_BACKLASH",
-                            "severity": severity,
-                            "description": (
-                                f"{int(negative_rate * 100)}% of "
-                                f"{group_type}={group_name} "
-                                f"reacted negatively"
-                            ),
-                            "affected_demographics": {
-                                group_type: group_name
-                            },
-                            "sample_agent_reactions": sample_reactions,
-                        }
-                    )
+                flags.append({
+                    "flag_type": f"{group_type.upper()}_BACKLASH",
+                    "severity": severity,
+                    "description": f"{int(negative_rate * 100)}% of {group_type}={group_name} reacted negatively",
+                    "affected_demographics": {group_type: group_name},
+                    "sample_agent_reactions": sample_reactions,
+                })
 
-        severity_order = {
-            "CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3
-        }
+        severity_order = {"CRITICAL": 0, "HIGH": 1, "MEDIUM": 2, "LOW": 3}
         flags.sort(key=lambda x: severity_order.get(x["severity"], 4))
 
         return flags[:10]
@@ -515,13 +567,13 @@ async def run_simulation_async(
     """
     Async convenience function to run a simulation.
     """
-    mqtt_host = os.getenv("MQTT_BROKER_HOST", "localhost")
-    mqtt_port = int(os.getenv("MQTT_BROKER_PORT", 1883))
-    mqtt_transport = os.getenv("MQTT_TRANSPORT", "tcp")
-    mqtt_path = os.getenv("MQTT_PATH", None)
-    chroma_host = os.getenv("CHROMA_HOST", "localhost")
-    chroma_port = int(os.getenv("CHROMA_PORT", 8000))
-    chroma_ssl = os.getenv("CHROMA_SSL", "False").lower() in ("true", "1", "yes")
+    mqtt_host = _clean_env("MQTT_BROKER_HOST", "localhost")
+    mqtt_port = int(_clean_env("MQTT_BROKER_PORT", "1883"))
+    mqtt_transport = _clean_env("MQTT_TRANSPORT", "tcp")
+    mqtt_path = _clean_env("MQTT_PATH", "") or None
+    chroma_host = _clean_env("CHROMA_HOST", "localhost")
+    chroma_port = int(_clean_env("CHROMA_PORT", "8000"))
+    chroma_ssl = _clean_env("CHROMA_SSL", "False").lower() in ("true", "1", "yes")
 
     orchestrator = SimulationOrchestrator(
         experiment_id=experiment_id,
