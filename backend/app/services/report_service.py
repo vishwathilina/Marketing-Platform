@@ -95,56 +95,57 @@ def _prediction_recommendations(metrics):
 
 def _collect_agent_reasonings(simulation, agent_logs):
     reasonings = []
+    
+    demographics_map = {}
 
-    # Prefer full agent states (final simulation snapshot)
+    # Extract initial/final full agent states
     for state in simulation.agent_states or []:
         agent_id = state.get('agent_id')
         reasoning = (state.get('reasoning') or '').strip()
         opinion = (state.get('opinion') or 'NEUTRAL').upper()
         profile = state.get('profile') or {}
 
-        if agent_id and reasoning:
+        if agent_id:
             demographics = (
                 f"Age: {profile.get('age', 'N/A')} | Gender: {profile.get('gender', 'N/A')} | "
                 f"Location: {profile.get('location', 'N/A')} | Income: {profile.get('income_level', 'N/A')} | "
                 f"Religion: {profile.get('religion', 'N/A')} | Ethnicity: {profile.get('ethnicity', 'N/A')}"
             )
-            reasonings.append(
-                {
-                    'agent_id': agent_id,
-                    'opinion': opinion,
-                    'reasoning': reasoning,
-                    'demographics': demographics
-                }
-            )
+            demographics_map[agent_id] = demographics
+            if reasoning:
+                reasonings.append(
+                    {
+                        'agent_id': agent_id,
+                        'opinion': opinion,
+                        'reasoning': f"[Final Assessment] {reasoning}",
+                        'demographics': demographics
+                    }
+                )
 
-    if reasonings:
-        return reasonings
-
-    # Fallback: extract from logs if agent_states reasoning is missing
+    # Pull active reasoning from event logs
     for log in agent_logs:
         payload = log.event_data or {}
         if not isinstance(payload, dict):
             continue
 
-        reasoning = (payload.get('reasoning') or '').strip()
+        reasoning = (payload.get('details') or payload.get('reasoning') or '').strip()
         if not reasoning:
             continue
-
+            
+        agent_id = log.agent_id
+        opinion = (payload.get('opinion') or log.event_type or 'NEUTRAL').upper()
+        
         reasonings.append(
             {
-                'agent_id': log.agent_id,
-                'opinion': (payload.get('opinion') or log.event_type or 'NEUTRAL').upper(),
-                'reasoning': reasoning,
+                'agent_id': agent_id,
+                'opinion': opinion,
+                'reasoning': f"[{log.event_type}] {reasoning}",
+                'demographics': demographics_map.get(agent_id, "See above")
             }
         )
 
-    # Keep latest unique reasoning per agent
-    dedup = {}
-    for item in reasonings:
-        dedup[item['agent_id']] = item
-
-    return sorted(dedup.values(), key=lambda x: x['agent_id'])
+    # Sort sequentially by agent to show reasoning history
+    return sorted(reasonings, key=lambda x: x['agent_id'])
 
 
 def _collect_agent_interactions(simulation, agent_logs):

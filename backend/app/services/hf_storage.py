@@ -1,9 +1,6 @@
 """
-HuggingFace Bucket Storage Service
-Uploads video files to the HuggingFace Bucket (Xet storage) and returns the public URL.
-
-Bucket URL: https://huggingface.co/buckets/vish85521/videos
-Requires: huggingface_hub >= 1.7.0 (for batch_bucket_files)
+Hugging Face Storage Service
+Uploads video files to a Hugging Face repo and returns a public URL.
 """
 import os
 import logging
@@ -14,6 +11,69 @@ logger = logging.getLogger(__name__)
 def _get_settings():
     from app.config import get_settings
     return get_settings()
+
+
+def _clean_token(token: str) -> str:
+    """Normalize secrets loaded from env/space settings (remove trailing newlines/spaces)."""
+    return (token or "").strip()
+
+
+def _clean_path_prefix(prefix: str) -> str:
+    """Normalize optional repo path prefix and handle legacy placeholder value."""
+    cleaned = (prefix or "").strip().strip("/")
+    if cleaned.upper() == "HF_VIDEO_PATH_PREFIX":
+        return "videos"
+    return cleaned
+
+
+def _build_public_url(repo_id: str, repo_type: str, remote_path: str) -> str:
+    repo_type = (repo_type or "dataset").lower()
+    if repo_type == "dataset":
+        return f"https://huggingface.co/datasets/{repo_id}/resolve/main/{remote_path}"
+    if repo_type == "space":
+        return f"https://huggingface.co/spaces/{repo_id}/resolve/main/{remote_path}"
+    return f"https://huggingface.co/{repo_id}/resolve/main/{remote_path}"
+
+
+def _extract_remote_path_from_url(video_url: str, repo_id: str, repo_type: str) -> str | None:
+    patterns = []
+    repo_type = (repo_type or "dataset").lower()
+
+    if repo_type == "dataset":
+        patterns.append(f"/datasets/{repo_id}/resolve/main/")
+    elif repo_type == "space":
+        patterns.append(f"/spaces/{repo_id}/resolve/main/")
+    else:
+        patterns.append(f"/{repo_id}/resolve/main/")
+
+    # Backward compatibility for previously stored bucket URLs.
+    patterns.append(f"/buckets/{repo_id}/resolve/")
+
+    for marker in patterns:
+        if marker in video_url:
+            return video_url.split(marker, 1)[1]
+    return None
+
+
+def _ensure_repo_exists(api, repo_id: str, repo_type: str, token: str) -> None:
+    """Ensure target repo exists; create it if missing."""
+    from huggingface_hub.utils import RepositoryNotFoundError
+
+    try:
+        api.repo_info(repo_id=repo_id, repo_type=repo_type, token=token)
+    except RepositoryNotFoundError:
+        logger.warning(
+            "HF repo not found (%s/%s). Creating it automatically.",
+            repo_type,
+            repo_id,
+        )
+        api.create_repo(
+            repo_id=repo_id,
+            repo_type=repo_type,
+            token=token,
+            private=False,
+            exist_ok=True,
+        )
 
 
 def upload_video_to_hf(local_path: str, filename: str) -> str:
@@ -31,36 +91,40 @@ def upload_video_to_hf(local_path: str, filename: str) -> str:
         ValueError: If HF access token is not configured.
         Exception: If upload fails.
     """
-    from huggingface_hub import batch_bucket_files
+    from huggingface_hub import HfApi
 
     settings = _get_settings()
+    token = _clean_token(settings.hf_access_token)
 
-    if not settings.hf_access_token:
+    if not token:
         raise ValueError(
             "HF_ACCESS_TOKEN is not configured. "
             "Please set it in your .env file."
         )
 
-    # bucket_id = owner/bucket-name  (e.g. "vish85521/videos")
-    bucket_id = settings.hf_video_repo_id
+    repo_id = settings.hf_video_repo_id
+    repo_type = settings.hf_video_repo_type or "dataset"
 
     # remote path inside the bucket; use prefix subdir if set
-    if settings.hf_video_path_prefix:
-        remote_path = f"{settings.hf_video_path_prefix}/{filename}"
+    path_prefix = _clean_path_prefix(settings.hf_video_path_prefix)
+    if path_prefix:
+        remote_path = f"{path_prefix}/{filename}"
     else:
         remote_path = filename
 
-    logger.info(f"Uploading {local_path} → bucket {bucket_id}/{remote_path} ...")
+    logger.info(f"Uploading {local_path} -> {repo_type} repo {repo_id}/{remote_path} ...")
 
-    batch_bucket_files(
-        bucket_id=bucket_id,
-        add=[(local_path, remote_path)],
-        token=settings.hf_access_token,
+    api = HfApi(token=token)
+    _ensure_repo_exists(api=api, repo_id=repo_id, repo_type=repo_type, token=token)
+    api.upload_file(
+        path_or_fileobj=local_path,
+        path_in_repo=remote_path,
+        repo_id=repo_id,
+        repo_type=repo_type,
+        token=token,
     )
 
-    # Public resolve URL for HF buckets:
-    # https://huggingface.co/buckets/<bucket_id>/resolve/<remote_path>
-    url = f"https://huggingface.co/buckets/{bucket_id}/resolve/{remote_path}"
+    url = _build_public_url(repo_id=repo_id, repo_type=repo_type, remote_path=remote_path)
 
     logger.info(f"Upload complete. Public URL: {url}")
     return url
@@ -74,40 +138,30 @@ def delete_video_from_hf(video_url: str) -> None:
     Args:
         video_url: The public HF bucket resolve URL of the video.
     """
-    from huggingface_hub import batch_bucket_files
+    from huggingface_hub import HfApi
 
     settings = _get_settings()
+    token = _clean_token(settings.hf_access_token)
 
-    if not settings.hf_access_token:
+    if not token:
         logger.warning("HF_ACCESS_TOKEN not configured, skipping HF delete.")
         return
 
-    # URL format: https://huggingface.co/buckets/<bucket_id>/resolve/<remote_path>
-    marker = "/resolve/"
-    if marker not in video_url:
-        logger.warning(f"Cannot parse HF bucket URL for deletion: {video_url}")
-        return
-
-    # Extract bucket_id and remote_path from URL
-    # e.g. https://huggingface.co/buckets/vish85521/videos/resolve/videos/uuid.mp4
-    #   → parts after "buckets/" = "vish85521/videos/resolve/videos/uuid.mp4"
-    try:
-        after_buckets = video_url.split("/buckets/", 1)[1]
-        # after_buckets = "vish85521/videos/resolve/videos/uuid.mp4"
-        owner, rest = after_buckets.split("/", 1)
-        bucket_name, path_part = rest.split("/resolve/", 1)
-        bucket_id = f"{owner}/{bucket_name}"
-        remote_path = path_part
-    except (IndexError, ValueError) as e:
-        logger.warning(f"Failed to parse HF URL '{video_url}': {e}")
+    repo_id = settings.hf_video_repo_id
+    repo_type = settings.hf_video_repo_type or "dataset"
+    remote_path = _extract_remote_path_from_url(video_url, repo_id=repo_id, repo_type=repo_type)
+    if not remote_path:
+        logger.warning(f"Cannot parse HF URL for deletion: {video_url}")
         return
 
     try:
-        batch_bucket_files(
-            bucket_id=bucket_id,
-            delete=[remote_path],
-            token=settings.hf_access_token,
+        api = HfApi(token=token)
+        api.delete_file(
+            path_in_repo=remote_path,
+            repo_id=repo_id,
+            repo_type=repo_type,
+            token=token,
         )
-        logger.info(f"Deleted HF bucket file: {bucket_id}/{remote_path}")
+        logger.info(f"Deleted HF file: {repo_id}/{remote_path}")
     except Exception as e:
-        logger.warning(f"Failed to delete HF bucket file {remote_path}: {e}")
+        logger.warning(f"Failed to delete HF file {remote_path}: {e}")

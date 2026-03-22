@@ -139,16 +139,27 @@ def analyze_video_with_gemini(video_path: str) -> str:
         logger.info("Video processing complete, analyzing content...")
         
         # Step 3: Analyze with Gemini
-        prompt = """Analyze this video advertisement in detail. Describe:
+        prompt = """Watch this video advertisement and transcribe everything you observe into detailed plain text.
+Do not interpret, judge, or analyse. Only describe what you literally see and hear.
 
-1. **Visual Elements**: People shown (ages, genders, relationships), settings, products
-2. **Cultural Context**: Any cultural symbols, traditions, or practices shown
-3. **Narrative**: What story is being told? What emotions are evoked?
-4. **Target Audience**: Who appears to be the intended audience?
-5. **Potential Sensitivities**: Any elements that might be controversial or offensive to certain groups (religious, political, cultural, age-related)
-6. **Message**: What is the main message or call to action?
+Describe the following:
 
-Be specific and detailed. Focus on elements that could affect how different demographic groups might react to this advertisement."""
+1. SCENES: For each scene or shot, describe what is visible — people, objects, setting, actions, movement.
+
+2. PEOPLE: Physical appearance, approximate age, gender, clothing, any visible religious or cultural markers (e.g. clothing style, jewellery, head coverings).
+
+3. TEXT ON SCREEN: Transcribe every word of text, slogans, logos, or captions that appear. Note the language.
+
+4. AUDIO (if detectable): Any spoken words, voiceover lines, song lyrics, or notable sounds.
+
+5. PRODUCT / BRAND: What product or service is being advertised? What is shown of it?
+
+6. SETTING: Where does the ad take place? Indoor/outdoor, urban/rural, home/workplace/public space, any recognisable locations.
+
+7. SEQUENCE: Briefly describe the order of events — what happens first, then next, then last.
+
+Be exhaustive and literal. Do not use words like 'suggests', 'implies', 'appears to target', or 'may offend'.
+Only state what is directly visible or audible. Write in plain paragraphs."""
 
         response = client.models.generate_content(
             model="gemini-3.1-flash-lite-preview",
