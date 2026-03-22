@@ -12,7 +12,7 @@
         <li>Hugging Face-hosted services for cloud usage</li>
       </ul>
       <p>
-        <a href="https://agenticmarketing.netlify.app" target="_blank" rel="noopener noreferrer">
+        <a href="https://marketing-platform-two.vercel.app" target="_blank" rel="noopener noreferrer">
           <img src="https://img.shields.io/badge/Live%20Frontend-Open-0ea5e9?style=for-the-badge" alt="Live Frontend"/>
         </a>
       </p>
