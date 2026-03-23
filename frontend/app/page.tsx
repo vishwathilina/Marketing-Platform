@@ -1,17 +1,84 @@
 'use client';
 import Link from 'next/link';
-import { Zap, Shield, BarChart3, Users, ArrowRight } from 'lucide-react';
+import { ArrowRight, Check, Play, Star } from 'lucide-react';
 import DashboardNavbar from '@/components/DashboardNavbar';
 import { useEffect, useState } from 'react';
 
 export default function HomePage() {
+    const CAROUSEL_SWITCH_MS = 50000;
     const [cookie, setCookie] = useState<string[]>([]);
+    const [activeSlide, setActiveSlide] = useState(0);
+
+    const carouselSlides = [
+        {
+            heroVideo: 'https://huggingface.co/datasets/vish85521/videos/resolve/main/videos/9d2d27df-60fb-4681-9e16-d5b84a559629.mp4',
+            heroImage: '',
+            productImage: 'https://essstr.blob.core.windows.net/essimg/ItemAsset/Pic18117.jpg',
+            questionOne: 'Will it go well with my tea ?',
+            questionTwo: 'Is it low calorie ?',
+            percent: '86%',
+            statText: 'Engagement score',
+            productNameOne: 'Maliban',
+            productNameTwo: 'Cream Cracker',
+            price: 'LKR 250.00',
+            rating: '4.6',
+        },
+        {
+            heroVideo: 'https://huggingface.co/datasets/vish85521/videos/resolve/main/videos/1d82deee-3c0a-4007-af26-4c3fa1e353e3.mp4',
+            heroImage: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=1000&q=80',
+            productImage: 'https://nippon.s3.ap-southeast-1.amazonaws.com/products/d5c40b6ef0c7e36cf1cdeb554dd1681c33c8516d.jpg',
+            questionOne: 'How much area will this actually cover?',
+            questionTwo: 'What is the drying time?',
+            percent: '48%',
+            statText: 'Engagement score',
+            productNameOne: 'Nippolac',
+            productNameTwo: 'paint',
+            price: 'LKR 1950',
+            rating: '4.4',
+        },
+        {
+            heroVideo: 'https://huggingface.co/datasets/vish85521/videos/resolve/main/videos/747feb47-d323-4515-b1a6-c5511a9f8c12.mp4',
+            heroImage: 'https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=1000&q=80',
+            productImage: 'https://assets.unileversolutions.com/v1/982487.png',
+            questionOne: 'Does it whiten?',
+            questionTwo: 'The Freshness Duration',
+            percent: '92%',
+            statText: 'Engagement score',
+            productNameOne: 'Signal Strong',
+            productNameTwo: 'Teeth',
+            price: 'LKR 200.00',
+            rating: '4.8',
+        },
+        {
+            heroVideo: 'https://huggingface.co/datasets/vish85521/videos/resolve/main/videos/9881919e-718f-4756-a43e-7e5713286b5f.mp4',
+            heroImage: 'https://images.unsplash.com/photo-1503342452485-86ff0a33d548?auto=format&fit=crop&w=1000&q=80',
+            productImage: 'https://i0.wp.com/onlinekade.lk/wp-content/uploads/2024/06/5063305003546.jpg',
+            questionOne: 'Is it Pure Ceylon Tea?',
+            questionTwo: 'Is it strong enough ?',
+            percent: '67%',
+            statText: 'Engagement score',
+            productNameOne: 'Laojee Tea',
+            productNameTwo: '',
+            price: 'LKR 659.99',
+            rating: '4.5',
+        },
+    ];
+
     useEffect(() => {
         setCookie(document.cookie.split('; '));
         console.log("Cookies:", cookie);
     }, []);
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setActiveSlide((prev) => (prev + 1) % carouselSlides.length);
+        }, CAROUSEL_SWITCH_MS);
+
+        return () => clearInterval(timer);
+    }, [carouselSlides.length, CAROUSEL_SWITCH_MS]);
+
     const userCookie = cookie.find(row => row.startsWith('user='));
+    const currentSlide = carouselSlides[activeSlide];
 
     return (
         <div className="min-h-screen bg-[#f3f3f1] text-[#101828] font-sans overflow-hidden">
@@ -22,7 +89,7 @@ export default function HomePage() {
                 <header className="border-b border-[#e5e7eb] bg-[#f8f8f7] relative z-50">
                     <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
                         <div className="flex items-center space-x-3">
-                            <img src="/logo.png" alt="AgenticMarketing Logo" className="w-8 h-8 object-contain shadow-lg shadow-cyan-500/30 rounded-lg bg-white" />
+                            <img src="/logo.png" alt="AgenticMarketing Logo" className="w-8 h-8 object-contain  " />
                             <span className="text-xl font-bold font-heading text-[#101828]">AGENTIC<span className="font-light text-slate-500">MARKETING</span></span>
                         </div>
 
@@ -46,7 +113,7 @@ export default function HomePage() {
                 </div>
 
                 {/* Hero Content */}
-                <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-32">
+                <div className="relative z-10 max-w-7xl mx-auto px-6 py-24 md:py-12 pt-0">
                     <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
                         <div className="text-center lg:text-left">
                             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-6 font-heading transform hover:scale-[1.02] transition-transform duration-500 leading-tight">
@@ -71,27 +138,138 @@ export default function HomePage() {
                             </div>
                         </div>
 
-                        {/* 3D Video Container */}
-                        <div className="relative w-full aspect-square max-w-[500px] mx-auto lg:max-w-none">
-                            {/* Decorative background framing */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-[#00c2a8]/30 to-amber-200/30 rounded-sm transform rotate-3 scale-105 transition-transform duration-700 hover:rotate-6"></div>
-                            <div className="absolute inset-0 bg-gradient-to-bl from-[#00897f]/20 to-transparent rounded-sm transform -rotate-2 scale-105 transition-transform duration-700"></div>
-
-                            {/* Video Element */}
-                            <div className="absolute inset-0 bg-white rounded-sm shadow-2xl overflow-hidden border border-[#e5e7eb] group z-10 w-full h-full flex items-center justify-center">
-                                <video
-                                    autoPlay
-                                    loop
-                                    muted
-                                    playsInline
-                                    className="w-full h-full object-cover scale-[1.05] transform transition-transform duration-1000 group-hover:scale-110"
+                        {/* Video Carousel */}
+                        <div className="relative mx-auto w-full max-w-[620px] aspect-square lg:mx-0">
+                            {/* Main Container */}
+                            <div className="relative w-full h-full">
+                                {/* Large Orange rounded rectangle background - main focal point */}
+                                <div
+                                    className="absolute top-8 left-1/4 overflow-hidden rounded-[2rem] bg-orange-500 shadow-2xl"
+                                    style={{ width: '55%', height: '85%' }}
                                 >
-                                    <source src="/tech.mp4" type="video/mp4" />
-                                    Your browser does not support the video tag.
-                                </video>
+                                    {/* Product Video */}
+                                    <video
+                                        key={activeSlide}
+                                        autoPlay
+                                        loop
+                                        muted
+                                        playsInline
+                                        className="h-full w-full object-cover"
+                                    >
+                                        <source src={currentSlide.heroVideo} type="video/mp4" />
+                                        <source src="/tech.mp4" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
 
-                                {/* Aesthetic glass overlay */}
-                                <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent pointer-events-none mix-blend-overlay"></div>
+                                    {/* Play Button Overlay */}
+                                    <div
+                                        className="absolute flex items-center justify-center"
+                                        style={{ bottom: '20%', left: '50%', transform: 'translateX(-50%)' }}
+                                    >
+                                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white shadow-2xl">
+                                            <Play className="h-7 w-7 fill-gray-900 text-gray-900" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Gradient overlay shape behind image */}
+                                <div
+                                    className="absolute rounded-3xl"
+                                    style={{
+                                        top: '10%',
+                                        left: '8%',
+                                        width: '45%',
+                                        height: '75%',
+                                    }}
+                                />
+
+                                {/* Left Chat Bubbles */}
+                                <div className="absolute left-0 top-1/4 z-30 space-y-4" style={{ width: '45%' }}>
+                                    {/* First Message */}
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-orange-500">
+                                            <Check className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div className="rounded-3xl bg-white px-5 py-3 shadow-lg">
+                                            <p className="text-sm font-semibold text-gray-900">{currentSlide.questionOne}</p>
+                                        </div>
+                                    </div>
+
+                                    {/* Second Message */}
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-blue-500">
+                                            <Check className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div className="rounded-3xl bg-white px-5 py-3 shadow-lg">
+                                            <p className="text-sm font-semibold text-gray-900">{currentSlide.questionTwo}</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Top Right Stats Card */}
+                                <div
+                                    className="absolute z-30 rounded-3xl border border-gray-200 bg-white p-6 shadow-xl"
+                                    style={{
+                                        top: '8%',
+                                        right: '5%',
+                                        width: '35%',
+                                    }}
+                                >
+                                    <p className="mb-1 text-xs font-medium tracking-wide text-gray-500">UP TO</p>
+                                    <p className="mb-2 text-5xl font-bold leading-none text-gray-900">{currentSlide.percent}</p>
+                                    <p className="text-sm leading-snug text-gray-700">{currentSlide.statText}</p>
+                                </div>
+
+                                {/* Bottom Right Product Card */}
+                                <div
+                                    className="absolute z-30 rounded-3xl bg-gray-200 p-4 shadow-xl md:p-5"
+                                    style={{
+                                        bottom: '5%',
+                                        right: '2%',
+                                        width: '46%',
+                                    }}
+                                >
+                                    <div className="flex items-center gap-3 md:gap-4">
+                                        {/* Product Image */}
+                                        <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-2xl bg-gray-300 md:h-24 md:w-24">
+                                            <img
+                                                src={currentSlide.productImage}
+                                                alt="Product"
+                                                className="h-full w-full object-cover"
+                                            />
+                                        </div>
+
+                                        {/* Product Info */}
+                                        <div className="flex min-w-0 flex-1 flex-col justify-between">
+                                            <div>
+                                                <p className="truncate text-sm font-bold leading-tight text-gray-900 md:text-base">{currentSlide.productNameOne}</p>
+                                                <p className="truncate text-sm font-bold leading-tight text-gray-900 md:text-base">{currentSlide.productNameTwo}</p>
+                                            </div>
+
+                                            <div>
+                                                <p className="mb-1.5 whitespace-nowrap text-xl font-bold text-gray-900 md:mb-2 md:text-2xl">{currentSlide.price}</p>
+                                                <div className="flex items-center gap-1">
+                                                    <Star className="h-4 w-4 fill-gray-900 text-gray-900 md:h-5 md:w-5" />
+                                                    <p className="text-sm font-semibold text-gray-900">{currentSlide.rating}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="absolute bottom-1 left-1/2 z-40 flex -translate-x-1/2 items-center gap-2">
+                                    {carouselSlides.map((_, index) => (
+                                        <button
+                                            key={index}
+                                            type="button"
+                                            aria-label={`Go to slide ${index + 1}`}
+                                            onClick={() => setActiveSlide(index)}
+                                            className={`h-2.5 rounded-full transition-all duration-300 ${
+                                                activeSlide === index ? 'w-8 bg-[#111827]' : 'w-2.5 bg-[#9ca3af]'
+                                            }`}
+                                        />
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -100,7 +278,7 @@ export default function HomePage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-24">
                         {[
                             { value: '1000+', label: 'AI Agents' },
-                            { value: '< 5min', label: 'Simulation Time' },
+                            { value: '< 1 Hour', label: 'Simulation Time' },
                             { value: '95%', label: 'Accuracy' },
                             { value: '24/7', label: 'Available' },
                         ].map((stat, i) => (
@@ -113,38 +291,40 @@ export default function HomePage() {
                 </div>
             </div>
 
-            {/* Features Section */}
-            <section id="how-it-works" className="py-24 max-w-7xl mx-auto px-6 relative z-10">
-                <h2 className="text-4xl font-bold text-center mb-16 font-heading text-[#111827]">
-                    How It <span className="text-[#00897f]">Works</span>
-                </h2>
-
-                <div className="grid md:grid-cols-3 gap-8">
-                    {[
-                        {
-                            icon: <BarChart3 className="w-8 h-8" />,
-                            title: 'Upload Your Ad',
-                            description: 'Upload your video advertisement. Our AI analyzes every scene for potential triggers.',
-                        },
-                        {
-                            icon: <Users className="w-8 h-8" />,
-                            title: 'AI Simulation',
-                            description: '1,000+ diverse AI agents react to your ad based on demographics, values, and social influence.',
-                        },
-                        {
-                            icon: <Shield className="w-8 h-8" />,
-                            title: 'Risk Report',
-                            description: 'Get detailed risk analysis with sentiment breakdown, engagement score, and controversy detection.',
-                        },
-                    ].map((feature, i) => (
-                        <div key={i} className="group rounded-sm border border-[#d1d5db] bg-white p-8 shadow-sm hover:-translate-y-3 hover:shadow-2xl transition-all duration-300 transform perspective-1000">
-                            <div className="w-16 h-16 rounded-sm bg-[#e6f4f2] text-[#00897f] flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
-                                {feature.icon}
-                            </div>
-                            <h3 className="text-xl font-semibold mb-3 text-[#111827]">{feature.title}</h3>
-                            <p className="text-[#6b7280]">{feature.description}</p>
+            {/* Feature Sections */}
+            <section id="how-it-works" className="py-24 bg-white relative z-10">
+                <div className="max-w-7xl mx-auto px-6 space-y-24">
+                    {/* Feature 1: Powerful Insights */}
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h2 className="text-4xl font-bold mb-4 font-heading text-[#101828]">Powerful insights, all in one place.</h2>
+                            <p className="text-lg text-[#4b5563] mb-6">
+                                Share learnings throughout your organisation with team-level access to project data. Intuitive visual analytics dashboards make it easy to understand your results, synthesise insights across projects, and look at performance versus our norms. So you can make faster, more confident decisions.
+                            </p>
+                            <Link href="#" className="inline-flex items-center gap-2 rounded-sm bg-[#101828] px-6 py-3 text-base font-semibold text-white hover:bg-[#1f2937] transition-colors">
+                                Explore solutions
+                            </Link>
                         </div>
-                    ))}
+                        <div className="bg-gray-200 h-80 rounded-sm flex items-center justify-center">
+                            <img src="/screensho1.png" alt="Analytics Dashboard" className="h-full w-full object-cover" />
+                        </div>
+                    </div>
+
+                    {/* Feature 2: Consumer Research */}
+                    <div className="grid md:grid-cols-2 gap-12 items-center">
+                        <div className="bg-gray-200 h-80 rounded-sm flex items-center justify-center order-last md:order-first">
+                            <img src="/screensho2.png" alt="Consumer Research" className="h-full w-full object-cover" />
+                        </div>
+                        <div>
+                            <h2 className="text-4xl font-bold mb-4 font-heading text-[#101828]">Consumer research, on your terms.</h2>
+                            <p className="text-lg text-[#4b5563] mb-6">
+                                Choose from a full suite of market research tools designed to help you optimise your marketing mix, whether you're getting feedback on an idea, developing a new product or launching a campaign. Get the flexibility you need to run self-serve studies or combine the speed and agility of the platform with expert service.
+                            </p>
+                            <Link href="#" className="inline-flex items-center gap-2 rounded-sm bg-[#101828] px-6 py-3 text-base font-semibold text-white hover:bg-[#1f2937] transition-colors">
+                                Explore pricing
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -156,7 +336,7 @@ export default function HomePage() {
                             Ready to Protect Your Brand?
                         </h2>
                         <p className="text-[#4b5563] mb-8 max-w-lg mx-auto">
-                            Start your first simulation free. No credit card required. Detect the blind spots in your campaigns.
+                            Start your first simulation free.
                         </p>
                         <Link href="/register" className="inline-flex items-center gap-2 rounded-sm bg-[#101828] px-8 py-4 text-lg font-semibold text-white hover:bg-[#1f2937] hover:scale-105 transition-all duration-300">
                             Get Started Now
@@ -168,7 +348,7 @@ export default function HomePage() {
             {/* Footer */}
             <footer className="border-t border-[#e5e7eb] bg-white py-8 relative z-10">
                 <div className="max-w-7xl mx-auto px-6 text-center text-[#9ca3af] text-sm">
-                    <p>© {new Date().getFullYear()} AGENTIC MARKETING. Powered by AI.</p>
+                    <p>© {new Date().getFullYear()} AGENTIC MARKETING.</p>
                 </div>
             </footer>
         </div>
