@@ -89,6 +89,22 @@ docker compose -f compose/dockercompose.yml logs -f postgres redis chromadb
 
 ## Common Issues
 
+### 401 on login (/auth/login)
+
+For the compose stack, backend startup seeds an initial admin account (only if it does not already exist):
+
+- email: admin@agenticmarketing.com
+- password: Admin@12345
+
+If you changed these values, check the `INITIAL_ADMIN_EMAIL` and `INITIAL_ADMIN_PASSWORD`
+environment variables in [dockercompose.yml](dockercompose.yml).
+
+If you are using an older persisted database volume, the seeded user may already exist with a
+different password. In that case either:
+
+- log in with the original password, or
+- recreate volumes with `docker compose -f compose/dockercompose.yml down -v` and start again.
+
 ### Backend not reachable from frontend
 
 Check:

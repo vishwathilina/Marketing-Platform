@@ -70,6 +70,10 @@ class Settings(BaseSettings):
     jwt_secret: str = "change_this_to_a_random_32_character_string"
     jwt_algorithm: str = "HS256"
     jwt_expiry_hours: int = 24
+
+    # Optional first-run account for local/dev startup
+    initial_admin_email: str = ""
+    initial_admin_password: str = ""
     
     # Simulation
     default_num_agents: int = 10

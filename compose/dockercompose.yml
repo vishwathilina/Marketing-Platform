@@ -63,6 +63,8 @@ services:
       CHROMA_PORT: "8000"
       CHROMA_SSL: "false"
       PORT: "7860"
+      INITIAL_ADMIN_EMAIL: admin@agenticmarketing.com
+      INITIAL_ADMIN_PASSWORD: Admin@12345
     ports:
       - "8001:7860"
     volumes:
