@@ -171,26 +171,66 @@ export default function ProjectDetailPage() {
                     )}
                 </div>
 
-                {/* Video Preview (HuggingFace URL) */}
+                {/* Creative Preview */}
                 {project.video_path?.startsWith('https://') && (
                     <div className="border border-[#e5e7eb] bg-white p-6 shadow-sm mb-6">
-                        <h2 className="text-xl font-bold text-[#111827] mb-4">Ad Video Preview</h2>
-                        <video
-                            src={project.video_path}
-                            controls
-                            className="w-full  max-h-[500px] bg-black"
-                            preload="metadata"
-                        >
-                            Your browser does not support the video tag.
-                        </video>
+                        <h2 className="text-xl font-bold text-[#111827] mb-4">
+                            {project.media_modality === 'image'
+                                ? 'Creative Preview'
+                                : project.media_modality === 'audio'
+                                  ? 'Audio Preview'
+                                  : project.media_modality === 'text'
+                                    ? 'Document Preview'
+                                    : 'Ad Video Preview'}
+                        </h2>
+                        {(project.media_modality === 'video' || !project.media_modality) && (
+                            <video
+                                src={project.video_path}
+                                controls
+                                className="w-full max-h-[500px] bg-black"
+                                preload="metadata"
+                            >
+                                Your browser does not support the video tag.
+                            </video>
+                        )}
+                        {project.media_modality === 'image' &&
+                            (project.video_path.toLowerCase().includes('.pdf') ? (
+                                <a
+                                    href={project.video_path}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="text-[#00897f] underline text-sm"
+                                >
+                                    Open PDF creative
+                                </a>
+                            ) : (
+                                <img
+                                    src={project.video_path}
+                                    alt={project.title}
+                                    className="w-full max-h-[500px] object-contain bg-[#f9fafb]"
+                                />
+                            ))}
+                        {project.media_modality === 'audio' && (
+                            <audio src={project.video_path} controls className="w-full" />
+                        )}
+                        {project.media_modality === 'text' && (
+                            <a
+                                href={project.video_path}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-[#00897f] underline text-sm"
+                            >
+                                Open uploaded document
+                            </a>
+                        )}
                     </div>
                 )}
 
-                {/* Video processing state */}
+                {/* Processing state */}
                 {project.status !== 'READY' && project.status !== 'FAILED' && (
                     <div className="rounded-xl border border-[#e5e7eb] bg-white p-10 text-center mb-6 shadow-sm">
                         <Loader2 className="h-10 w-10 animate-spin mx-auto mb-4 text-[#00897f]" />
-                        <p className="text-[#374151] font-medium">Video is being processed...</p>
+                        <p className="text-[#374151] font-medium">Creative is being processed...</p>
                         <p className="text-sm text-[#6b7280] mt-2">This may take a few minutes</p>
                     </div>
                 )}

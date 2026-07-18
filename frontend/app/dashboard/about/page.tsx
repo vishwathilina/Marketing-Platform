@@ -26,16 +26,16 @@ export default function AboutPage() {
                     
                     <div className="pl-4 border-l-2 border-slate-200 space-y-6">
                         <div>
-                            <h3 className="text-lg font-medium text-slate-800 mb-1">Visual Content Processing (Gemini VLM)</h3>
+                            <h3 className="text-lg font-medium text-slate-800 mb-1">Multimedia Content Processing (Gemini)</h3>
                             <p className="text-slate-600 leading-relaxed">
-                                Original video marketing collateral is uploaded and programmatically interpreted into factual, semantic simulation briefs. Leveraging the Gemini 2.0 SDK, the pipeline precisely identifies core aesthetics, explicit/implicit dialogue, contextual narratives, and universally sensitive material with high structural consistency.
+                                Marketing collateral — video, print/OOH images, audio ads, or written email/blog copy — is uploaded (or pasted) and programmatically decomposed into factual simulation briefs. Subtype-specific Gemini prompts capture layout, transcript, on-screen/on-page copy, brand marks, and CTAs with structural consistency. Agents then react only to that text brief.
                             </p>
                         </div>
 
                         <div>
-                            <h3 className="text-lg font-medium text-slate-800 mb-1">Distributed Simulation Engine (Ray + Qwen LLM)</h3>
+                            <h3 className="text-lg font-medium text-slate-800 mb-1">Distributed Simulation Engine (Ray + Ollama)</h3>
                             <p className="text-slate-600 leading-relaxed">
-                                The computationally intensive processing runs securely across Python Ray clusters scaling over LLM actor pools. Each node manages thousands of individual synthetic agents, representing exact demographic subsets (income, geographic location, political leaning, and personality). Inference queries are asynchronously piped to a managed Hugging Face Qwen API for scalable and low-latency cognitive processing.
+                                The computationally intensive processing runs securely across Python Ray clusters scaling over LLM actor pools. Each node manages thousands of individual synthetic agents, representing exact demographic subsets (income, geographic location, political leaning, and personality). Inference queries are asynchronously piped to Ollama Cloud for scalable and low-latency cognitive processing.
                             </p>
                         </div>
 

@@ -40,7 +40,7 @@ export default function HelpCenter() {
                                 </li>
                                 <li className="flex gap-2">
                                     <span className="text-blue-500 font-bold">•</span>
-                                    <span>Upload your <b>video advertisement</b>. The platform's Vision LLM (Gemini) will automatically watch the video and transcribe it into a high-density 150-word context brief for the agents.</span>
+                                    <span>Choose a <b>creative type</b> (video, print, banner, OOH, radio, streaming audio, email, or blog) and upload the file — or paste text for email/blog. Gemini (or text extraction) turns it into a factual simulation brief for the agents.</span>
                                 </li>
                                 <li className="flex gap-2">
                                     <span className="text-blue-500 font-bold">•</span>

@@ -1,14 +1,11 @@
 import axios from 'axios';
 
 // Use Next.js rewrite proxy to avoid CORS issues
-// Requests to /api/* are proxied to http://localhost:8000/*
+// Requests to /api/* are proxied to the backend (see next.config.js)
 const API_BASE_URL = '/api';
 
 const api = axios.create({
     baseURL: API_BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
 });
 
 const AUTH_TOKEN_KEY = 'token';
@@ -41,7 +38,7 @@ export const clearStoredToken = () => {
     document.cookie = `${AUTH_COOKIE_NAME}=; path=/; max-age=0`;
 };
 
-// Add auth token to requests
+// Add auth token; for FormData let the browser set multipart Content-Type + boundary
 api.interceptors.request.use((config) => {
     if (typeof window !== 'undefined') {
         const token = getStoredToken();
@@ -49,6 +46,24 @@ api.interceptors.request.use((config) => {
             config.headers.Authorization = `Bearer ${token}`;
         }
     }
+
+    if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+        // Axios defaults / prior JSON calls must not force application/json on uploads
+        if (typeof config.headers.delete === 'function') {
+            config.headers.delete('Content-Type');
+            config.headers.delete('content-type');
+        } else {
+            delete (config.headers as Record<string, unknown>)['Content-Type'];
+            delete (config.headers as Record<string, unknown>)['content-type'];
+        }
+    } else if (config.data && typeof config.data === 'object') {
+        if (typeof config.headers.set === 'function') {
+            config.headers.set('Content-Type', 'application/json');
+        } else {
+            (config.headers as Record<string, string>)['Content-Type'] = 'application/json';
+        }
+    }
+
     return config;
 });
 
@@ -105,11 +120,7 @@ export const projectsApi = {
     },
 
     create: async (formData: FormData) => {
-        const response = await api.post('/projects', formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        });
+        const response = await api.post('/projects', formData);
         return response.data;
     },
 

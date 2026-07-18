@@ -5,8 +5,24 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
-
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
+import {
+    ArrowLeft,
+    Loader2,
+    AlertTriangle,
+    Users,
+    TrendingUp,
+    MapPin,
+    Download,
+    XCircle,
+    CalendarDays,
+    Clock3,
+    Activity,
+    BarChart3,
+} from 'lucide-react';
+import { simulationsApi, projectsApi, getStoredToken } from '@/lib/api';
+import OpinionTrajectoryChart from '@/components/OpinionTrajectoryChart';
+import RiskFlagsPanel from '@/components/RiskFlagsPanel';
 
 const AgentMap = dynamic(
     () => import('@/components/AgentMap'),
@@ -19,28 +35,9 @@ const AgentMap = dynamic(
                     <p className="text-white/60">Loading map component...</p>
                 </div>
             </div>
-        )
+        ),
     }
 );
-
-import {
-    ArrowLeft,
-    Loader2,
-    AlertTriangle,
-    Users,
-    TrendingUp,
-    MessageCircle,
-    AlertCircle,
-    MapPin,
-    Download,
-    XCircle,
-    CalendarDays,
-    Clock3,
-    Activity,
-    BarChart3,
-} from 'lucide-react';
-import { simulationsApi, projectsApi, getStoredToken } from '@/lib/api';
-import OpinionTrajectoryChart from '@/components/OpinionTrajectoryChart';
 
 const COLORS = {
     positive: '#10b981',
@@ -123,15 +120,6 @@ export default function SimulationResultsPage() {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error('Failed to download report', error);
-        }
-    };
-
-    const getSeverityClass = (severity: string) => {
-        switch (severity) {
-            case 'CRITICAL': return 'risk-critical';
-            case 'HIGH': return 'risk-high';
-            case 'MEDIUM': return 'risk-medium';
-            default: return 'risk-low';
         }
     };
 
@@ -357,15 +345,37 @@ export default function SimulationResultsPage() {
                                         <h2 className="text-2xl font-bold">Insights</h2>
                                     </div>
                                     <div className="flex items-start gap-6">
-                                        <video
-                                            src={project.video_path}
-                                            controls
-                                            className="w-full max-w-[320px] bg-black border border-slate-200"
-                                            preload="metadata"
-                                        >
-                                            Your browser does not support the video tag.
-                                        </video>
-                                        <div className="pt-2">
+                                        {(project.media_modality === 'video' || !project.media_modality) && (
+                                            <video
+                                                src={project.video_path}
+                                                controls
+                                                className="w-full max-w-[320px] bg-black border border-slate-200"
+                                                preload="metadata"
+                                            >
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        )}
+                                        {project.media_modality === 'image' && (
+                                            <img
+                                                src={project.video_path}
+                                                alt={project.title}
+                                                className="w-full max-w-[320px] border border-slate-200 object-contain bg-slate-50"
+                                            />
+                                        )}
+                                        {project.media_modality === 'audio' && (
+                                            <audio src={project.video_path} controls className="w-full max-w-[320px]" />
+                                        )}
+                                        {project.media_modality === 'text' && (
+                                            <a
+                                                href={project.video_path}
+                                                target="_blank"
+                                                rel="noreferrer"
+                                                className="text-sm text-teal-700 underline"
+                                            >
+                                                Open uploaded document
+                                            </a>
+                                        )}
+                                        <div className="pt-2 flex-1">
                                             <p className="text-sm font-semibold text-slate-800">vlm_generated_context</p>
                                             <div className="mt-2 h-52 overflow-y-auto border border-slate-200 bg-slate-50 p-3">
                                                 <p className="text-sm text-slate-700 whitespace-pre-wrap leading-6">
@@ -373,6 +383,18 @@ export default function SimulationResultsPage() {
                                                 </p>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!project?.video_path && project?.vlm_generated_context && (
+                                <div className="border border-slate-200 bg-white p-5">
+                                    <h2 className="text-2xl font-bold mb-4">Insights</h2>
+                                    <p className="text-sm font-semibold text-slate-800">vlm_generated_context</p>
+                                    <div className="mt-2 h-52 overflow-y-auto border border-slate-200 bg-slate-50 p-3">
+                                        <p className="text-sm text-slate-700 whitespace-pre-wrap leading-6">
+                                            {project.vlm_generated_context}
+                                        </p>
                                     </div>
                                 </div>
                             )}
@@ -527,40 +549,7 @@ export default function SimulationResultsPage() {
 
                             {/* Risk Flags */}
                             {results.risk_flags?.length > 0 && (
-                                <div className="border border-slate-200 bg-white p-6">
-                                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                                        <AlertCircle className="w-5 h-5 mr-2 text-red-500" />
-                                        Risk Flags
-                                    </h3>
-                                    <div className="space-y-4">
-                                        {results.risk_flags.map((flag: any, index: number) => (
-                                            <div
-                                                key={index}
-                                                className={`p-4 border ${getSeverityClass(flag.severity)}`}
-                                            >
-                                                <div className="flex items-center justify-between mb-2">
-                                                    <span className="font-medium">{flag.flag_type.replace(/_/g, ' ')}</span>
-                                                    <span className="text-sm px-2 py-1 bg-white/70 border border-white/70">
-                                                        {flag.severity}
-                                                    </span>
-                                                </div>
-                                                <p className="text-sm opacity-90">{flag.description}</p>
-
-                                                {flag.sample_agent_reactions?.length > 0 && (
-                                                    <div className="mt-3 space-y-2">
-                                                        <p className="text-xs font-medium opacity-80">Sample reactions:</p>
-                                                        {flag.sample_agent_reactions.map((reaction: any, i: number) => (
-                                                            <div key={i} className="text-xs opacity-80 flex items-start space-x-2">
-                                                                <MessageCircle className="w-3 h-3 mt-0.5 flex-shrink-0" />
-                                                                <span>"{reaction.reasoning}"</span>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
+                                <RiskFlagsPanel flags={results.risk_flags} />
                             )}
 
                             {/* Agent Map */}

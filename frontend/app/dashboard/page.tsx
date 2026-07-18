@@ -228,13 +228,19 @@ export default function DashboardPage() {
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
                                                 <div className="h-12 w-20 overflow-hidden rounded border border-[#e5e7eb] bg-[#eef2ff]">
-                                                    {project.video_path ? (
-                                                        <video 
-                                                            src={`${project.video_path.startsWith('http') ? project.video_path : 'http://localhost:8001' + project.video_path}#t=0.1`} 
-                                                            className="h-full w-full object-cover" 
-                                                            preload="metadata" 
-                                                            muted 
-                                                            playsInline 
+                                                    {project.video_path && (project.media_modality === 'video' || !project.media_modality) ? (
+                                                        <video
+                                                            src={`${project.video_path.startsWith('http') ? project.video_path : 'http://localhost:8001' + project.video_path}#t=0.1`}
+                                                            className="h-full w-full object-cover"
+                                                            preload="metadata"
+                                                            muted
+                                                            playsInline
+                                                        />
+                                                    ) : project.video_path && project.media_modality === 'image' ? (
+                                                        <img
+                                                            src={project.video_path}
+                                                            alt=""
+                                                            className="h-full w-full object-cover"
                                                         />
                                                     ) : (
                                                         <div className="flex h-full w-full items-center justify-center">

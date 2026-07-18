@@ -5,7 +5,7 @@
     </td>
     <td valign="top">
       <h1>AgentMarketing Platform</h1>
-      <p>End-to-end platform for running AI-agent marketing simulations from uploaded ad videos.</p>
+      <p>End-to-end platform for running AI-agent marketing simulations from uploaded multimedia creatives.</p>
       <p>This repository supports two runtime models:</p>
       <ul>
         <li>Compose-based local stack for full development and integration testing</li>
@@ -39,7 +39,7 @@
 
 ## What This Platform Does
 
-- Upload and manage ad campaign video projects
+- Upload and manage ad campaign projects (video, image, audio, or text)
 - Generate AI-agent reactions and behavior events
 - Run simulations with Celery + Ray worker flow
 - Store and retrieve vector/context data with ChromaDB
@@ -84,7 +84,7 @@ Hosted paths and references:
 
 - Frontend points to hosted backend through environment values
 - Backend can run from root backend Docker image
-- Qwen generation endpoint is configured as a Hugging Face Space URL
+- Agent simulation LLM calls are configured through Ollama Cloud
 - Video storage is configured to a Hugging Face Dataset repository
 
 Current frontend runtime env points to:
